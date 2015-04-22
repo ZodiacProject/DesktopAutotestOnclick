@@ -1,0 +1,50 @@
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.exe.config
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.exe
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.pdb
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Newtonsoft.Json.dll
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.dll
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.dll
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.dll
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.dll
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Newtonsoft.Json.xml
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.xml
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.xml
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.xml
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.xml
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.exe
+c:\users\userrr\documents\visual studio 2013\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.pdb
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\log4net.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NLog.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\this.Log-log4net.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\this.Log-NLog.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\this.Log.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\log4net.xml
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NLog.xml
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NuLog.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NuLog.json
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.exe.config
+H:\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.exe
+H:\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.pdb
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\NuLog.json
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.exe
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.pdb
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\log4net.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\Newtonsoft.Json.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\NLog.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\NuLog.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\this.Log-log4net.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\this.Log-NLog.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\this.Log.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.dll
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\log4net.xml
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\Newtonsoft.Json.xml
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\NLog.xml
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.xml
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.xml
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.xml
+H:\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.xml
+H:\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache

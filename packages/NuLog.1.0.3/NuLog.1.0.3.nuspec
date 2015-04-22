@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NuLog</id>
+    <version>1.0.3</version>
+    <title>NuLog</title>
+    <authors>Ivan Andrew Pointer</authors>
+    <owners>Ivan Andrew Pointer</owners>
+    <licenseUrl>http://www.nulog.info/license/</licenseUrl>
+    <projectUrl>http://www.nulog.info/</projectUrl>
+    <iconUrl>http://www.nulog.info/wp-content/uploads/2014/11/NuLog-Logo-Large-e1416321715549.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Powerfully simple logging.  Period.
+
+NuLog is a tag based logging framework written in C# for .NET. It is built to be simple, fast and extensible. It's so simple, you can be up and logging in minutes!</description>
+    <releaseNotes>RC1.0.3 - Updated the logevent to prevent a trace loop from occurring.  Fixed a bug in the quick-check for date based file rollovers.</releaseNotes>
+    <copyright>©2014 Ivan Andrew Pointer</copyright>
+    <language>en-US</language>
+    <tags>NuLog Log Logging Tag C#</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.5" />
+    </dependencies>
+  </metadata>
+</package>

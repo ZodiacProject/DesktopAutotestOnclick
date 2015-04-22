@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>this.Log-log4net</id>
+    <version>0.0.3.0</version>
+    <title>this.Log Logging Extension (log4net Plugin)</title>
+    <authors>RealDimensions Software,  LLC</authors>
+    <owners>RealDimensions Software,  LLC</owners>
+    <licenseUrl>https://raw.github.com/ferventcoder/this.Log/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ferventcoder/this.Log</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>this.Log-log4net is the log4net plugin to this.Log logging extension.</description>
+    <summary>this.Log-log4net - this.Log logging extension using log4net</summary>
+    <releaseNotes>== v0.0.3 ==
+      Strong named the assembly - https://github.com/ferventcoder/this.Log/pull/6
+      Report the correct logger - https://github.com/ferventcoder/this.Log/pull/2 | https://github.com/ferventcoder/this.Log/issues/1
+      Error and Fatal can now have Exceptions passed to them (only the Func&lt;string&gt; versions though) - https://github.com/ferventcoder/this.Log/commit/4a468d2836312184597981e5e91a98909e23f1f8</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>logging log this.Log log4net</tags>
+    <dependencies>
+      <dependency id="this.Log" version="0.0.3.0" />
+      <dependency id="log4net" version="[1.2.10]" />
+    </dependencies>
+  </metadata>
+</package>
