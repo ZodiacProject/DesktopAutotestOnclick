@@ -22,7 +22,6 @@ C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDe
 C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NLog.xml
 C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NuLog.dll
 C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\NuLog.json
-C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
 H:\AutotestDesktop\AutotestDesktop\bin\Debug\AutotestDesktop.exe.config
 H:\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.exe
 H:\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.pdb
@@ -48,3 +47,8 @@ H:\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.xml
 H:\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.xml
 H:\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.xml
 H:\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Gurock.TestRail.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\TestRail.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Gurock.TestRail.pdb
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\TestRail.pdb
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache

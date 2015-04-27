@@ -1,0 +1,5 @@
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\TestRail_Example\TestRail_Example\testrail-api-master\testrail-api-master\dotnet\obj\Debug\Gurock.TestRail.csprojResolveAssemblyReference.cache
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\TestRail_Example\TestRail_Example\testrail-api-master\testrail-api-master\dotnet\bin\Debug\Gurock.TestRail.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\TestRail_Example\TestRail_Example\testrail-api-master\testrail-api-master\dotnet\bin\Debug\Gurock.TestRail.pdb
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\TestRail_Example\TestRail_Example\testrail-api-master\testrail-api-master\dotnet\obj\Debug\Gurock.TestRail.dll
+C:\Users\Userrr\Documents\Visual Studio 2013\Projects\TestRail_Example\TestRail_Example\testrail-api-master\testrail-api-master\dotnet\obj\Debug\Gurock.TestRail.pdb

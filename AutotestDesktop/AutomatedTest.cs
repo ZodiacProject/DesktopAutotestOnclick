@@ -34,25 +34,25 @@ namespace AutotestDesktop
 		{   
 			RunBrowser(new FirefoxDriver());
 		}
-       //[TestMethod]
+       [TestMethod]
 		public void ChromeOnClick()
 		{
               
             RunBrowser(new ChromeDriver());
 		}
-       // [TestMethod]
+        [TestMethod]
 		public void OperaOnClick()
 		{
             RunBrowser(new OperaDriver());
 		
 		}
-        // [TestMethod]
+        [TestMethod]
 		public void IEOnClick()
 		{
             RunBrowser(new InternetExplorerDriver());
 			
 		}
-       // [TestMethod]
+        [TestMethod]
 		public void SafariOnClick()
 		{
             RunBrowser(new SafariDriver());

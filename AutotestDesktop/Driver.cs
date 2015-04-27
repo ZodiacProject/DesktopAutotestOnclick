@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -8,7 +9,6 @@ using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Internal;
-using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,54 +18,69 @@ using System.Diagnostics;
 using NuLog;
 
 
-
-
 namespace AutotestDesktop
 {
     class Driver
     {
-
-        public List<IWebDriver> Drivers {get; private set;}
         private List<PublisherTarget> _driverSettings; // for many publishers
+        private bool _isLandChecked;
+        private int _countWindowClick = 0;
+        public List<IWebDriver> Drivers {get; private set;}
+        public TestRail TestRun { get; set; }
 //Constuctor
         public Driver()
         {
 			Drivers = new List<IWebDriver>();
            _driverSettings = new List<PublisherTarget>()
                 {
-              //  new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", ShowPopup = 3, IntervalPopup = 10000 },
-                new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", ShowPopup = 1, IntervalPopup = 20000},
-              //  new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", ShowPopup = 4, IntervalPopup = 30000, TargetClick = "morevids" },
-              //  new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", ShowPopup = 2, IntervalPopup = 45000 },
-                new PublisherTarget() { Url = "http://um-fabolous.blogspot.ru/", ZoneId = "199287", ShowPopup = 3, IntervalPopup = 45000 },
-                //new PublisherTarget() { Url = "http://vodlocker.com/", ZoneId = "61593", ShowPopup = ??, IntervalPopup = ?? },
+              // new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", CountShowPopup = 3, IntervalPopup = 10000, StepCase = 0},
+              // new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", CountShowPopup = 4, IntervalPopup = 30000, TargetClick = "morevids", StepCase = 1},            
+                //new PublisherTarget() { Url = "http://vodlocker.com/", ZoneId = "61593", ShowPopup = ??, IntervalPopup = ??, StepCase = 2 },
+                //new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", CountShowPopup = 2, IntervalPopup = 45000, StepCase = 3},
+               // new PublisherTarget() { Url = "http://um-fabolous.blogspot.ru/", ZoneId = "199287", CountShowPopup = 3, IntervalPopup = 45000, StepCase = 4},                
+               // new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", CountShowPopup = 1, IntervalPopup = 20000, StepCase = 5},              
                 };
         }
         //methods
         public void NavigateDriver(IWebDriver driver)
         {
+            TestRail TestRun = new TestRail();
+            List<string> CaseToRun = new List<string>();
+            
+            foreach (string runCase in TestRun.GetRunCase(driver))
+                     CaseToRun.Add(runCase);
+
+            //foreach (string c in CaseToRun)
+            //   Console.WriteLine(c);
+            // return;
+            string successMessage = "";
+            string errorMessage = "";
+            string retestMessage = "";
             foreach (PublisherTarget driverSet in _driverSettings)
             {
-               driver.Navigate().GoToUrl(driverSet.Url);
-                int countWindowClick = 0;
+                driver.Navigate().GoToUrl(driverSet.Url);
+            
+                
                 int failedLand = 0;
                 // Проверка на наш Landing
-                bool isLandChecked = driver.PageSource.Contains(driverSet.ZoneId); //false;//
+                _isLandChecked = driver.PageSource.Contains(driverSet.ZoneId); //false;//
+              
                 //string checkLandStr = "http://onclickads.net/afu.php?id=";
                 string baseWindow = driver.CurrentWindowHandle;
                 //return;
                 if (driver.Url == "http://thevideos.tv/")
-                    driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
-                while (driverSet.ShowPopup != 0)
                 {
-                   // if (driver.Url == "http://thevideos.tv/")
-                     //   driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
+                    driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
+                    _isLandChecked = driver.PageSource.Contains(driverSet.ZoneId);
+                }
+                while (driverSet.CountShowPopup != 0)
+                {
                        Thread.Sleep(3000);
-                       driver.SwitchTo().ActiveElement().Click();             
-                      
-                       if (isLandChecked)
+                       driver.SwitchTo().ActiveElement().Click();
+                                
+                       if (_isLandChecked)
                        {
-                           if ((countWindowClick = driver.WindowHandles.Count) > 1)
+                           if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                            {
                                try
                                {
@@ -79,19 +94,17 @@ namespace AutotestDesktop
                                    }
                                }
                                catch (Exception) { }
-
-
                                try
                                {
                                    do
                                    {
                                        driver.SwitchTo().Alert().Accept(); // если появился alert      
-                                   } while ((countWindowClick = driver.WindowHandles.Count) > 1);
+                                   } while ((_countWindowClick = driver.WindowHandles.Count) > 1);
                                }
                                catch (Exception) { }
                            }
                            
-                           driverSet.ShowPopup--;
+                           driverSet.CountShowPopup--;
                            driver.SwitchTo().Window(baseWindow);
 
                            //    if (driver.Url != "http://thevideos.tv/")
@@ -104,7 +117,9 @@ namespace AutotestDesktop
                            failedLand++;
                       if (failedLand > 3)
                        {
-                           Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Title + " FailedLand: " + failedLand + " Repeat a test");
+                           errorMessage = driver.SwitchTo().Window(baseWindow).Title + " FailedLand: " + failedLand + "\nLanding is " + _isLandChecked;
+                           Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Title + errorMessage);
+                           TestRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage);
                            break;
                        }
                      //*
@@ -118,12 +133,64 @@ namespace AutotestDesktop
                 }
                 catch (Exception) { }
 
-                countWindowClick = driver.WindowHandles.Count;
-                if (countWindowClick == 1 && driverSet.ShowPopup == 0)
-                    Console.WriteLine("[Passed] " + driver.Url + "\nLanding is - " + isLandChecked);
-                else if (isLandChecked)
-                    Console.Error.WriteLine("### [FAILED] " + "Landing is " + isLandChecked + " " + driver.SwitchTo().Window(baseWindow).Title + " OnClick: popups is " + driverSet.ShowPopup + " & count of windows " + countWindowClick);
+                _countWindowClick = driver.WindowHandles.Count;
+                if (_countWindowClick == 1 && driverSet.CountShowPopup == 0)
+                { 
+                    Console.WriteLine(successMessage + _isLandChecked);
+                    successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
+                    TestRun.SetStatus(CaseToRun[driverSet.StepCase], 1, successMessage);
+                }
+
+                else if (_isLandChecked)
+                {
+                    retestMessage = "Landing is " + _isLandChecked + " "
+                        + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
+                        " & count of windows " + _countWindowClick + " repeat a test";
+                    Console.Error.WriteLine(errorMessage);
+
+                    TestRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage);
+                }
+                   
             }//end foreach
+        }
+        public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting, string baseWindow)
+        {
+            
+            if (_isLandChecked)
+            {
+                if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                {
+                    try
+                    {
+                        foreach (string handle in driver.WindowHandles)
+                        {
+                            if (driver.SwitchTo().Window(handle).Url != driver.SwitchTo().Window(baseWindow).Url)
+                            {
+                                driver.SwitchTo().Window(handle);
+                                driver.Close();//закрытие всплывающего окна
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+                    try
+                    {
+                        do
+                        {
+                            driver.SwitchTo().Alert().Accept(); // если появился alert      
+                        } while ((_countWindowClick = driver.WindowHandles.Count) > 1);
+                    }
+                    catch (Exception) { }
+                }
+
+                d_setting.CountShowPopup--;
+                driver.SwitchTo().Window(baseWindow);
+
+                //    if (driver.Url != "http://thevideos.tv/")
+                //      driver.Navigate().Back();
+
+                // time Interval popup
+                Thread.Sleep(d_setting.IntervalPopup);
+            }
         }
     }
 }
