@@ -42,7 +42,7 @@ namespace AutotestDesktop
         {
             client.User = _login;
             client.Password = _password;
-            int SuiteID = 44;//int.Parse(Console.ReadLine());
+            int SuiteID = 20;//int.Parse(Console.ReadLine());
             _testRun = new Dictionary<string, List<string>>();
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + SuiteID);
             //foreach (var s in Sections)
@@ -96,7 +96,7 @@ namespace AutotestDesktop
                     {"suite_id", suiteId},
                     {"name", nameSuite},
                     {"include_all", true},
-                    {"description", "Автоматическое тестирвоание OnClick для браузеров: Chrome, FireFox, Opera, IE, Safari"},
+                    {"description", "Автоматическое тестирование Desktop OnClick для браузеров: Chrome, FireFox, Opera, IE, Safari"},
                     {"case_ids", _createCases.ToArray()},
             };
         
@@ -117,9 +117,8 @@ namespace AutotestDesktop
                 }
               return TCases;
         }
-        public void SetStatus(string caseID, int statusID, string resultMessage)
+        public void SetStatus(string caseID, int statusID, string resultMessage, string commentMessage)
         {
-            APIClient client = new APIClient("https://propeller.testrail.net");
             client.User = _login;
             client.Password = _password;
 
@@ -127,9 +126,8 @@ namespace AutotestDesktop
             {
 
                 {"status_id", statusID}, 
-                {"comment", resultMessage}
-                //{"defects", "ITDAD-807"}
-                //{"comment_test", "Это комментарий результата теста"}
+                {"comment", resultMessage},
+                {"custom_comment_test", commentMessage}
             };
             JObject r = (JObject)client.SendPost("add_result/" + caseID, addResultData);
         }
