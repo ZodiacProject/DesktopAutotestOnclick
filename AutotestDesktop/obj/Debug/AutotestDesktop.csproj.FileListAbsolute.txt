@@ -52,3 +52,32 @@ C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDe
 C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Gurock.TestRail.pdb
 C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\TestRail.pdb
 C:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\AutotestDesktop.exe.config
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\obj\Debug\AutotestDesktop.exe
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\obj\Debug\AutotestDesktop.pdb
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\NuLog.json
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\AutotestDesktop.exe
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\AutotestDesktop.pdb
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\Gurock.TestRail.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\log4net.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\NLog.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\NuLog.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\TestRail.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\this.Log-log4net.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\this.Log-NLog.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\this.Log.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\WebDriver.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\WebDriver.Support.dll
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\Gurock.TestRail.pdb
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\log4net.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\NLog.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\TestRail.pdb
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\WebDriver.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\bin\Debug\WebDriver.Support.xml
+C:\Users\Userrr\Documents\GitHub\AutotestDeskTop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
