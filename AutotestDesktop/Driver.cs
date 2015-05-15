@@ -34,12 +34,12 @@ namespace AutotestDesktop
 			Drivers = new List<IWebDriver>();
            _driverSettings = new List<PublisherTarget>()
                 {
-                 new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", CountShowPopup = 3, IntervalPopup = 10000, StepCase = 0},
-                 new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", CountShowPopup = 4, IntervalPopup = 30000, TargetClick = "morevids", StepCase = 1},            
+                 //new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", CountShowPopup = 3, IntervalPopup = 10000, StepCase = 0},
+                 //new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", CountShowPopup = 4, IntervalPopup = 30000, TargetClick = "morevids", StepCase = 1},            
                // new PublisherTarget() { Url = "http://mail.ru/", ZoneId = "61593", CountShowPopup = 12, IntervalPopup = 10000, StepCase = 2 },
-               //new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", CountShowPopup = 2, IntervalPopup = 45000, StepCase = 0},
+               new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", CountShowPopup = 2, IntervalPopup = 45000, StepCase = 0},
              //  new PublisherTarget() { Url = "http://um-fabolous.blogspot.ru/", ZoneId = "199287", CountShowPopup = 3, IntervalPopup = 45000, StepCase = 4},                
-               //new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", CountShowPopup = 1, IntervalPopup = 20000, StepCase = 1},              
+               new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", CountShowPopup = 1, IntervalPopup = 20000, StepCase = 1},              
                 };
         }
         //methods
@@ -98,7 +98,7 @@ public void NavigateDriver(IWebDriver driver)
                              if (!_isOnClick)
                              {
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
-                                 commentMessage = "OnClick is " + _isOnClick;
+                                 commentMessage = "OnClick не отработал";
                                  Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + " OnClick is " + _isOnClick);
                                  TestRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                                  break;

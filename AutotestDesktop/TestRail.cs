@@ -42,7 +42,7 @@ namespace AutotestDesktop
         {
             client.User = _login;
             client.Password = _password;
-            int SuiteID = 44;//int.Parse(Console.ReadLine());
+            int SuiteID = 47;//int.Parse(Console.ReadLine());
             _testRun = new Dictionary<string, List<string>>();
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + SuiteID);
             //foreach (var s in Sections)
