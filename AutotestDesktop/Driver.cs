@@ -34,17 +34,18 @@ namespace AutotestDesktop
 			Drivers = new List<IWebDriver>();
            _driverSettings = new List<PublisherTarget>()
                 {
-               new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", CountShowPopup = 3, IntervalPopup = 10000, StepCase = 0},
-               new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", CountShowPopup = 3, IntervalPopup = 45000, TargetClick = "morevids", StepCase = 1},              
-             //   new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", CountShowPopup = 2, IntervalPopup = 45000, StepCase = 0},
-                //new PublisherTarget() { Url = "http://um-fabolous.blogspot.ru/", ZoneId = "199287", CountShowPopup = 3, IntervalPopup = 45000, StepCase = 4},                
-              //  new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", CountShowPopup = 1, IntervalPopup = 20000, StepCase = 1},              
+                new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", CountShowPopup = 3, IntervalPopup = 10000, StepCase = 0},
+                new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", CountShowPopup = 3, IntervalPopup = 45000, TargetClick = "morevids", StepCase = 1},              
+                new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", CountShowPopup = 2, IntervalPopup = 45000, StepCase = 2},
+                new PublisherTarget() { Url = "http://um-fabolous.blogspot.ru/", ZoneId = "199287", CountShowPopup = 3, IntervalPopup = 45000, StepCase = 3},                
+                //new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", CountShowPopup = 1, IntervalPopup = 20000, StepCase = 4},              
                 };
         }
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
             TestRail TestRun = new TestRail();
+            TestRun.StartTestRail();
             List<string> CaseToRun = new List<string>();
             
             foreach (string runCase in TestRun.GetRunCase(driver))
@@ -62,10 +63,10 @@ public void NavigateDriver(IWebDriver driver)
                 driver.Navigate().GoToUrl(driverSet.Url);
         
                 int failedLand = 0;
-                // Проверка на наш Landingесл
+                // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
                 {
-                    if (driver.PageSource.Contains(driverSet.ZoneId)) //false;//
+                    if (driver.PageSource.Contains(driverSet.ZoneId))
                         _isLandChecked = true;
                     else
                         _isLandChecked = false;
@@ -79,21 +80,19 @@ public void NavigateDriver(IWebDriver driver)
                         else
                             _isLandChecked = false;
                 }
-                //string checkLandStr = "http://onclickads.net/afu.php?id=";
+
                 string baseWindow = driver.CurrentWindowHandle;
-                //return;
-                
+              
                 while (driverSet.CountShowPopup != 0)
                 {
-                  //  _isOnClick = false;
                     if (driver.Url != "http://thevideos.tv/")
                             Thread.Sleep(2000);
-            
-                        driver.SwitchTo().ActiveElement().Click();
-                        Thread.Sleep(3000);
+
+                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                    Thread.Sleep(3000);
                       if (_isLandChecked)
                       {
-                          OnclickProgress(driver, driverSet, baseWindow);
+                          OnclickProgress(driver, driverSet);
                              if (!_isOnClick)
                              {
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
@@ -103,26 +102,22 @@ public void NavigateDriver(IWebDriver driver)
                                  break;
                              }
                       }
-                       else
-                       //    failedLand++;
-                     // if (failedLand > 3)
-                       {
+                      else
+                      {
                            errorMessage = "FailedLand: " + failedLand + "\nLanding is " + _isLandChecked;
                            commentMessage = "Landing is " + _isLandChecked;
                            Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
                            TestRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                            break;
                        }
-                     //*
-                   //  isLandChecked = false;
-                    //*
+
                 }
     // Проверка на открытие после того, как все показы уже были
                 try
-                { 
-                    driver.SwitchTo().ActiveElement().Click(); 
+                {
+                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                 }
-                catch (Exception) { }
+                catch { }
 
                 _countWindowClick = driver.WindowHandles.Count;
                 if (_countWindowClick == 1 && driverSet.CountShowPopup == 0)
@@ -145,33 +140,33 @@ public void NavigateDriver(IWebDriver driver)
                    
             }//end foreach
         }
-public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting, string baseWindow)
+public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
                     _isOnClick = true;
+                    Thread.Sleep(2000);
                     try
                     {
                         foreach (string handle in driver.WindowHandles)
                         {
-                            if (driver.SwitchTo().Window(handle).Url != driver.SwitchTo().Window(baseWindow).Url)
+                            if (handle != driver.WindowHandles.ElementAt(0))//(driver.SwitchTo().Window(handle).Url != driver.SwitchTo().Window(baseWindow).Url)
                             {
-                                driver.SwitchTo().Window(handle);
-                                driver.Close();//закрытие всплывающего окна
+                                driver.SwitchTo().Window(handle).Close();
+                                while ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                                    {
+                                        driver.SwitchTo().Alert().Accept(); // если появился alert      
+                                    }    
                             }
                         }
-                        do
-                        {
-                            driver.SwitchTo().Alert().Accept(); // если появился alert      
-                        } while ((_countWindowClick = driver.WindowHandles.Count) > 1);
                     }
-                    catch (Exception) { }
-                    if ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                        driver.Close();
+                    catch (Exception e) { Console.WriteLine(e); }
+                    //if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                    //    driver.Close();
                 }
 
                 d_setting.CountShowPopup--;
-                driver.SwitchTo().Window(baseWindow);
+                driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
 
                 //    if (driver.Url != "http://thevideos.tv/")
                 //      driver.Navigate().Back();

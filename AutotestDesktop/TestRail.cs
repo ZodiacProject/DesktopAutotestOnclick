@@ -26,6 +26,7 @@ namespace AutotestDesktop
         private const string _password = "302bis";
         private List<string> _createCases = new List<string>();
         private string _runID = "";
+        private int _suiteId = 20;
         private int _numberCase;
         private Dictionary<string, List<string>> _testRun;
         public Status status;
@@ -38,18 +39,17 @@ namespace AutotestDesktop
             Implementated,
             Failed
         };
-       public TestRail()
+       public void StartTestRail()
         {
             client.User = _login;
             client.Password = _password;
-            int SuiteID = 44;//int.Parse(Console.ReadLine());
             _testRun = new Dictionary<string, List<string>>();
-            JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + SuiteID);
+            JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
             //foreach (var s in Sections)
             //{
             //    Console.WriteLine(s.ToString());
             //}
-            JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + SuiteID);
+            JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
 
             foreach (var run in Runs)
             {
@@ -87,13 +87,13 @@ namespace AutotestDesktop
         {
             client.User = _login;
             client.Password = _password;
-
-            JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + suiteId);
+            _suiteId = suiteId;
+            JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + _suiteId);
             foreach (var c in caseData)
                     _createCases.Add(c["id"].ToString());
             var runData = new Dictionary<string, object>
             {
-                    {"suite_id", suiteId},
+                    {"suite_id", _suiteId},
                     {"name", nameSuite},
                     {"include_all", true},
                     {"description", "Автоматическое тестирование Desktop OnClick для браузеров: Chrome, FireFox, Opera, IE, Safari"},
@@ -150,6 +150,15 @@ namespace AutotestDesktop
             {
                 Console.WriteLine(e);
             }
+        }
+        public void GetSuitesOfProject()
+        {
+            client.User = _login;
+            client.Password = _password;
+            JArray SuiteData = (JArray)client.SendGet("get_suites/3");
+            Console.WriteLine("ID\tName");
+            foreach (var suite in SuiteData)
+                Console.WriteLine( " " + suite["id"] + "\t" + suite["name"]);
         }
     }
 
