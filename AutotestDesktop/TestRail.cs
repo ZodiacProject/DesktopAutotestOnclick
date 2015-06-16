@@ -19,15 +19,18 @@ using OpenQA.Selenium.Internal;
 
 namespace AutotestDesktop
 {
-    class TestRail
+   public class TestRail
     {
         private APIClient client = new APIClient("https://propeller.testrail.net");
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
         private List<string> _createCases = new List<string>();
-        private string _runID = "";
-        private int _suiteId = 20;
+        private string _runID = null;
+        private string _suiteId = "";
         private int _numberCase;
+        public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
+        public string RunID { set { _runID = value; } }
+      //  public int GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         private Dictionary<string, List<string>> _testRun;
         public Status status;
        public enum Status
@@ -45,16 +48,24 @@ namespace AutotestDesktop
             client.Password = _password;
             _testRun = new Dictionary<string, List<string>>();
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
+            int created_on = 0;
             //foreach (var s in Sections)
             //{
             //    Console.WriteLine(s.ToString());
             //}
             JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
 
-            foreach (var run in Runs)
+            if (String.IsNullOrEmpty(_runID)) // Создание нового test-run (когда run ID имеет пустое значение)
             {
-                if(Convert.ToBoolean(run["is_completed"]) == false)
-                    _runID = run["id"].ToString();
+                foreach (var run in Runs)
+                {
+                    if (Convert.ToBoolean(run["is_completed"]) == false)
+                        if (Convert.ToInt32(run["created_on"]) > created_on)
+                        {
+                            created_on = Convert.ToInt32(run["created_on"]);
+                            _runID = run["id"].ToString();
+                        }
+                }
             }
             JArray TestCases = (JArray)client.SendGet("get_tests/" + _runID);
             _numberCase = TestCases.Count / Sections.Count;
@@ -83,11 +94,11 @@ namespace AutotestDesktop
             //Console.WriteLine("name = {0}, id = {1}", testrun.Key, value);
         }
 
-        public void CreateRun(int suiteId, string nameSuite)
+        public void CreateRun(string suiteId, string nameSuite)
         {
             client.User = _login;
             client.Password = _password;
-            _suiteId = suiteId;
+         //   _suiteId = suiteId;
             JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + _suiteId);
             foreach (var c in caseData)
                     _createCases.Add(c["id"].ToString());
@@ -101,7 +112,8 @@ namespace AutotestDesktop
             };
         
             JObject runCreate = (JObject)client.SendPost("add_run/3", runData);
-            Console.WriteLine("Test run is create.");
+            Console.WriteLine("\nTest run is create.");
+            Console.WriteLine("Test is running...");
          }
      
 
@@ -151,14 +163,50 @@ namespace AutotestDesktop
                 Console.WriteLine(e);
             }
         }
+        public void DeleteRun(string runID)
+        {
+            _runID = runID;
+            client.User = _login;
+            client.Password = _password;
+            var deleteData = new Dictionary<string, object>
+            {
+                {"description", "Тест проведен и закрыт"}
+            };
+            try
+            {
+
+                JObject c = (JObject)client.SendPost("delete_run/" + _runID, deleteData);
+                Console.Clear();
+                Console.WriteLine("Test run " + _runID + " successfully removed");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        public void GetRunsProject()
+        {
+            Console.WriteLine("Актуальные test-runs:");
+            client.User = _login;
+            client.Password = _password;
+            JArray Runs = (JArray)client.SendGet("get_runs/3");
+            foreach (var run in Runs)
+            {
+                if (Convert.ToBoolean(run["is_completed"]) == false)
+                    Console.WriteLine("ID:" + run["id"].ToString() + "\tName:" + run["name"]);
+            }
+            Console.WriteLine();
+        }
         public void GetSuitesOfProject()
         {
+            Console.WriteLine("Test Suites now:");
             client.User = _login;
             client.Password = _password;
             JArray SuiteData = (JArray)client.SendGet("get_suites/3");
             Console.WriteLine("ID\tName");
             foreach (var suite in SuiteData)
                 Console.WriteLine( " " + suite["id"] + "\t" + suite["name"]);
+            Console.WriteLine();
         }
     }
 

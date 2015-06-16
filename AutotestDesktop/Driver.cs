@@ -23,32 +23,27 @@ namespace AutotestDesktop
     class Driver
     {
         private List<PublisherTarget> _driverSettings; // for many publishers
+        private PublisherTarget _publishers;
         private bool _isLandChecked;
         private bool _isOnClick;
         private int _countWindowClick = 0;
         public List<IWebDriver> Drivers {get; private set;}
-        public TestRail TestRun { get; set; }
+        private TestRail _testRun;
 //Constuctor
-        public Driver()
+        public Driver(TestRail test)
         {
+            _testRun = test;
 			Drivers = new List<IWebDriver>();
-           _driverSettings = new List<PublisherTarget>()
-                {
-                new PublisherTarget() { Url = "http://putlocker.is", ZoneId = "10802", CountShowPopup = 3, IntervalPopup = 10000, StepCase = 0},
-                new PublisherTarget() { Url = "http://thevideos.tv/", ZoneId = "90446", CountShowPopup = 3, IntervalPopup = 45000, TargetClick = "morevids", StepCase = 1},              
-                new PublisherTarget() { Url = "http://www13.zippyshare.com/v/94311818/file.html/", ZoneId = "180376", CountShowPopup = 2, IntervalPopup = 45000, StepCase = 2},
-                new PublisherTarget() { Url = "http://um-fabolous.blogspot.ru/", ZoneId = "199287", CountShowPopup = 3, IntervalPopup = 45000, StepCase = 3},                
-                //new PublisherTarget() {Url = "http://www.flashx.tv/&?", ZoneId = "119133", CountShowPopup = 1, IntervalPopup = 20000, StepCase = 4},              
-                };
+            _publishers = new PublisherTarget();
+            _driverSettings = _publishers.GetDriverSettings();
         }
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
-            TestRail TestRun = new TestRail();
-            TestRun.StartTestRail();
+            _testRun.StartTestRail();
             List<string> CaseToRun = new List<string>();
-            
-            foreach (string runCase in TestRun.GetRunCase(driver))
+
+            foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
 
             //foreach (string c in CaseToRun)
@@ -98,7 +93,7 @@ public void NavigateDriver(IWebDriver driver)
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
                                  commentMessage = "OnClick не отработал";
                                  Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + " OnClick is " + _isOnClick);
-                                 TestRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                                 _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                                  break;
                              }
                       }
@@ -107,7 +102,7 @@ public void NavigateDriver(IWebDriver driver)
                            errorMessage = "FailedLand: " + failedLand + "\nLanding is " + _isLandChecked;
                            commentMessage = "Landing is " + _isLandChecked;
                            Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
-                           TestRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                           _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                            break;
                        }
 
@@ -124,7 +119,7 @@ public void NavigateDriver(IWebDriver driver)
                 {
                     successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
                     Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
-                    TestRun.SetStatus(CaseToRun[driverSet.StepCase], 1, successMessage, null);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 1, successMessage, null);
                 }
 
                 else if (_isLandChecked && _isOnClick)
@@ -135,7 +130,7 @@ public void NavigateDriver(IWebDriver driver)
                         "\nPlease, repeat this test";
                     Console.Error.WriteLine(errorMessage + " " + _isOnClick);
 
-                    TestRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage, null);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage, null);
                 }
                    
             }//end foreach
@@ -172,7 +167,7 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                 //      driver.Navigate().Back();
 
                 // time Interval popup
-                Thread.Sleep(d_setting.IntervalPopup); 
+                Thread.Sleep(d_setting.Interval); 
         }
     }
 }

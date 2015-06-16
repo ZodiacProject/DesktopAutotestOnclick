@@ -14,59 +14,90 @@ using System.Threading.Tasks;
 
 namespace AutotestDesktop
 {
-	[TestClass]
 	public class AutomatedTest
 	{
-		Driver Browser = new Driver();
-        private void RunBrowser(IWebDriver webDriver)
+        private TestRail testrail;
+        private Driver Browser;
+        private string _createTest = "";
+        private string _deleteTest = "";
+        public AutomatedTest()
         {
-           // Task.Factory.StartNew(() =>
-            //{
+            testrail = new TestRail();
+            testrail.GetSuitesOfProject();
+            testrail.GetRunsProject();
 
-                Browser.Drivers.Add(webDriver);
-                Browser.NavigateDriver(webDriver);
-                webDriver.Quit();
-                
-           // });
+            Console.Write("Do you want to delete a test-run? _");
+            _deleteTest = Console.ReadLine();
+            DoYoyWantDeleteTest();
+            Console.Write("Do you want create a test-run (y/n) _");
+            _createTest = Console.ReadLine();
+            Browser = new Driver (testrail);
+            DoYouWantCreateTest();
+            FireFoxOnClick();
+            ChromeOnClick();
         }
-        [TestMethod]
-		public void FireFoxOnClick()
+        
+        private void DoYouWantCreateTest()
+        {
+            if (_createTest == "y")
+            {
+                Console.WriteLine("\nPlease, enter name of run-test & SuitesID:");
+                Console.Write("Name _");
+                string nameSuite = Console.ReadLine();
+                Console.Write("SuitesID _");
+                string suiteID = Console.ReadLine();
+                testrail.CreateRun(testrail.GetSuiteID = suiteID, nameSuite);
+            }
+            else
+            {
+                Console.Write("Input run ID _");
+                testrail.RunID = Console.ReadLine();
+                Console.Write("Input suite ID _");
+                testrail.GetSuiteID = Console.ReadLine();
+                Console.WriteLine("Test is running...");
+            }
+        }
+        private void DoYoyWantDeleteTest()
+        {
+            while (_deleteTest == "y")
+            {
+                Console.Write("Please, input run ID: ");
+                testrail.DeleteRun(Console.ReadLine());
+                testrail.GetSuitesOfProject();
+                testrail.GetRunsProject();
+                Console.Write("Do you want to delete again? _");
+                _deleteTest = Console.ReadLine();
+            }
+        }
+        
+		private void FireFoxOnClick()
 		{   
 			RunBrowser(new FirefoxDriver());
 		}
-       [TestMethod]
-		public void ChromeOnClick()
-		{
-              
+		private void ChromeOnClick()
+		{              
             RunBrowser(new ChromeDriver());
 		}
-        [TestMethod]
-		public void OperaOnClick()
+        private void OperaOnClick()
 		{
             RunBrowser(new OperaDriver());
 		
 		}
-        [TestMethod]
-		public void IEOnClick()
+        private void IEOnClick()
 		{
             RunBrowser(new InternetExplorerDriver());
 			
 		}
-        [TestMethod]
-		public void SafariOnClick()
+        private void SafariOnClick()
 		{
             RunBrowser(new SafariDriver());
-			
 		}
-
-		[TestInitialize]
-		public void Setup()
-		{
-
-		}
-		// Close Browser
-		//  [TestCleanup]
-
-	}
+        private void RunBrowser(IWebDriver webDriver)
+        {
+            Browser.Drivers.Add(webDriver);
+            Browser.NavigateDriver(webDriver);
+            webDriver.Quit();
+        }
+    }
      
 }

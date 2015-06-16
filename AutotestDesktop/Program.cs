@@ -11,13 +11,8 @@ namespace AutotestDesktop
     {
         static void Main(string[] args)
         {
-            TestRail testrail = new TestRail();
-            testrail.GetSuitesOfProject();
-            Console.WriteLine("\nPlease, input Name of Run and SuiteID:");
-            string nameSuite = Console.ReadLine();
-            int suiteID = int.Parse(Console.ReadLine());
-            testrail.CreateRun(suiteID, nameSuite);
-           // testrail.CloseRun();
+            AutomatedTest BeginTest = new AutomatedTest();
+            Console.WriteLine("Тест выполнился!");
         }
     }
 }
