@@ -66,9 +66,11 @@ public void NavigateDriver(IWebDriver driver)
                 // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
                 {
-                    if (driver.PageSource.Contains(driverSet.ZoneId))
+                    _FindZoneID(driver);
+                    return;
+                    //if (driver.PageSource.Contains(driverSet.ZoneId))
                         _isLandChecked = true;
-                    else
+                    //else
                         _isLandChecked = false;
                 }
                 else
@@ -92,7 +94,7 @@ public void NavigateDriver(IWebDriver driver)
                     Thread.Sleep(3000);
                       if (_isLandChecked)
                       {
-                          OnclickProgress(driver, driverSet);
+                          _OnclickProgress(driver, driverSet);
                              if (!_isOnClick)
                              {
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
@@ -140,7 +142,18 @@ public void NavigateDriver(IWebDriver driver)
                    
             }//end foreach
         }
-public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
+private string _FindZoneID(IWebDriver driver)
+{
+    if (driver.PageSource.Contains("apu.php?zoneid="))
+    {
+        //IList<IWebElement> Script = driver.FindElements(By.XPath("//script"));
+        //foreach (IWebElement script in Script)
+       IWebElement el = driver.FindElement(By.XPath("/html/body/script[1]"));
+            Console.WriteLine(el.Text);
+    }
+    return null;
+}
+private void _OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
