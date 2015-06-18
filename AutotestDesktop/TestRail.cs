@@ -28,10 +28,11 @@ namespace AutotestDesktop
         private string _runID = null;
         private string _suiteId = "";
         private int _numberCase;
-        public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
-        public string RunID { set { _runID = value; } }
-      //  public int GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         private Dictionary<string, List<string>> _testRun;
+        private Dictionary<string, string> _testCaseName;
+        public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
+        public string RunID { set { _runID = value; } } 
+        public Dictionary<string, string> TestCaseName { get { return _testCaseName; }}
         public Status status;
        public enum Status
         {
@@ -46,14 +47,15 @@ namespace AutotestDesktop
         {
             client.User = _login;
             client.Password = _password;
+            int created_on = 0; // переменной присваивается самый полесденй по номеру test-run
             _testRun = new Dictionary<string, List<string>>();
+            _testCaseName = new Dictionary<string, string>();            
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
-            int created_on = 0;
+            JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
             //foreach (var s in Sections)
             //{
             //    Console.WriteLine(s.ToString());
             //}
-            JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
 
             if (String.IsNullOrEmpty(_runID)) // Создание нового test-run (когда run ID имеет пустое значение)
             {
@@ -67,7 +69,13 @@ namespace AutotestDesktop
                         }
                 }
             }
-            JArray TestCases = (JArray)client.SendGet("get_tests/" + _runID);
+             JArray TestCases = (JArray)client.SendGet("get_tests/" + _runID);
+
+             foreach (var caseName in TestCases.Take(TestCases.Count/Sections.Count))
+             {
+                 _testCaseName.Add(caseName["id"].ToString(), caseName["title"].ToString());
+             }
+
             _numberCase = TestCases.Count / Sections.Count;
             foreach (var section in Sections)
             {
@@ -76,7 +84,7 @@ namespace AutotestDesktop
                 //return;
                 foreach (var testCase in TestCases.Take(_numberCase))
                 {
-                    //Console.WriteLine(test["id"] + " " + test["title"]);
+                   // Console.WriteLine(testCase["id"] + " " + testCase["title"]);
                     try
                     {
                         _testRun[section["name"].ToString()].Add(testCase["id"].ToString());
@@ -129,6 +137,7 @@ namespace AutotestDesktop
                 }
               return TCases;
         }
+        
         public void SetStatus(string caseID, int statusID, string resultMessage, string commentMessage)
         {
             client.User = _login;

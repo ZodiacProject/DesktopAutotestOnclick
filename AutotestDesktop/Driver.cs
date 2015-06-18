@@ -34,21 +34,26 @@ namespace AutotestDesktop
         {
             _testRun = test;
 			Drivers = new List<IWebDriver>();
-            _publishers = new PublisherTarget();
-            _driverSettings = _publishers.GetDriverSettings();
         }
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
             _testRun.StartTestRail();
             List<string> CaseToRun = new List<string>();
+            Dictionary<string, string> NameTestCase = new Dictionary<string, string>();  
 
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
+            foreach (KeyValuePair<string, string> testName in _testRun.TestCaseName)
+                     NameTestCase.Add(testName.Key, testName.Value);
 
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
             //return;
+
+            _publishers = new PublisherTarget();
+            _driverSettings = _publishers.GetDriverSettings(NameTestCase);
+
             string successMessage = "";
             string errorMessage = "";
             string retestMessage = "";

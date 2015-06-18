@@ -33,8 +33,12 @@ namespace AutotestDesktop
             _createTest = Console.ReadLine();
             Browser = new Driver (testrail);
             DoYouWantCreateTest();
+
             FireFoxOnClick();
-            ChromeOnClick();
+            //ChromeOnClick();
+            //OperaOnClick();
+            //IEOnClick();
+            //SafariOnClick();
         }
         
         private void DoYouWantCreateTest()
