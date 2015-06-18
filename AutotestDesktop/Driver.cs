@@ -40,12 +40,12 @@ public void NavigateDriver(IWebDriver driver)
         {
             _testRun.StartTestRail();
             List<string> CaseToRun = new List<string>();
-            Dictionary<string, string> NameTestCase = new Dictionary<string, string>();  
+            List<string> NameTestCase = new List<string>();  
 
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
-            foreach (KeyValuePair<string, string> testName in _testRun.TestCaseName)
-                     NameTestCase.Add(testName.Key, testName.Value);
+            foreach (string testName in _testRun.TestCaseName)
+                     NameTestCase.Add(testName);
 
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
@@ -144,25 +144,16 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
-                    _isOnClick = true;
-                    Thread.Sleep(2000);
+                    _isOnClick = true;                    
                     try
                     {
-                        foreach (string handle in driver.WindowHandles)
+                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                        while ((_countWindowClick = driver.WindowHandles.Count) > 1)
                         {
-                            if (handle != driver.WindowHandles.ElementAt(0))//(driver.SwitchTo().Window(handle).Url != driver.SwitchTo().Window(baseWindow).Url)
-                            {
-                                driver.SwitchTo().Window(handle).Close();
-                                while ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                                    {
-                                        driver.SwitchTo().Alert().Accept(); // если появился alert      
-                                    }    
-                            }
-                        }
+                            driver.SwitchTo().Alert().Accept(); // если появился alert      
+                        }    
                     }
                     catch (Exception e) { Console.WriteLine(e); }
-                    //if ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                    //    driver.Close();
                 }
 
                 d_setting.CountShowPopup--;

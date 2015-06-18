@@ -31,8 +31,8 @@ namespace AutotestDesktop
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
         public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
-        public string RunID { set { _runID = value; } } 
-        public Dictionary<string, string> TestCaseName { get { return _testCaseName; }}
+        public string RunID { set { _runID = value; } }
+        public List<string> TestCaseName { get { return GetNameCase(); } }
         public Status status;
        public enum Status
         {
@@ -136,6 +136,13 @@ namespace AutotestDesktop
                         TCases.Add(value);
                 }
               return TCases;
+        }
+       private List <string> GetNameCase()
+        {
+            List<string> TName = new List<string>();
+            foreach (KeyValuePair<string, string> testname in _testCaseName)
+                TName.Add(testname.Value);
+            return TName;
         }
         
         public void SetStatus(string caseID, int statusID, string resultMessage, string commentMessage)
