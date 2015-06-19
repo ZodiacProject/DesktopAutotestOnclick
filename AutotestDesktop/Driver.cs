@@ -47,8 +47,9 @@ public void NavigateDriver(IWebDriver driver)
                      CaseToRun.Add(runCase);
             foreach (string testName in _testRun.TestCaseName)
                      NameTestCase.Add(testName);
-          foreach (string topSite in _testRun.TopOnclick)
-                Console.WriteLine(topSite);
+          //foreach (string topSite in _testRun.TopOnclick)
+            //    Console.WriteLine(topSite);
+           //_testRun.UpdateSuite("117");
             return;
 
             //foreach (string c in CaseToRun)

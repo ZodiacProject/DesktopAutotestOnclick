@@ -23,6 +23,9 @@ namespace AutotestDesktop
         public AutomatedTest()
         {
             testrail = new TestRail();
+            //testrail.CreateSuite();
+            testrail.UpdateSuite("117");
+            return;
             testrail.GetSuitesOfProject();
             testrail.GetRunsProject();
             Console.WriteLine("Do your want regular test or FULL test ?");

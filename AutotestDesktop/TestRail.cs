@@ -104,7 +104,15 @@ namespace AutotestDesktop
             //    foreach (string value in testrun.Value)
             //Console.WriteLine("name = {0}, id = {1}", testrun.Key, value);
         }
+       public void GetCases()
+       {
+           client.User = _login;
+           client.Password = _password;
 
+           JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=117");
+           foreach (var c in caseData)
+               Console.WriteLine(c);
+       }
         public void CreateRun(string suiteId, string nameSuite)
         {
             client.User = _login;
@@ -126,6 +134,32 @@ namespace AutotestDesktop
             Console.WriteLine("\nTest run is create.");
             Console.WriteLine("Test is running...");
          }
+        public void CreateSuite()
+        {
+            client.User = _login;
+            client.Password = _password;
+
+            var suiteData = new Dictionary<string, object>
+            {
+                {"name", "Clobal Test Onclick for top sites"},
+                {"description", "Автоматическое тестирование OnClick по выгрузке из статистики за последние 3 месяца"},
+            };
+            JObject suiteCreate = (JObject)client.SendPost("add_suite/3", suiteData);
+            Console.WriteLine("\nTest Suite is create.");
+        }
+       public void UpdateSuite(string suiteID)
+        {
+            client.User = _login;
+            client.Password = _password;
+
+            var suiteData = new Dictionary<string, object>
+            {
+                {"id", 70245},
+                {"name_case", "Работай"},
+            };
+            JObject suiteCreate = (JObject)client.SendPost("update_suite/" + suiteID, suiteData);
+            Console.WriteLine("\nTest Suite is update.");
+        }
      
 
         public List <string> GetRunCase(IWebDriver driver)
@@ -235,7 +269,7 @@ namespace AutotestDesktop
             JArray SuiteData = (JArray)client.SendGet("get_suites/3");
             Console.WriteLine("ID\tName");
             foreach (var suite in SuiteData)
-                Console.WriteLine( " " + suite["id"] + "\t" + suite["name"]);
+                Console.WriteLine(suite);//Console.WriteLine( " " + suite["id"] + "\t" + suite["name"]);
             Console.WriteLine();
         }
     }
