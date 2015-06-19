@@ -34,15 +34,16 @@ namespace AutotestDesktop
                 DriverSetting.Add(new PublisherTarget()
                 {
                     Url = nameCase_Url,
-                    CountShowPopup = _getShowPopup(nameCase_Url),
-                    Interval = _getInterval(nameCase_Url),
-                    TargetClick = _getTargetClick(nameCase_Url),
+                    ZoneId = _GetZoneID(nameCase_Url),
+                    CountShowPopup = _GetShowPopup(nameCase_Url),
+                    Interval = _GetInterval(nameCase_Url),
+                    TargetClick = _GetTargetClick(nameCase_Url),
                     StepCase = numberStep++
                 });
             }
                 return DriverSetting;
         }
-        private string _getZoneID (string urlForFindZoneID)
+        private string _GetZoneID (string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {
@@ -58,7 +59,7 @@ namespace AutotestDesktop
                 default: return null;
             }         
         }
-        private int _getShowPopup (string urlForFindZoneID)
+        private int _GetShowPopup (string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {
@@ -74,7 +75,7 @@ namespace AutotestDesktop
                 default: return 0;
             }
         }
-        private int _getInterval (string urlForFindZoneID)
+        private int _GetInterval (string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {
@@ -90,7 +91,7 @@ namespace AutotestDesktop
                 default: return 0;
             }
         }
-        private string _getTargetClick (string urlForFindZoneID)
+        private string _GetTargetClick (string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {

@@ -40,12 +40,16 @@ public void NavigateDriver(IWebDriver driver)
         {
             _testRun.StartTestRail();
             List<string> CaseToRun = new List<string>();
-            List<string> NameTestCase = new List<string>();  
+            List<string> NameTestCase = new List<string>();
+            List<string> TopSitesOnClick = new List<string>();
 
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
             foreach (string testName in _testRun.TestCaseName)
                      NameTestCase.Add(testName);
+          foreach (string topSite in _testRun.TopOnclick)
+                Console.WriteLine(topSite);
+            return;
 
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
@@ -66,11 +70,11 @@ public void NavigateDriver(IWebDriver driver)
                 // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
                 {
-                    _FindZoneID(driver);
-                    return;
-                    //if (driver.PageSource.Contains(driverSet.ZoneId))
+                  //  _FindZoneID(driver);
+                  //  return;
+                    if (driver.PageSource.Contains(driverSet.ZoneId))
                         _isLandChecked = true;
-                    //else
+                    else
                         _isLandChecked = false;
                 }
                 else

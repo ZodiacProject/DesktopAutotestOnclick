@@ -25,10 +25,10 @@ namespace AutotestDesktop
             testrail = new TestRail();
             testrail.GetSuitesOfProject();
             testrail.GetRunsProject();
-
-            Console.Write("Do you want to delete a test-run? _");
-            _deleteTest = Console.ReadLine();
-            DoYoyWantDeleteTest();
+            Console.WriteLine("Do your want regular test or FULL test ?");
+            //Console.Write("Do you want to delete a test-run? _");
+            //_deleteTest = Console.ReadLine();
+            //DoYoyWantDeleteTest();
             Console.Write("Do you want create a test-run (y/n) _");
             _createTest = Console.ReadLine();
             Browser = new Driver (testrail);

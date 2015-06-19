@@ -23,6 +23,7 @@ namespace Gurock.TestRail
 		private string m_user;
 		private string m_password;
 		private string m_url;
+        private string _statUrl = "http://apistats.propellerads.com/api/v1/stats/stat.json?day_from=";
 
 		public APIClient(string base_url)
 		{
@@ -71,6 +72,111 @@ namespace Gurock.TestRail
 		{
 			return SendRequest("GET", uri, null);
 		}
+
+        public object GetTopSites(string uri)
+        {
+            return SendRequestForTopSites("GET", uri, null);
+        }
+     
+        private object SendRequestForTopSites(string method, string uri, object data)
+		{
+            string url = this._statUrl + uri;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json";
+            request.Method = method;
+
+            if (method == "POST")
+            {
+                // Add the POST arguments, if any. We just serialize the passed
+                // data object (i.e. a dictionary) and then add it to the request
+                // body.
+                if (data != null)
+                {
+                    byte[] block = Encoding.UTF8.GetBytes(
+                        JsonConvert.SerializeObject(data)
+                    );
+
+                    request.GetRequestStream().Write(block, 0, block.Length);
+                }
+            }
+
+            // Execute the actual web request (GET or POST) and record any
+            // occurred errors.
+            Exception ex = null;
+            HttpWebResponse response = null;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException e)
+            {
+                if (e.Response == null)
+                {
+                    throw;
+                }
+
+                response = (HttpWebResponse)e.Response;
+                ex = e;
+            }
+
+            // Read the response body, if any, and deserialize it from JSON.
+            string text = "";
+            if (response != null)
+            {
+                var reader = new StreamReader(
+                    response.GetResponseStream(),
+                    Encoding.UTF8
+                );
+
+                using (reader)
+                {
+                    text = reader.ReadToEnd();
+                }
+            }
+
+            JContainer result;
+            if (text != "")
+            {
+                if (text.StartsWith("["))
+                {
+                    result = JArray.Parse(text);
+                }
+                else
+                {
+                    result = JObject.Parse(text);
+                }
+            }
+            else
+            {
+                result = new JObject();
+            }
+
+            // Check for any occurred errors and add additional details to
+            // the exception message, if any (e.g. the error message returned
+            // by TestRail).
+            if (ex != null)
+            {
+                string error = (string)result["error"];
+                if (error != null)
+                {
+                    error = '"' + error + '"';
+                }
+                else
+                {
+                    error = "No additional error message received";
+                }
+
+                throw new APIException(
+                    String.Format(
+                        "TestRail API returned HTTP {0} ({1})",
+                        (int)response.StatusCode,
+                        error
+                    )
+                );
+            }
+
+            return result;
+        }
 
 		/**
 		 * Send POST

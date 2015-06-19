@@ -28,11 +28,13 @@ namespace AutotestDesktop
         private string _runID = null;
         private string _suiteId = "";
         private int _numberCase;
+        private JObject _topSites;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
         public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         public string RunID { set { _runID = value; } }
-        public List<string> TestCaseName { get { return GetNameCase(); } }
+        public List<string> TestCaseName { get { return _GetNameCase(); } }
+        public List<string> TopOnclick { get { return _GetTopSitesOnClick(); } }
         public Status status;
        public enum Status
         {
@@ -49,14 +51,15 @@ namespace AutotestDesktop
             client.Password = _password;
             int created_on = 0; // переменной присваивается самый полесденй по номеру test-run
             _testRun = new Dictionary<string, List<string>>();
-            _testCaseName = new Dictionary<string, string>();            
+            _testCaseName = new Dictionary<string, string>();
+            _topSites = (JObject)client.GetTopSites("2015-03-19&day_to=2015-06-19&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50"); 
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
             JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
             //foreach (var s in Sections)
             //{
             //    Console.WriteLine(s.ToString());
             //}
-
+           
             if (String.IsNullOrEmpty(_runID)) // Создание нового test-run (когда run ID имеет пустое значение)
             {
                 foreach (var run in Runs)
@@ -137,13 +140,24 @@ namespace AutotestDesktop
                 }
               return TCases;
         }
-       private List <string> GetNameCase()
+       private List <string> _GetNameCase()
         {
             List<string> TName = new List<string>();
             foreach (KeyValuePair<string, string> testname in _testCaseName)
                 TName.Add(testname.Value);
             return TName;
         }
+       private List <string> _GetTopSitesOnClick()
+       {
+           string url = null;
+           List<string> TopSites = new List<string>();
+           foreach (var site in _topSites)
+           {
+               url = site.Value.SelectToken("affiliate_name").ToString();
+               TopSites.Add(url.Substring(0, url.Length - 8));
+           }
+           return TopSites;
+       }
         
         public void SetStatus(string caseID, int statusID, string resultMessage, string commentMessage)
         {
