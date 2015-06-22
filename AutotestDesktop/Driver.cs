@@ -88,7 +88,7 @@ public void NavigateDriver(IWebDriver driver)
                     if (driver.Url != "http://thevideos.tv/")
                             Thread.Sleep(2000);
 
-                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                    driver.SwitchTo().Window(baseWindow).SwitchTo().ActiveElement().Click();
                     Thread.Sleep(3000);
                       if (_isLandChecked)
                       {
@@ -97,7 +97,7 @@ public void NavigateDriver(IWebDriver driver)
                              {
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
                                  commentMessage = "OnClick не отработал";
-                                 Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + " OnClick is " + _isOnClick);
+                                 Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
                                  _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                                  break;
                              }
@@ -106,7 +106,7 @@ public void NavigateDriver(IWebDriver driver)
                       {
                            errorMessage = "FailedLand: " + failedLand + "\nLanding is " + _isLandChecked;
                            commentMessage = "Landing is " + _isLandChecked;
-                           Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
+                           Console.Error.WriteLine(driver.Url + errorMessage);
                            _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                            break;
                        }
@@ -148,10 +148,10 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                     try
                     {
                         driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                        while ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                        {
-                            driver.SwitchTo().Alert().Accept(); // если появился alert      
-                        }    
+                       // while ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                       // {
+                        //    driver.SwitchTo().Alert().Accept(); // если появился alert      
+                       // }    
                     }
                     catch (Exception e) { Console.WriteLine(e); }
                 }
