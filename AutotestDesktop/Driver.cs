@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -27,8 +27,9 @@ namespace AutotestDesktop
         private bool _isLandChecked;
         private bool _isOnClick;
         private int _countWindowClick = 0;
-        public List<IWebDriver> Drivers {get; private set;}
         private TestRail _testRun;
+      
+        public List<IWebDriver> Drivers {get; private set;}
 //Constuctor
         public Driver(TestRail test)
         {
@@ -38,7 +39,12 @@ namespace AutotestDesktop
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
+            string successMessage = "";
+            string errorMessage = "";
+            string retestMessage = "";
+            string commentMessage = "";
             _testRun.StartTestRail();
+            _publishers = new PublisherTarget();
             List<string> CaseToRun = new List<string>();
             List<string> NameTestCase = new List<string>();  
 
@@ -46,18 +52,9 @@ public void NavigateDriver(IWebDriver driver)
                      CaseToRun.Add(runCase);
             foreach (string testName in _testRun.TestCaseName)
                      NameTestCase.Add(testName);
-
-            //foreach (string c in CaseToRun)
-            //    Console.WriteLine(c);
-            //return;
-
-            _publishers = new PublisherTarget();
+  
             _driverSettings = _publishers.GetDriverSettings(NameTestCase);
 
-            string successMessage = "";
-            string errorMessage = "";
-            string retestMessage = "";
-            string commentMessage = "";
             foreach (PublisherTarget driverSet in _driverSettings)
             {
                 driver.Navigate().GoToUrl(driverSet.Url);

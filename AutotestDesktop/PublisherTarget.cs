@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +16,13 @@ namespace AutotestDesktop
     class PublisherTarget
     {
         private List <string> _nameCase;
-        public string Url;
-        public string ZoneId;
-        public string TargetClick;
-        public int CountShowPopup;
-        public int Interval;
-        public int StepCase;
+        public string Url {get; private set;}
+        public string ZoneId {get; private set;}
+        public string TargetClick {get; private set;}
+        public int CountShowPopup {get; private set;}
+        public int Interval {get; private set;}
+        public int StepCase {get; private set;}
+      
         public List<PublisherTarget> DriverSetting;
 
         public List<PublisherTarget> GetDriverSettings(List <string> NameCase)
