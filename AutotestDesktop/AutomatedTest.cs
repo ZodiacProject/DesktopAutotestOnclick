@@ -24,11 +24,14 @@ namespace AutotestDesktop
         {
             testrail = new TestRail();
             //testrail.CreateSuite();
-            testrail.UpdateSuite("117");
-            return;
+            //testrail.UpdateTestSuite("117", Console.ReadLine());
+            //return;
+          //  testrail.AddCases();
+
             testrail.GetSuitesOfProject();
             testrail.GetRunsProject();
-            Console.WriteLine("Do your want regular test or FULL test ?");
+
+            //Console.WriteLine("Do your want regular (reg) test or FULL (full) test ?");
             //Console.Write("Do you want to delete a test-run? _");
             //_deleteTest = Console.ReadLine();
             //DoYoyWantDeleteTest();
@@ -75,8 +78,7 @@ namespace AutotestDesktop
                 Console.Write("Do you want to delete again? _");
                 _deleteTest = Console.ReadLine();
             }
-        }
-        
+        }        
 		private void FireFoxOnClick()
 		{   
 			RunBrowser(new FirefoxDriver());

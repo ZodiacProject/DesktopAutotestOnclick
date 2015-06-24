@@ -24,9 +24,12 @@ namespace AutotestDesktop
     {
         private List<PublisherTarget> _driverSettings; // for many publishers
         private PublisherTarget _publishers;
+        private List<string> CaseToRun = new List<string>();
+        private List<string> NameTestCase = new List<string>();
+        private List<string> TopSitesOnClick = new List<string>();
         private bool _isLandChecked;
         private bool _isOnClick;
-        private int _countWindowClick = 0;
+        private int _countWindowClick = 0;        
         public List<IWebDriver> Drivers {get; private set;}
         private TestRail _testRun;
 //Constuctor
@@ -39,18 +42,14 @@ namespace AutotestDesktop
 public void NavigateDriver(IWebDriver driver)
         {
             _testRun.StartTestRail();
-            List<string> CaseToRun = new List<string>();
-            List<string> NameTestCase = new List<string>();
-            List<string> TopSitesOnClick = new List<string>();
-
+            
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
             foreach (string testName in _testRun.TestCaseName)
                      NameTestCase.Add(testName);
-          //foreach (string topSite in _testRun.TopOnclick)
-            //    Console.WriteLine(topSite);
-           //_testRun.UpdateSuite("117");
-            return;
+            //foreach (string topSite in _testRun.TopOnclick)
+              //  Console.WriteLine(topSite);
+           
 
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
