@@ -139,18 +139,19 @@ public void NavigateDriver(IWebDriver driver)
         }
 public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
+            try
+            {
+
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
-                    _isOnClick = true;                    
-                    try
+                    _isOnClick = true;
+                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                    if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
-                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                       // while ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                       // {
-                        //    driver.SwitchTo().Alert().Accept(); // если появился alert      
-                       // }    
+                        driver.SwitchTo().Alert().Accept();
+                        driver.Close();
                     }
-                    catch (Exception e) { Console.WriteLine(e); }
+                        
                 }
 
                 d_setting.CountShowPopup--;
@@ -158,8 +159,8 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
 
                 //    if (driver.Url != "http://thevideos.tv/")
                 //      driver.Navigate().Back();
-
-                // time Interval popup
+            }
+            catch { }
                 Thread.Sleep(d_setting.Interval); 
         }
     }

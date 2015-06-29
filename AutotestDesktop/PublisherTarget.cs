@@ -19,7 +19,7 @@ namespace AutotestDesktop
         public string Url {get; private set;}
         public string ZoneId {get; private set;}
         public string TargetClick {get; private set;}
-        public int CountShowPopup {get; private set;}
+        public int CountShowPopup { get; set; }
         public int Interval {get; private set;}
         public int StepCase {get; private set;}
       
