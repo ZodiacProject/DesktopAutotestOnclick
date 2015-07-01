@@ -34,11 +34,11 @@ namespace AutotestDesktop
             Browser = new Driver (testrail);
             DoYouWantCreateTest();
 
-            //FireFoxOnClick();
-            //ChromeOnClick();
-            //OperaOnClick();
+            FireFoxOnClick();
+            ChromeOnClick();
+            OperaOnClick();
             IEOnClick();
-            //SafariOnClick();
+            SafariOnClick();
         }
         
         private void DoYouWantCreateTest()

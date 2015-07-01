@@ -81,11 +81,13 @@ public void NavigateDriver(IWebDriver driver)
                 string baseWindow = driver.CurrentWindowHandle;
               
                 while (driverSet.CountShowPopup != 0)
-                {
-                    if (driver.Url != "http://thevideos.tv/")
-                            Thread.Sleep(2000);
-
-                    driver.SwitchTo().Window(baseWindow).SwitchTo().ActiveElement().Click();
+                {                 
+                    try
+                    {
+                        driver.SwitchTo().Window(baseWindow).SwitchTo().ActiveElement().Click();
+                    }
+                    catch { }
+                    
                     Thread.Sleep(3000);
                       if (_isLandChecked)
                       {
@@ -149,7 +151,6 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                     if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
                         driver.SwitchTo().Alert().Accept();
-                        driver.Close();
                     }
                         
                 }
