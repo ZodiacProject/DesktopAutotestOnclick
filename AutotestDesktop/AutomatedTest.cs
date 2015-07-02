@@ -23,14 +23,15 @@ namespace AutotestDesktop
         public AutomatedTest()
         {
             testrail = new TestRail();
+            //testrail.GetCases();
+            //return;
             //testrail.CreateSuite();
             //testrail.UpdateTestSuite("117", Console.ReadLine());
             //return;
-          //  testrail.AddCases();
-
+            //testrail.AddCases();
+            //return;
             testrail.GetSuitesOfProject();
             testrail.GetRunsProject();
-
             //Console.WriteLine("Do your want regular (reg) test or FULL (full) test ?");
             //Console.Write("Do you want to delete a test-run? _");
             //_deleteTest = Console.ReadLine();

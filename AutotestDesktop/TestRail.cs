@@ -109,10 +109,11 @@ namespace AutotestDesktop
        {
            client.User = _login;
            client.Password = _password;
-
+           int i = 0;
            JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=117");
            foreach (var c in caseData)
-               Console.WriteLine(c);
+                        i++;
+           Console.WriteLine(i);
        }
         public void CreateRun(string suiteId, string nameSuite)
         {
@@ -150,19 +151,24 @@ namespace AutotestDesktop
         }
        public void AddCases()
         {
-            var CaseData = new Dictionary<string, object>();
+            Console.WriteLine("Creation of test-cases in the suite...");
             client.User = _login;
             client.Password = _password;
             _getTopSitesOnClick();
-            foreach (KeyValuePair<string, object> site in _sites)       
+            for (int i = 0; i < _sites.Count; i++)
             {
-                CaseData.Add(site.Key.ToString(), site.Value.);
-                //CaseData.Add("type_id", 6);
-                //CaseData.Add("ptiority_id", 4);
+                var CaseData = new Dictionary<string, object>
+                {
+                    {"title", _sites[i]},
+                    {"type_id", 6},
+                    {"ptiority_id", 4},
+                };
+                JObject suiteCreate = (JObject)client.SendPost("add_case/9446", CaseData);
+                if (i == 39)
+                    Thread.Sleep(60000);
             }
-
-           JObject suiteCreate = (JObject)client.SendPost("add_case/9446", CaseData);
-           Console.WriteLine("\nTest case(s) is added.");
+            
+            Console.WriteLine("\nTest case(s) is added.");
         }
        public void UpdateTestSuite(string suiteID, string newSuiteName)
        {
@@ -184,7 +190,8 @@ namespace AutotestDesktop
                 foreach (string value in testrun.Value)
                 {
                   //  Console.WriteLine(driver.GetType().Name);
-                    if (driver.GetType().Name.Contains(testrun.Key)) 
+
+//Section's select Chrome, FireFox, Opera, Safari, IE if (driver.GetType().Name.Contains(testrun.Key))                     
                         TCases.Add(value);
                 }
               return TCases;
@@ -197,14 +204,36 @@ namespace AutotestDesktop
             return TName;
         }
        private void _getTopSitesOnClick()
-       {
-           _topSites = (JObject)client.GetTopSites("2015-03-19&day_to=2015-06-19&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=1");
+       {                      
+           string ThisMonth = null;
+           string ThreeLastMonth = null;
+           DateTime thisDay = DateTime.Today;
+           DateTime threeLastMonth = new DateTime(thisDay.Year, thisDay.Month - 3, thisDay.Day);
+ 
+           ThisMonth = _getDateForJasonRequest(thisDay);
+           ThreeLastMonth = _getDateForJasonRequest(threeLastMonth);
+
+           _topSites = (JObject)client.GetTopSites(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
            string url = null;
            foreach (var site in _topSites)
            {
                url = site.Value.SelectToken("affiliate_name").ToString();
-               _sites.Add(url.Substring(0, url.Length - 8));
+               _sites.Add("http://" + url.Substring(0, url.Length - 8));
            }
+       }
+       private string _getDateForJasonRequest(DateTime date)
+       {
+           string month = null;
+               if (date.Month < 10)
+                   month = date.Year + "-" + "0" + date.Month;
+               else
+                   month = date.Year + "-" + date.Month;
+
+               if (date.Day < 10)
+                   month += "-" + "0" + date.Day;
+               else
+                   month += "-" + date.Day;
+           return month; 
        }
         
         public void SetStatus(string caseID, int statusID, string resultMessage, string commentMessage)
