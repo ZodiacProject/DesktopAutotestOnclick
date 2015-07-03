@@ -49,14 +49,14 @@ namespace AutotestDesktop
             {
                 case "http://putlocker.is": return "10802";
                    
-                case "http://thevideos.tv/": return "90446";
+                case "http://thevideos.tv": return "90446";
   
                 case "http://www13.zippyshare.com/v/94311818/file.html": return "180376";
 
-                case "http://um-fabolous.blogspot.ru/": return "199287";
+                case "http://um-fabolous.blogspot.ru": return "199287";
 
                 case "http://www.flashx.tv/&?": return "119133";
-                default: return null;
+                default: return "NOTZONE";
             }         
         }
         private int _GetShowPopup (string urlForFindZoneID)
@@ -65,11 +65,11 @@ namespace AutotestDesktop
             {
                 case "http://putlocker.is": return 3;
 
-                case "http://thevideos.tv/": return 3;
+                case "http://thevideos.tv": return 3;
 
                 case "http://www13.zippyshare.com/v/94311818/file.html": return 2;
 
-                case "http://um-fabolous.blogspot.ru/": return 3;
+                case "http://um-fabolous.blogspot.ru": return 3;
 
                 case "http://www.flashx.tv/&?": return 1;
                 default: return 0;
@@ -81,11 +81,11 @@ namespace AutotestDesktop
             {
                 case "http://putlocker.is": return 10000;
 
-                case "http://thevideos.tv/": return 45000;
+                case "http://thevideos.tv": return 45000;
 
                 case "http://www13.zippyshare.com/v/94311818/file.html": return 45000;
 
-                case "http://um-fabolous.blogspot.ru/": return 45000;
+                case "http://um-fabolous.blogspot.ru": return 45000;
 
                 case "http://www.flashx.tv/&?": return 20000;
                 default: return 0;
@@ -93,9 +93,9 @@ namespace AutotestDesktop
         }
         private string _GetTargetClick (string urlForFindZoneID)
         {
-            switch (urlForFindZoneID)
+           switch (urlForFindZoneID)
             {
-                case "http://thevideos.tv/": return "morevids";         
+                case "http://thevideos.tv": return "morevids";         
                 default: return null;
             }
         }

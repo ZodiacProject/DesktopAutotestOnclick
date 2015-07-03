@@ -62,9 +62,8 @@ public void NavigateDriver(IWebDriver driver)
             string retestMessage = "";
             string commentMessage = "";
             foreach (PublisherTarget driverSet in _driverSettings)
-            {
-                driver.Navigate().GoToUrl(driverSet.Url);
-        
+            {                                
+                    driver.Navigate().GoToUrl(driverSet.Url);                                 
                 int failedLand = 0;
                 // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
@@ -89,10 +88,7 @@ public void NavigateDriver(IWebDriver driver)
                 string baseWindow = driver.CurrentWindowHandle;
               
                 while (driverSet.CountShowPopup != 0)
-                {
-                    if (driver.Url != "http://thevideos.tv/")
-                            Thread.Sleep(2000);
-
+                {                 
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                     Thread.Sleep(3000);
                       if (_isLandChecked)
@@ -125,14 +121,14 @@ public void NavigateDriver(IWebDriver driver)
                 catch { }
 
                 _countWindowClick = driver.WindowHandles.Count;
-                if (_countWindowClick == 1 && driverSet.CountShowPopup == 0)
+                if (_countWindowClick == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
                 {
                     successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
                     Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
                     _testRun.SetStatus(CaseToRun[driverSet.StepCase], 1, successMessage, null);
                 }
 
-                else if (_isLandChecked && _isOnClick)
+               else if (_isLandChecked && _isOnClick)
                 {
                     retestMessage = "Landing is " + _isLandChecked + " "
                         + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
@@ -142,6 +138,15 @@ public void NavigateDriver(IWebDriver driver)
 
                     _testRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage, null);
                 }
+                else if (!_isLandChecked)
+                {
+                    errorMessage = "Страница не содержит наш тег";
+                    commentMessage = "Landing is " + _isLandChecked;
+                    Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);            
+                }
+
+
                    
             }//end foreach
         }
