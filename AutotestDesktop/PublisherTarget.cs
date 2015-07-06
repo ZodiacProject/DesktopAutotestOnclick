@@ -33,10 +33,13 @@ namespace AutotestDesktop
             foreach (string nameCase_Url in NameCase)
             {
     
-                DriverSetting.Add(new PublisherTarget() { Url = nameCase_Url, ZoneId = _getZoneID(nameCase_Url), 
-                                 CountShowPopup = _getShowPopup(nameCase_Url), Interval = _getInterval(nameCase_Url),
-                                 TargetClick = _getTargetClick(nameCase_Url), StepCase = numberStep++});
-            }
+                DriverSetting.Add(new PublisherTarget() 
+                { 
+                  Url = nameCase_Url, 
+                  ZoneId = _getZoneID(nameCase_Url), 
+                  CountShowPopup = _getShowPopup(nameCase_Url), Interval = _getInterval(nameCase_Url),
+                  TargetClick = _getTargetClick(nameCase_Url), StepCase = numberStep++});
+                }
                 return DriverSetting;
         }
         private string _getZoneID (string urlForFindZoneID)

@@ -58,8 +58,6 @@ public void NavigateDriver(IWebDriver driver)
             foreach (PublisherTarget driverSet in _driverSettings)
             {
                 driver.Navigate().GoToUrl(driverSet.Url);
-        
-                int failedLand = 0;
                 // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
                 {
@@ -70,8 +68,7 @@ public void NavigateDriver(IWebDriver driver)
                 }
                 else
                 {
-                     driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
-                     Thread.Sleep(3000);
+                    driver.FindElement(By.ClassName(driverSet.TargetClick)).Click(); 
                         if (driver.PageSource.Contains(driverSet.ZoneId))
                             _isLandChecked = true;
                         else
@@ -79,47 +76,42 @@ public void NavigateDriver(IWebDriver driver)
                 }
 
                 string baseWindow = driver.CurrentWindowHandle;
-              
-                while (driverSet.CountShowPopup != 0)
-                {                 
-                    try
-                    {
-                        driver.SwitchTo().Window(baseWindow).SwitchTo().ActiveElement().Click();
-                    }
-                    catch { }
-                    
-                    Thread.Sleep(3000);
-                      if (_isLandChecked)
-                      {
-                          OnclickProgress(driver, driverSet);
-                             if (!_isOnClick)
-                             {
-                                 errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
-                                 commentMessage = "OnClick не отработал";
-                                 Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
-                                 _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
-                                 break;
-                             }
-                      }
-                      else
-                      {
-                           errorMessage = "FailedLand: " + failedLand + "\nLanding is " + _isLandChecked;
-                           commentMessage = "Landing is " + _isLandChecked;
-                           Console.Error.WriteLine(driver.Url + errorMessage);
-                           _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
-                           break;
-                       }
 
-                }
+                while (driverSet.CountShowPopup != 0)
+                {
+                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).Navigate().Refresh();
+                    if (driver.Url == "http://thevideos.tv/")
+                        driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
+                    else
+                    driver.SwitchTo().ActiveElement().Click();
+                    if (_isLandChecked)
+                        OnclickProgress(driver, driverSet);
+                    if (!_isOnClick)
+                        break;
+                }                   
     // Проверка на открытие после того, как все показы уже были
+                if (_isOnClick)
                 try
                 {
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                 }
                 catch { }
 
-                _countWindowClick = driver.WindowHandles.Count;
-                if (_countWindowClick == 1 && driverSet.CountShowPopup == 0)
+                if (!_isLandChecked)
+                {
+                    errorMessage = "Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
+                    commentMessage = "Landing is " + _isLandChecked;
+                    Console.Error.WriteLine(driver.Url + errorMessage);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                }
+                if (!_isOnClick && _isLandChecked)
+                {
+                    errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
+                    commentMessage = "OnClick не отработал";
+                    Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                }
+                if ((_countWindowClick = driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
                 {
                     successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
                     Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
@@ -133,7 +125,6 @@ public void NavigateDriver(IWebDriver driver)
                         " & count of windows " + _countWindowClick + "\nIn the testing process is NOT open our Landing" + 
                         "\nPlease, repeat this test";
                     Console.Error.WriteLine(errorMessage + " " + _isOnClick);
-
                     _testRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage, null);
                 }
                    
@@ -147,21 +138,28 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
                     _isOnClick = true;
-                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                    if (driver.Url != driver.WindowHandles.ElementAt(1))
+                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                    else
+                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).Close();
+                    // Thread.Sleep(2000);
                     if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
                         driver.SwitchTo().Alert().Accept();
                     }
-                        
                 }
+                else
+                    _isOnClick = false;
+            }
+            catch { }
 
                 d_setting.CountShowPopup--;
-                driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
+                //driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
 
                 //    if (driver.Url != "http://thevideos.tv/")
                 //      driver.Navigate().Back();
-            }
-            catch { }
+            
+            
                 Thread.Sleep(d_setting.Interval); 
         }
     }
