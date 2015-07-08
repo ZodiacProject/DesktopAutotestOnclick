@@ -1,0 +1,119 @@
+[33mcommit 173a63f596c359f44fe177bc362ac8cc2d95a0bc[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Wed Jul 8 19:40:47 2015 +0300
+
+    Рабочая версия
+
+[33mcommit c8a00d005942f909beb4769f428c90a278f52b7d[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Mon Jul 6 20:40:16 2015 +0300
+
+    Добавлен Refrash для нового клика вместо перехода на стр
+
+[33mcommit 86b894ae3e69c1d49fc3591265f8c284c971e628[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Wed Jul 1 15:22:23 2015 +0300
+
+    Рефакторинг метода OnlickProgres
+
+[33mcommit 8a5e95517273c33db2f1c4e3a67fa4023ac84a32[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Mon Jun 29 14:53:27 2015 +0300
+
+    Улучшена работа метода OnlickProgress для IE
+
+[33mcommit 300d7a97bbe956fd12f97ba1ce046cd766d5ab31[m
+Author: Bear_t <alexeystepanov@MacBook-Pro-Alexey.local>
+Date:   Tue Jun 23 17:03:21 2015 +0300
+
+    Рефакторинг кода
+
+[33mcommit e93b62294196d0e3e0b69275dc7566649784a2b1[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Mon Jun 22 12:35:11 2015 +0300
+
+    В OnclickProgress удален alert. Рабатет без него
+
+[33mcommit c6ab5712df478a375d718424909e3a070911fdb6[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Thu Jun 18 17:17:33 2015 +0300
+
+    Необходимо улучшить работу закрытия окон
+
+[33mcommit 038468c58f7bf3048499db88de8a1f4fe62e0261[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Thu Jun 18 17:13:07 2015 +0300
+
+    Полная работа автотеста на основе test-run
+
+[33mcommit 705915f589291fe57d6de41b68ba3dca5762b124[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Thu Jun 18 14:03:13 2015 +0300
+
+    Автоматические создание url для теста
+
+[33mcommit 79cc01e5be94c26ef5e71268011d9208ff799f59[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Tue Jun 16 19:47:48 2015 +0300
+
+    Добавлена возможность создание test-run, удаление работает некорректно. Удалены unit tests
+
+[33mcommit 12de909bc067d7ce6109c31bc8d290ef215ea70a[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Wed Jun 3 17:46:51 2015 +0300
+
+    Add более удачный код для закрытия окон
+
+[33mcommit 2a912b9a1679480bd0f8130a825fe76bc2cb239d[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Mon May 25 13:31:52 2015 +0300
+
+    Актуальная версия автестов
+
+[33mcommit c70f4048c21e497bfb732d9ce68d34d98f38a65b[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Mon May 18 17:32:10 2015 +0300
+
+    Обновления работы сайтов
+
+[33mcommit abc05b649404c84f25433259f59cdacb3bbc2f8b[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Fri May 15 10:58:19 2015 +0300
+
+    Рабочая версия автотестов для Desktop OnClick
+
+[33mcommit f5425e15995a52481c4869f01145243e359aa0f4[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Tue May 12 18:56:57 2015 +0300
+
+    12.05.2015
+
+[33mcommit a50ce0ed29cc8b1d4dfc3906dfa8fa65dcfa1173[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Tue Apr 28 13:57:09 2015 +0300
+
+    28.04.2015
+    
+    Настроена работа по проверки рабочих площадок
+
+[33mcommit dcf243cf9f8a698d8016336e240dbbc875fbd0e7[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Mon Apr 27 13:23:11 2015 +0300
+
+    %date%
+    
+    TestRail интегрирован с автотестами
+
+[33mcommit d1794d617e9f1eb60ee6998acfe8e9dc49c7745c[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Wed Apr 22 23:10:58 2015 +0300
+
+    Without TestRail
+    
+    версия автотеста без интеграции с TestRail
+
+[33mcommit 8ddfda5680376b6403f1dbd5262fe4a8f523fa1d[m
+Author: ZodiacProject <stepanov.guap@gmail.com>
+Date:   Wed Apr 22 23:07:28 2015 +0300
+
+    :neckbeard: Added .gitattributes & .gitignore files

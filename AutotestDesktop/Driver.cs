@@ -43,6 +43,8 @@ public void NavigateDriver(IWebDriver driver)
             string errorMessage = "";
             string retestMessage = "";
             string commentMessage = "";
+            string baseWindow = "";
+
             _testRun.StartTestRail();
             _publishers = new PublisherTarget();
             List<string> CaseToRun = new List<string>();
@@ -50,7 +52,7 @@ public void NavigateDriver(IWebDriver driver)
 
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
-            foreach (string testName in _testRun.TestCaseName)
+            foreach (string testName in _testRun.GetNameCase())
                      NameTestCase.Add(testName);
   
             _driverSettings = _publishers.GetDriverSettings(NameTestCase);
@@ -58,6 +60,8 @@ public void NavigateDriver(IWebDriver driver)
             foreach (PublisherTarget driverSet in _driverSettings)
             {
                 driver.Navigate().GoToUrl(driverSet.Url);
+                baseWindow = driver.CurrentWindowHandle;
+
                 // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
                 {
@@ -74,21 +78,25 @@ public void NavigateDriver(IWebDriver driver)
                         else
                             _isLandChecked = false;
                 }
+                                         
+                    while (driverSet.CountShowPopup != 0)
+                    {
+                        Thread.Sleep(1000);
+                        try
+                        {
+                            if (driver.Url != driverSet.Url)
+                                driver.SwitchTo().Window(baseWindow);
 
-                string baseWindow = driver.CurrentWindowHandle;
+                            driver.SwitchTo().ActiveElement().Click();
 
-                while (driverSet.CountShowPopup != 0)
-                {
-                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).Navigate().Refresh();
-                    if (driver.Url == "http://thevideos.tv/")
-                        driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
-                    else
-                    driver.SwitchTo().ActiveElement().Click();
-                    if (_isLandChecked)
-                        OnclickProgress(driver, driverSet);
-                    if (!_isOnClick)
-                        break;
-                }                   
+                            if (_isLandChecked)
+                                OnclickProgress(driver, driverSet);
+                            if (!_isOnClick)
+                                break;
+                        }
+                        catch { }
+                    }                                
+
     // Проверка на открытие после того, как все показы уже были
                 if (_isOnClick)
                 try
@@ -134,15 +142,11 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
             try
             {
-
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
-                    _isOnClick = true;
-                    if (driver.Url != driver.WindowHandles.ElementAt(1))
+                    _isOnClick = true;                
                         driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                    else
-                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).Close();
-                    // Thread.Sleep(2000);
+
                     if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
                         driver.SwitchTo().Alert().Accept();
@@ -152,15 +156,11 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                     _isOnClick = false;
             }
             catch { }
-
-                d_setting.CountShowPopup--;
-                //driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
-
-                //    if (driver.Url != "http://thevideos.tv/")
-                //      driver.Navigate().Back();
             
-            
-                Thread.Sleep(d_setting.Interval); 
+            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
+            d_setting.CountShowPopup--;            
+            Thread.Sleep(d_setting.Interval); 
+
         }
     }
 }

@@ -32,7 +32,6 @@ namespace AutotestDesktop
         private Dictionary<string, string> _testCaseName;
         public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         public string RunID { set { _runID = value; } }
-        public List<string> TestCaseName { get { return GetNameCase(); } }
         public Status status;
        public enum Status
         {
@@ -137,7 +136,7 @@ namespace AutotestDesktop
                 }
               return TCases;
         }
-       private List <string> GetNameCase()
+       public List <string> GetNameCase()
         {
             List<string> TName = new List<string>();
             foreach (KeyValuePair<string, string> testname in _testCaseName)
