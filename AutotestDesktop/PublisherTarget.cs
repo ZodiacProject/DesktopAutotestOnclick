@@ -46,7 +46,7 @@ namespace AutotestDesktop
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is": return "10802";
+                case "http://putlocker.is/": return "10802";
                    
                 case "http://thevideos.tv/": return "90446";
   
@@ -62,7 +62,7 @@ namespace AutotestDesktop
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is": return 3;
+                case "http://putlocker.is/": return 3;
 
                 case "http://thevideos.tv/": return 3;
 
@@ -78,7 +78,7 @@ namespace AutotestDesktop
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is": return 10000;
+                case "http://putlocker.is/": return 10000;
 
                 case "http://thevideos.tv/": return 45000;
 

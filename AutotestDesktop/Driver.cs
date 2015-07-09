@@ -60,8 +60,7 @@ public void NavigateDriver(IWebDriver driver)
             foreach (PublisherTarget driverSet in _driverSettings)
             {
                 driver.Navigate().GoToUrl(driverSet.Url);
-                baseWindow = driver.CurrentWindowHandle;
-
+                baseWindow = driver.CurrentWindowHandle;           
                 // Проверка на наш Landing
                 if (driver.Url != "http://thevideos.tv/")
                 {
@@ -72,7 +71,8 @@ public void NavigateDriver(IWebDriver driver)
                 }
                 else
                 {
-                    driver.FindElement(By.ClassName(driverSet.TargetClick)).Click(); 
+                    driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
+                    Thread.Sleep(2000);
                         if (driver.PageSource.Contains(driverSet.ZoneId))
                             _isLandChecked = true;
                         else
@@ -84,11 +84,11 @@ public void NavigateDriver(IWebDriver driver)
                         Thread.Sleep(1000);
                         try
                         {
-                            if (driver.Url != driverSet.Url)
-                                driver.SwitchTo().Window(baseWindow);
+                            //if (driver.Url != driverSet.Url)
+                            //    driver.SwitchTo().Window(baseWindow);
 
                             driver.SwitchTo().ActiveElement().Click();
-
+                            Thread.Sleep(3000);
                             if (_isLandChecked)
                                 OnclickProgress(driver, driverSet);
                             if (!_isOnClick)
@@ -146,10 +146,10 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                 {
                     _isOnClick = true;                
                         driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-
+                        Thread.Sleep(2000);
                     if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
-                        driver.SwitchTo().Alert().Accept();
+                        driver.SwitchTo().Alert().Accept();                       
                     }
                 }
                 else
