@@ -16,7 +16,7 @@ namespace AutotestDesktop
     class PublisherTarget
     {
         private List <string> _nameCase;
-        public string Url {get; private set;}
+        public string Url {get; set;}
         public string ZoneId {get; private set;}
         public string TargetClick {get; private set;}
         public int CountShowPopup { get; set; }
