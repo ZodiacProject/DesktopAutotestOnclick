@@ -80,7 +80,7 @@ public void NavigateDriver(IWebDriver driver)
                         else
                             _isLandChecked = false;
                 }
-                                         
+                if (_isLandChecked)                                         
                     while (driverSet.CountShowPopup != 0)
                     {
                         Thread.Sleep(1000);
@@ -89,37 +89,36 @@ public void NavigateDriver(IWebDriver driver)
                             if (driver.Url != driverSet.Url)
                             {
                                 driver.Navigate().GoToUrl(driverSet.Url);
-                                Thread.Sleep(2000);
+                                Thread.Sleep(3000);
                             }                                
                             driver.SwitchTo().ActiveElement().Click();
-                            Thread.Sleep(3000);
-                            if (_isLandChecked)
-                                OnclickProgress(driver, driverSet);
+                            OnclickProgress(driver, driverSet);
                             if (!_isOnClick)
                                 break;
                         }
                         catch { }
-                    }                                
+                    }
+                
+                else
+                {
+                    errorMessage = "Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
+                    commentMessage = "Landing is " + _isLandChecked;
+                    Console.Error.WriteLine(driver.Url + errorMessage);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                }                
 
     // Проверка на открытие после того, как все показы уже были
-                if (_isOnClick)
+                if (_isOnClick && _isLandChecked)
                 try
                 {
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                 }
                 catch { }
 
-                if (!_isLandChecked)
-                {
-                    errorMessage = "Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
-                    commentMessage = "Landing is " + _isLandChecked;
-                    Console.Error.WriteLine(driver.Url + errorMessage);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
-                }
                 if (!_isOnClick && _isLandChecked)
                 {
                     errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
-                    commentMessage = "OnClick не отработал";
+                    commentMessage = "OnClick не отработал. Тег есть на странице";
                     Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
                     _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
                 }
@@ -142,20 +141,26 @@ public void NavigateDriver(IWebDriver driver)
                    
             }//end foreach
         }
+
 public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
             try
             {
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
-                    _isOnClick = true;                
-                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                        Thread.Sleep(2000);
+                    _isOnClick = true;
+                    if (driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Url != d_setting.Url)
+                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                    else
+                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).Close();
+
                     while ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
                         driver.SwitchTo().Alert().Accept();
-                        driver.SwitchTo().Alert().Dismiss();
-                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();                       
+                        if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                            driver.SwitchTo().Alert().Dismiss();
+                        if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();                       
                     }
                 }
                 else
