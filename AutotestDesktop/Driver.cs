@@ -68,7 +68,7 @@ public void NavigateDriver(IWebDriver driver)
                     if (driver.PageSource.Contains(driverSet.ZoneId))
                         _isLandChecked = true;
                     else
-                        _isLandChecked = false;
+                        _isLandChecked = false; 
                 }
                 else
                 {
@@ -92,7 +92,8 @@ public void NavigateDriver(IWebDriver driver)
                                 Thread.Sleep(3000);
                             }                                
                             driver.SwitchTo().ActiveElement().Click();
-                            OnclickProgress(driver, driverSet);
+                            Thread.Sleep(2000);
+                            OnclickProgress(driver, driverSet, baseWindow);
                             if (!_isOnClick)
                                 break;
                         }
@@ -142,18 +143,17 @@ public void NavigateDriver(IWebDriver driver)
             }//end foreach
         }
 
-public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
+public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting, string window)
         {
             try
             {
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                 {
                     _isOnClick = true;
-                    if (driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Url != d_setting.Url)
-                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                    else
-                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).Close();
-
+                    if (window == driver.WindowHandles.ElementAt(0))
+                        Console.WriteLine("yes");
+                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                    Thread.Sleep(10000);
                     while ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
                         driver.SwitchTo().Alert().Accept();
@@ -165,10 +165,10 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                 }
                 else
                     _isOnClick = false;
+                        
+            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
             }
             catch { }
-            
-            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
             d_setting.CountShowPopup--;            
             Thread.Sleep(d_setting.Interval); 
 

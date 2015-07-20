@@ -62,7 +62,7 @@ namespace AutotestDesktop
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is/": return 3;
+                case "http://putlocker.is/": return 1;
 
                 case "http://thevideos.tv/": return 3;
 
