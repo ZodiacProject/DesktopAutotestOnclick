@@ -215,6 +215,7 @@ namespace AutotestDesktop
 
            _topSites = (JObject)client.GetTopSites(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
            string url = null;
+           string affiliates = null;
            foreach (var site in _topSites)
            {
                url = site.Value.SelectToken("affiliate_name").ToString();

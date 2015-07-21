@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ParserPage.cs" />
     <Compile Include="Properties\APIClient.cs" />
     <Compile Include="Properties\APIException.cs" />
     <Compile Include="AutomatedTest.cs" />

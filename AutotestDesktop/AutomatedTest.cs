@@ -28,7 +28,7 @@ namespace AutotestDesktop
             //testrail.CreateSuite();
             //testrail.UpdateTestSuite("117", Console.ReadLine());
             //return;
-            //testrail.AddCases();
+            testrail.AddCases();
             //return;
             testrail.GetSuitesOfProject();
             testrail.GetRunsProject();
@@ -105,6 +105,7 @@ namespace AutotestDesktop
         private void RunBrowser(IWebDriver webDriver)
         {
             Browser.Drivers.Add(webDriver);
+            //ParserPage page = new ParserPage(webDriver);
             Browser.NavigateDriver(webDriver);
             webDriver.Quit();
         }
