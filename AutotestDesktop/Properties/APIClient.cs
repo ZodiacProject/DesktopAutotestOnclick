@@ -23,7 +23,7 @@ namespace Gurock.TestRail
 		private string m_user;
 		private string m_password;
 		private string m_url;
-        private string _statUrl = "http://apistats.propellerads.com/api/v1/stats/stat.json?day_from=";
+        private string _statUrl = "http://apistats.propellerads.com/api/v1/stats/stat.json?day_from=";       
 
 		public APIClient(string base_url)
 		{
@@ -73,12 +73,12 @@ namespace Gurock.TestRail
 			return SendRequest("GET", uri, null);
 		}
 
-        public object GetTopSites(string uri)
+        public object GetTopSitesData(string uri)
         {
-            return SendRequestForTopSites("GET", uri, null);
+            return SendRequestForTopSitesData("GET", uri, null);
         }
-     
-        private object SendRequestForTopSites(string method, string uri, object data)
+
+        private object SendRequestForTopSitesData(string method, string uri, object data)
 		{
             string url = this._statUrl + uri;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -174,7 +174,6 @@ namespace Gurock.TestRail
                     )
                 );
             }
-
             return result;
         }
 

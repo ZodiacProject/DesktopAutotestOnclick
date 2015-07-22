@@ -26,11 +26,12 @@ namespace AutotestDesktop
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
         private List<string> _createCases = new List<string>();
-        private List<string> _sites = new List<string>();
+        private Dictionary <string, List<string>> _sites;
         private string _runID = null;
         private string _suiteId = "";
         private int _numberCase;
         private JObject _topSites;
+        private JObject _topZoneSites; 
         private JArray _caseData;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
@@ -151,23 +152,26 @@ namespace AutotestDesktop
         }
        public void AddCases()
         {
+            int count = 0;
             Console.WriteLine("Creation of test-cases in the suite...");
             client.User = _login;
             client.Password = _password;
             _getTopSitesOnClick();
-            for (int i = 0; i < _sites.Count; i++)
+            foreach (KeyValuePair<string, List<string>> site in _sites)
             {
-                var CaseData = new Dictionary<string, object>
-                {
-                    {"title", _sites[i]},
+               
+                    var CaseData = new Dictionary<string, object>
+                    {
+                    {"title", site.Key},
                     {"type_id", 6},
-                    {"ptiority_id", 4},
-                };
-                JObject suiteCreate = (JObject)client.SendPost("add_case/9446", CaseData);
-                if (i == 39)
-                    Thread.Sleep(60000);
+                    {"ptiority_id", 4},                   
+                    {"custom_zone_id", site.Value.First()},
+                    };
+                    JObject suiteCreate = (JObject)client.SendPost("add_case/9446", CaseData);
+                    if (count == 38)
+                        Thread.Sleep(60000);
+                    count++;
             }
-            
             Console.WriteLine("\nTest case(s) is added.");
         }
        public void UpdateTestSuite(string suiteID, string newSuiteName)
@@ -204,7 +208,8 @@ namespace AutotestDesktop
             return TName;
         }
        private void _getTopSitesOnClick()
-       {                      
+       {
+           _sites = new Dictionary<string, List<string>>();
            string ThisMonth = null;
            string ThreeLastMonth = null;
            DateTime thisDay = DateTime.Today;
@@ -213,13 +218,20 @@ namespace AutotestDesktop
            ThisMonth = _getDateForJasonRequest(thisDay);
            ThreeLastMonth = _getDateForJasonRequest(threeLastMonth);
 
-           _topSites = (JObject)client.GetTopSites(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
-           string url = null;
-           string affiliates = null;
+           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=5");
+           string url = null;         
            foreach (var site in _topSites)
            {
-               url = site.Value.SelectToken("affiliate_name").ToString();
-               _sites.Add("http://" + url.Substring(0, url.Length - 8));
+               url = "http://" + site.Value.SelectToken("affiliate_name").ToString().Substring(0, site.Value.SelectToken("affiliate_name").ToString().Length - 8); // какая жесть :)
+               //url = "http://" + url.Substring(0, url.Length - 8);
+            //   affiliates = site.Value.SelectToken("affiliate").ToString();
+               _topZoneSites = (JObject)client.GetTopSitesData(ThisMonth + "&day_to=" + ThisMonth + "&affiliates=" + site.Value.SelectToken("affiliate").ToString() + "&group=zone");
+               
+               _sites.Add(url, new List <string>());
+               foreach (var topZone in _topZoneSites)
+               {                  
+                   _sites[url].Add(topZone.Value.SelectToken("zone").ToString());
+               }
            }
        }
        private string _getDateForJasonRequest(DateTime date)
