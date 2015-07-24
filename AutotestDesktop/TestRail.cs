@@ -25,8 +25,7 @@ namespace AutotestDesktop
         private APIClient client = new APIClient("https://propeller.testrail.net");
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
-        private List<string> _createCases = new List<string>();
-        private Dictionary <string, List<string>> _sites;
+        private const string _onclick = "_onclick";
         private string _runID = null;
         private string _suiteId = "";
         private int _numberCase;
@@ -35,9 +34,13 @@ namespace AutotestDesktop
         private JArray _caseData;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
+        private Dictionary<string, List<string>> _sites;
+        private List<string> _createCases = new List<string>();
+        public Dictionary<string, string> TestCaseName { get { return _getRegularNameCase(); } }
+
         public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         public string RunID { set { _runID = value; } }
-        public List<string> TestCaseName { get { return _GetRegularNameCase(); } }
+        
         public Status status;
        public enum Status
         {
@@ -78,7 +81,7 @@ namespace AutotestDesktop
 
              foreach (var caseName in TestCases.Take(TestCases.Count/Sections.Count))
              {
-                 _testCaseName.Add(caseName["id"].ToString(), caseName["title"].ToString());
+                 _testCaseName.Add(caseName["title"].ToString(), caseName["custom_zone_id"].ToString());                
              }
 
             _numberCase = TestCases.Count / Sections.Count;
@@ -159,18 +162,21 @@ namespace AutotestDesktop
             _getTopSitesOnClick();
             foreach (KeyValuePair<string, List<string>> site in _sites)
             {
-               
+                try
+                {
                     var CaseData = new Dictionary<string, object>
                     {
                     {"title", site.Key},
                     {"type_id", 6},
                     {"ptiority_id", 4},                   
-                    {"custom_zone_id", site.Value.First()},
+                    {"custom_zone_id", String.Join("#", site.Value)},
                     };
                     JObject suiteCreate = (JObject)client.SendPost("add_case/9446", CaseData);
                     if (count == 38)
                         Thread.Sleep(60000);
                     count++;
+                }
+                catch (Exception e) { Console.WriteLine(e + "\n" + site.Key + " " + site.Value[count]); }
             }
             Console.WriteLine("\nTest case(s) is added.");
         }
@@ -200,13 +206,14 @@ namespace AutotestDesktop
                 }
               return TCases;
         }
-       private List <string> _GetRegularNameCase()
+       private Dictionary <string, string> _getRegularNameCase()
         {
-            List<string> TName = new List<string>();
+            Dictionary<string, string> TtestCase = new Dictionary<string, string>();
             foreach (KeyValuePair<string, string> testname in _testCaseName)
-                TName.Add(testname.Value);
-            return TName;
+                TtestCase.Add(testname.Key, testname.Value);
+            return TtestCase;
         }
+
        private void _getTopSitesOnClick()
        {
            _sites = new Dictionary<string, List<string>>();
@@ -218,20 +225,22 @@ namespace AutotestDesktop
            ThisMonth = _getDateForJasonRequest(thisDay);
            ThreeLastMonth = _getDateForJasonRequest(threeLastMonth);
 
-           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=5");
+           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
            string url = null;         
            foreach (var site in _topSites)
            {
-               url = "http://" + site.Value.SelectToken("affiliate_name").ToString().Substring(0, site.Value.SelectToken("affiliate_name").ToString().Length - 8); // какая жесть :)
-               //url = "http://" + url.Substring(0, url.Length - 8);
-            //   affiliates = site.Value.SelectToken("affiliate").ToString();
-               _topZoneSites = (JObject)client.GetTopSitesData(ThisMonth + "&day_to=" + ThisMonth + "&affiliates=" + site.Value.SelectToken("affiliate").ToString() + "&group=zone");
-               
+               url = "http://" + site.Value.SelectToken("affiliate_name").ToString().Substring(0, site.Value.SelectToken("affiliate_name").ToString().Length - _onclick.Length); // какая жесть :)
+               _topZoneSites = (JObject)client.GetTopSitesData(ThisMonth + "&day_to=" + ThisMonth + "&affiliates=" + site.Value.SelectToken("affiliate").ToString() + "&group=zone&cut[impressions]=more100&order=revenue&limit=30");
                _sites.Add(url, new List <string>());
-               foreach (var topZone in _topZoneSites)
-               {                  
-                   _sites[url].Add(topZone.Value.SelectToken("zone").ToString());
-               }
+
+               if (_topZoneSites.Count != 0)
+                   foreach (var topZone in _topZoneSites)
+                   {
+                       if (Convert.ToInt64(topZone.Value.SelectToken("zone")) != 0)
+                           _sites[url].Add(topZone.Value.SelectToken("zone").ToString());
+                   }
+               else
+                   _sites[url].Add("Zone Not Found");
            }
        }
        private string _getDateForJasonRequest(DateTime date)

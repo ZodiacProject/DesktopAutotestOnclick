@@ -20,14 +20,13 @@ namespace AutotestDesktop
 {
     class ParserPage
     {
-        private IWebDriver _driver;
+        private bool _isFindZone = false;
         private IReadOnlyCollection<IWebElement> _searchWebelements;
         private List<string> _searchElement = new List<string>();
-        public ParserPage(IWebDriver driver)
-        {
-            _driver = driver;
-            _driver.Navigate().GoToUrl("http://thevideos.tv");
-            _searchWebelements = _driver.FindElements(By.TagName("a"));
+        public bool FindZoneOnPage(IWebDriver driver, string url, string zoneID)
+        {            
+            driver.Navigate().GoToUrl(url);
+            _searchWebelements = driver.FindElements(By.TagName("a"));
             foreach (IWebElement webEl in _searchWebelements)
             {
                 if (webEl.Text != string.Empty)
@@ -37,18 +36,36 @@ namespace AutotestDesktop
             {             
                 try
                 {
-                    _driver.FindElement(By.LinkText(element)).Click();
-                    Thread.Sleep(3000);             
-                    if (driver.PageSource.Contains("90446"))
+                    foreach (string zone in _concatZoneID(zoneID))
                     {
-                        Console.WriteLine("Yes, I'am find zone");
-                        return;
+                        if (driver.PageSource.Contains(zone))
+                        {
+                            Console.WriteLine("Yes, I'am find zone");
+                            return _isFindZone = true;
+                        }
                     }
-                    _driver.Navigate().Back();
+                    if (!_isFindZone)
+                    {
+                        driver.FindElement(By.LinkText(element)).Click();
+                        Thread.Sleep(3000);
+                    }
+                    driver.Navigate().Back();
                 }
                 catch { }
             }
-            
+            return false;            
+        }
+        private List <string> _concatZoneID (string str)
+        {
+            List <string> LconcatZoneId = new List<string>();
+            string concatZone = null;
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] != '#')
+                    concatZone += str[i];
+            }
+            LconcatZoneId.Add(concatZone);
+            return LconcatZoneId;
         }
     }
     

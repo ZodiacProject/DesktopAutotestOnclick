@@ -28,8 +28,7 @@ namespace AutotestDesktop
             //testrail.CreateSuite();
             //testrail.UpdateTestSuite("117", Console.ReadLine());
             //return;
-            testrail.AddCases();
-            return;
+            //testrail.AddCases();
             testrail.GetSuitesOfProject();
             testrail.GetRunsProject();
             //Console.WriteLine("Do your want regular (reg) test or FULL (full) test ?");

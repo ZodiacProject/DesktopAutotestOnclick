@@ -15,29 +15,29 @@ namespace AutotestDesktop
 {
     class PublisherTarget
     {
-        private List <string> _nameCase;
-        public string Url;
-        public string ZoneId;
-        public string TargetClick;
-        public int CountShowPopup;
-        public int Interval;
-        public int StepCase;
+        private Dictionary <string, string> _dataCase;
+        public string Url { get; set; }
+        public string ZoneIds { get; private set; }
+        public string TargetClick { get; private set; }
+        public int CountShowPopup { get; set; }
+        public int Interval { get; private set; }
+        public int StepCase { get; private set; }
         public List<PublisherTarget> DriverSetting;
 
-        public List<PublisherTarget> GetDriverSettings(List <string> NameCase)
+        public List<PublisherTarget> GetDriverSettings(Dictionary<string, string> DataCase)
         {
             int numberStep = 0;
-            _nameCase = NameCase;
+            _dataCase = DataCase;
             DriverSetting = new List<PublisherTarget>();
-            foreach (string nameCase_Url in NameCase)
+            foreach (KeyValuePair <string, string> dataCase in DataCase)
             {
                 DriverSetting.Add(new PublisherTarget()
                 {
-                    Url = nameCase_Url,
-                    ZoneId = _GetZoneID(nameCase_Url),
-                    CountShowPopup = _GetShowPopup(nameCase_Url),
-                    Interval = _GetInterval(nameCase_Url),
-                    TargetClick = _GetTargetClick(nameCase_Url),
+                    Url = dataCase.Key,
+                    ZoneIds = dataCase.Value, //_GetZoneID(nameCase_Url.Key)
+                    CountShowPopup = _GetShowPopup(dataCase.Key),
+                    Interval = _GetInterval(dataCase.Key),
+                    TargetClick = _GetTargetClick(dataCase.Key),
                     StepCase = numberStep++
                 });
             }
@@ -72,7 +72,7 @@ namespace AutotestDesktop
                 case "http://um-fabolous.blogspot.ru": return 3;
 
                 case "http://www.flashx.tv/&?": return 1;
-                default: return 0;
+                default: return 1;
             }
         }
         private int _GetInterval (string urlForFindZoneID)
@@ -88,7 +88,7 @@ namespace AutotestDesktop
                 case "http://um-fabolous.blogspot.ru": return 45000;
 
                 case "http://www.flashx.tv/&?": return 20000;
-                default: return 0;
+                default: return 20000;
             }
         }
         private string _GetTargetClick (string urlForFindZoneID)

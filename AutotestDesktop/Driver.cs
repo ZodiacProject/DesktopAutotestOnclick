@@ -25,8 +25,8 @@ namespace AutotestDesktop
         private List<PublisherTarget> _driverSettings; // for many publishers
         private PublisherTarget _publishers;
         private List<string> CaseToRun = new List<string>();
-        private List<string> NameTestCase = new List<string>();
         private List<string> TopSitesOnClick = new List<string>();
+        private Dictionary<string, string> TestCase = new Dictionary<string, string>();
         private bool _isLandChecked;
         private bool _isOnClick;
         private int _countWindowClick = 0;        
@@ -45,8 +45,9 @@ public void NavigateDriver(IWebDriver driver)
             
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
-            foreach (string testName in _testRun.TestCaseName)
-                     NameTestCase.Add(testName);
+            foreach (KeyValuePair <string, string> testcase in _testRun.TestCaseName)
+                     TestCase.Add(testcase.Key, testcase.Value);
+ 
             //foreach (string topSite in _testRun.TopOnclick)
               //  Console.WriteLine(topSite);
 
@@ -55,35 +56,40 @@ public void NavigateDriver(IWebDriver driver)
             //return;
 
             _publishers = new PublisherTarget();
-            _driverSettings = _publishers.GetDriverSettings(NameTestCase);
+            _driverSettings = _publishers.GetDriverSettings(TestCase);
 
             string successMessage = "";
             string errorMessage = "";
             string retestMessage = "";
             string commentMessage = "";
             foreach (PublisherTarget driverSet in _driverSettings)
-            {                                
-                    driver.Navigate().GoToUrl(driverSet.Url);                                 
-                int failedLand = 0;
-                // Проверка на наш Landing
-                if (driver.Url != "http://thevideos.tv/")
-                {
-                  //  _FindZoneID(driver);
-                  //  return;
-                    if (driver.PageSource.Contains(driverSet.ZoneId))
-                        _isLandChecked = true;
-                    else
-                        _isLandChecked = false;
-                }
+            {
+                ParserPage parsePage = new ParserPage();
+                if (parsePage.FindZoneOnPage(driver, driverSet.Url.ToString(), driverSet.ZoneIds.ToString()))
+                    _isLandChecked = true;
                 else
-                {
-                     driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
-                     Thread.Sleep(3000);
-                        if (driver.PageSource.Contains(driverSet.ZoneId))
-                            _isLandChecked = true;
-                        else
-                            _isLandChecked = false;
-                }
+                    _isLandChecked = false;
+                //driver.Navigate().GoToUrl(driverSet.Url);                                 
+                int failedLand = 0;
+                //// Проверка на наш Landing
+                //if (driver.Url != "http://thevideos.tv/")
+                //{
+                //  //  _FindZoneID(driver);
+                //  //  return;
+                //    if (driver.PageSource.Contains(driverSet.ZoneIds))
+                //        _isLandChecked = true;
+                //    else
+                //        _isLandChecked = false;
+                //}
+                //else
+                //{
+                //     driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
+                //     Thread.Sleep(3000);
+                //        if (driver.PageSource.Contains(driverSet.ZoneIds))
+                //            _isLandChecked = true;
+                //        else
+                //            _isLandChecked = false;
+                //}
 
                 string baseWindow = driver.CurrentWindowHandle;
               
