@@ -27,7 +27,7 @@ namespace AutotestDesktop
         private bool _isLandChecked;
         private bool _isOnClick;
         private int _countWindowClick = 0;
-        private TestRail _testRun;
+        private TestRail _testRun;        
       
         public List<IWebDriver> Drivers {get; private set;}
 //Constuctor
@@ -84,17 +84,15 @@ public void NavigateDriver(IWebDriver driver)
                 if (_isLandChecked)                                         
                     while (driverSet.CountShowPopup != 0)
                     {
-                        Thread.Sleep(1000);
-
                         try
                         {
                             if (driver.Url != driverSet.Url)
                             {
-                                driver.Navigate().GoToUrl(driverSet.Url);
+                                driver.Navigate().GoToUrl(driverSet.Url);                              
                                 Thread.Sleep(2000);
                             }                                
                             driver.SwitchTo().ActiveElement().Click();
-                            Thread.Sleep(2000);
+                            Thread.Sleep(5000);
                             OnclickProgress(driver, driverSet);
                             if (!_isOnClick)
                                 break;
@@ -153,11 +151,12 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
                 {
                     _isOnClick = true;                 
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+                    Thread.Sleep(2000);
                     while ((_countWindowClick = driver.WindowHandles.Count) > 1)
                     {
-                        driver.SwitchTo().Alert().Accept();
+                        _acceptAlert(driver);
                         if ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                            driver.SwitchTo().Alert().Dismiss();
+                            _acceptAlert(driver);// driver.SwitchTo().Alert().Dismiss();
                         if ((_countWindowClick = driver.WindowHandles.Count) > 1)
                             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();                       
                     }
@@ -171,6 +170,37 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
             d_setting.CountShowPopup--;
             Thread.Sleep(d_setting.Interval);            
             }
+private void _acceptAlert(IWebDriver driver)
+{
+    string alertText = "";
+    IAlert alert = null;
+    while (alertText.Equals(""))
+    {
+        if (alert == null)
+        {
+            try
+            {
+                alert = driver.SwitchTo().Alert();
+            }
+            catch   { Thread.Sleep(50); }
+        }
+        else
+        {
+            try
+            {
+                alert.Accept();
+                alertText = alert.Text;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Equals("No alert is present")) 
+                    alertText = "Already Accepted";
+                else 
+                    Thread.Sleep(50);
+            }
+        }
+    }
+}
     }
 }
     
