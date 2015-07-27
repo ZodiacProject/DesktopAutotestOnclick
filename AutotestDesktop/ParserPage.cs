@@ -21,52 +21,72 @@ namespace AutotestDesktop
     class ParserPage
     {
         private bool _isFindZone = false;
-        private IReadOnlyCollection<IWebElement> _searchWebelements;
-        private List<string> _searchElement = new List<string>();
+        private IReadOnlyCollection <IWebElement> _searchWebelements;
+        private List <string> _searchElement = new List<string>();
         public bool FindZoneOnPage(IWebDriver driver, string url, string zoneID)
-        {            
+        {
             driver.Navigate().GoToUrl(url);
-            _searchWebelements = driver.FindElements(By.TagName("a"));
-            foreach (IWebElement webEl in _searchWebelements)
+            if (_сheckZone(driver, zoneID))
             {
-                if (webEl.Text != string.Empty)
-                    _searchElement.Add(webEl.Text);
+                _isFindZone = true;
+                return _isFindZone;
             }
-            foreach (string  element in _searchElement)
-            {             
-                try
+            else
+            {
+                _searchWebelements = driver.FindElements(By.TagName("a"));
+                foreach (IWebElement webEl in _searchWebelements)
                 {
-                    foreach (string zone in _concatZoneID(zoneID))
-                    {
-                        if (driver.PageSource.Contains(zone))
-                        {
-                            Console.WriteLine("Yes, I'am find zone");
-                            return _isFindZone = true;
-                        }
-                    }
-                    if (!_isFindZone)
+                    if (webEl.Text != string.Empty)
+                        _searchElement.Add(webEl.Text);
+                }
+                foreach (string element in _searchElement)
+                {
+                    try
                     {
                         driver.FindElement(By.LinkText(element)).Click();
                         Thread.Sleep(3000);
+                        if (_сheckZone(driver, zoneID))
+                        {
+                            _isFindZone = true;
+                            return _isFindZone;
+                        }
+                        else
+                            driver.Navigate().Back();
                     }
-                    driver.Navigate().Back();
+                    catch { }
                 }
-                catch { }
+                return false;
             }
-            return false;            
         }
-        private List <string> _concatZoneID (string str)
+
+private bool _сheckZone(IWebDriver driver, string zoneID)
+    {
+        foreach (string zone in _concatZoneID(zoneID))
         {
-            List <string> LconcatZoneId = new List<string>();
-            string concatZone = null;
+            if (driver.PageSource.Contains(zone))
+            {
+                Console.WriteLine("Yes, I'am find zone");
+                return true;
+            }
+        }
+        return false;
+    }
+private List <string> _concatZoneID (string str)
+    {
+        List <string> LconcatZoneId = new List<string>();
+        string concatZone = null;
+        if (str.Contains("#"))
             for (int i = 0; i < str.Length; i++)
             {
                 if (str[i] != '#')
                     concatZone += str[i];
+                else
+                    LconcatZoneId.Add(concatZone);
             }
-            LconcatZoneId.Add(concatZone);
-            return LconcatZoneId;
-        }
+        else
+            LconcatZoneId.Add(str);
+        return LconcatZoneId;
+    }
     }
     
 }
