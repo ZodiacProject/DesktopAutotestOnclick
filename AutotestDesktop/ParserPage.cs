@@ -23,9 +23,8 @@ namespace AutotestDesktop
         private bool _isFindZone = false;
         private IReadOnlyCollection <IWebElement> _searchWebelements;
         private List <string> _searchElement = new List<string>();
-        public bool FindZoneOnPage(IWebDriver driver, string url, string zoneID)
-        {
-            driver.Navigate().GoToUrl(url);
+        public bool FindZoneOnPage(IWebDriver driver, string zoneID)
+        {                 
             if (_сheckZone(driver, zoneID))
             {
                 _isFindZone = true;
@@ -81,7 +80,10 @@ private List <string> _concatZoneID (string str)
                 if (str[i] != '#')
                     concatZone += str[i];
                 else
+                {
                     LconcatZoneId.Add(concatZone);
+                    concatZone = null;
+                }
             }
         else
             LconcatZoneId.Add(str);

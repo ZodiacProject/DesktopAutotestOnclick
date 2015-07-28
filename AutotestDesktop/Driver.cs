@@ -29,6 +29,7 @@ namespace AutotestDesktop
         private Dictionary<string, string> TestCase = new Dictionary<string, string>();
         private bool _isLandChecked;
         private bool _isOnClick;
+        private bool _isLoadPage;
         private int _countWindowClick = 0;        
         public List<IWebDriver> Drivers {get; private set;}
         private TestRail _testRun;
@@ -41,8 +42,7 @@ namespace AutotestDesktop
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
-            _testRun.StartTestRail();
-            
+            _testRun.StartTestRail();            
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
             foreach (KeyValuePair <string, string> testcase in _testRun.TestCaseName)
@@ -57,42 +57,27 @@ public void NavigateDriver(IWebDriver driver)
 
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(TestCase);
-
+            ParserPage parsePage = new ParserPage();
             string successMessage = "";
             string errorMessage = "";
             string retestMessage = "";
             string commentMessage = "";
             foreach (PublisherTarget driverSet in _driverSettings)
-            {
-                ParserPage parsePage = new ParserPage();
-                if (parsePage.FindZoneOnPage(driver, driverSet.Url.ToString(), driverSet.ZoneIds.ToString()))
+            {                
+                driver.Navigate().GoToUrl(driverSet.Url);
+                if (driver.Title.Contains("недоступен"))
+                {
+                    Console.WriteLine(driver.Url + " Веб-страница недоступна");
+                    _isLoadPage = false;
+                }
+                else
+                    _isLoadPage = true;
+
+                if (parsePage.FindZoneOnPage(driver, driverSet.ZoneIds.ToString()))
                     _isLandChecked = true;
                 else
-                    _isLandChecked = false;
-                //driver.Navigate().GoToUrl(driverSet.Url);                                 
-                int failedLand = 0;
-                //// Проверка на наш Landing
-                //if (driver.Url != "http://thevideos.tv/")
-                //{
-                //  //  _FindZoneID(driver);
-                //  //  return;
-                //    if (driver.PageSource.Contains(driverSet.ZoneIds))
-                //        _isLandChecked = true;
-                //    else
-                //        _isLandChecked = false;
-                //}
-                //else
-                //{
-                //     driver.FindElement(By.ClassName(driverSet.TargetClick)).Click();
-                //     Thread.Sleep(3000);
-                //        if (driver.PageSource.Contains(driverSet.ZoneIds))
-                //            _isLandChecked = true;
-                //        else
-                //            _isLandChecked = false;
-                //}
-
-                string baseWindow = driver.CurrentWindowHandle;
-              
+                    _isLandChecked = false;                                        
+                string baseWindow = driver.CurrentWindowHandle;              
                 while (driverSet.CountShowPopup != 0)
                 {                 
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
@@ -105,19 +90,21 @@ public void NavigateDriver(IWebDriver driver)
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
                                  commentMessage = "OnClick не отработал";
                                  Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + " OnClick is " + _isOnClick);
-                                 _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                                 _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
                                  break;
                              }
                       }
                       else
                       {
-                           errorMessage = "FailedLand: " + failedLand + "\nLanding is " + _isLandChecked;
-                           commentMessage = "Landing is " + _isLandChecked;
+                          if (_isLoadPage)
+                              errorMessage = " Landing is " + _isLandChecked;
+                          else
+                              errorMessage = " Веб-страница недоступна";
+                           commentMessage = errorMessage;
                            Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
-                           _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
+                           _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
                            break;
                        }
-
                 }
     // Проверка на открытие после того, как все показы уже были
                 try
@@ -128,10 +115,10 @@ public void NavigateDriver(IWebDriver driver)
 
                 _countWindowClick = driver.WindowHandles.Count;
                 if (_countWindowClick == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
-                {
+                {                  
                     successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
                     Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 1, successMessage, null);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Passed, successMessage, null);
                 }
 
                else if (_isLandChecked && _isOnClick)
@@ -142,31 +129,17 @@ public void NavigateDriver(IWebDriver driver)
                         "\nPlease, repeat this test";
                     Console.Error.WriteLine(errorMessage + " " + _isOnClick);
 
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage, null);
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Retest, retestMessage, null);
                 }
-                else if (!_isLandChecked)
+                else if (!_isLandChecked && _isLoadPage)
                 {
                     errorMessage = "Страница не содержит наш тег";
                     commentMessage = "Landing is " + _isLandChecked;
                     Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);            
-                }
-
-
-                   
+                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);            
+                }                   
             }//end foreach
         }
-private string _FindZoneID(IWebDriver driver)
-{
-    if (driver.PageSource.Contains("apu.php?zoneid="))
-    {
-        //IList<IWebElement> Script = driver.FindElements(By.XPath("//script"));
-        //foreach (IWebElement script in Script)
-       IWebElement el = driver.FindElement(By.XPath("/html/body/script[1]"));
-            Console.WriteLine(el.Text);
-    }
-    return null;
-}
 private void _OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
                 if ((_countWindowClick = driver.WindowHandles.Count) > 1)
