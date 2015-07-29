@@ -135,7 +135,7 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
             d_setting.CountShowPopup--;
             Thread.Sleep(d_setting.Interval);            
             }
-    private void _acceptAlert(IWebDriver driver)
+private void _acceptAlert(IWebDriver driver)
     {
         string alertText = "";
         IAlert alert = null;
@@ -168,7 +168,7 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
             count++;
         }
     }
-    private void _endTest(IWebDriver driver, PublisherTarget driverSet, List<string> CaseToRun)
+private void _endTest(IWebDriver driver, PublisherTarget driverSet, List<string> CaseToRun)
     {
         string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
         if (!_isLandChecked)
