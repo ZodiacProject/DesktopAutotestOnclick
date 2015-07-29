@@ -32,16 +32,8 @@ namespace AutotestDesktop
         private Dictionary<string, string> _testCaseName;
         public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         public string RunID { set { _runID = value; } }
-        public Status status;
-       public enum Status
-        {
-            Untestead,
-            Passed,
-            Blocked,
-            Critical,
-            Implementated,
-            Failed
-        };
+        public Status Status;
+    
        public void StartTestRail()
         {
             client.User = _login;
@@ -144,7 +136,7 @@ namespace AutotestDesktop
             return TName;
         }
         
-        public void SetStatus(string caseID, int statusID, string resultMessage, string commentMessage)
+        public void SetStatus(string caseID, Status statusID, string resultMessage, string commentMessage)
         {
             client.User = _login;
             client.Password = _password;
@@ -224,6 +216,15 @@ namespace AutotestDesktop
             Console.WriteLine();
         }
     }
+   public enum Status
+   {
+       Untestead,
+       Passed = 1,
+       Blocked,
+       Retest = 4,
+       Implementated,
+       Failed = 5
+   }
 
    
 }

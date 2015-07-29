@@ -26,7 +26,6 @@ namespace AutotestDesktop
         private PublisherTarget _publishers;
         private bool _isLandChecked;
         private bool _isOnClick;
-        private int _countWindowClick = 0;
         private TestRail _testRun;        
       
         public List<IWebDriver> Drivers {get; private set;}
@@ -39,16 +38,11 @@ namespace AutotestDesktop
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
-            string successMessage = "";
-            string errorMessage = "";
-            string retestMessage = "";
-            string commentMessage = "";
-            string baseWindow = "";
-
             _testRun.StartTestRail();
             _publishers = new PublisherTarget();
             List<string> CaseToRun = new List<string>();
-            List<string> NameTestCase = new List<string>();  
+            List<string> NameTestCase = new List<string>();
+            string baseWindow = null;
 
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
@@ -81,16 +75,16 @@ public void NavigateDriver(IWebDriver driver)
                         else
                             _isLandChecked = false;
                 }
-                if (_isLandChecked)                                         
+                if (_isLandChecked)
                     while (driverSet.CountShowPopup != 0)
                     {
                         try
                         {
                             if (driver.Url != driverSet.Url)
                             {
-                                driver.Navigate().GoToUrl(driverSet.Url);                              
+                                driver.Navigate().GoToUrl(driverSet.Url);
                                 Thread.Sleep(2000);
-                            }                                
+                            }
                             driver.SwitchTo().ActiveElement().Click();
                             Thread.Sleep(5000);
                             OnclickProgress(driver, driverSet);
@@ -99,14 +93,8 @@ public void NavigateDriver(IWebDriver driver)
                         }
                         catch { }
                     }
-                
                 else
-                {
-                    errorMessage = "Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
-                    commentMessage = "Landing is " + _isLandChecked;
-                    Console.Error.WriteLine(driver.Url + errorMessage);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
-                }                
+                    _endTest(driver, driverSet, CaseToRun);
 
     // Проверка на открытие после того, как все показы уже были
                 if (_isOnClick && _isLandChecked)
@@ -116,30 +104,14 @@ public void NavigateDriver(IWebDriver driver)
                 }
                 catch { }
 
-                if (!_isOnClick && _isLandChecked)
-                {
-                    errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
-                    commentMessage = "OnClick не отработал. Тег есть на странице";
-                    Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 5, errorMessage, commentMessage);
-                }
-                if ((_countWindowClick = driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
-                {
-                    successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
-                    Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 1, successMessage, null);
-                }
+                if (!_isOnClick && _isLandChecked)                
+                    _endTest(driver, driverSet, CaseToRun);
+                
+                if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)                
+                    _endTest(driver, driverSet, CaseToRun);                
 
                 else if (_isLandChecked && _isOnClick)
-                {
-                    retestMessage = "Landing is " + _isLandChecked + " "
-                        + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
-                        " & count of windows " + _countWindowClick + "\nIn the testing process is NOT open our Landing" + 
-                        "\nPlease, repeat this test";
-                    Console.Error.WriteLine(errorMessage + " " + _isOnClick);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], 4, retestMessage, null);
-                }
-                   
+                    _endTest(driver, driverSet, CaseToRun);
             }//end foreach
         }
 
@@ -147,60 +119,90 @@ public void OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
         {
             try
             {
-                if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                if ((driver.WindowHandles.Count) > 1)
                 {
                     _isOnClick = true;                 
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                    Thread.Sleep(2000);
-                    while ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                    {
-                        _acceptAlert(driver);
-                        if ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                            _acceptAlert(driver);// driver.SwitchTo().Alert().Dismiss();
-                        if ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();                       
-                    }
+                    Thread.Sleep(5000);
+                    if ((driver.WindowHandles.Count) > 1)                   
+                        _acceptAlert(driver);                                                                        
                 }
                 else
-                    _isOnClick = false;
-                        
+                    _isOnClick = false;                        
             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
             }
             catch { }
             d_setting.CountShowPopup--;
             Thread.Sleep(d_setting.Interval);            
             }
-private void _acceptAlert(IWebDriver driver)
-{
-    string alertText = "";
-    IAlert alert = null;
-    while (alertText.Equals(""))
+    private void _acceptAlert(IWebDriver driver)
     {
-        if (alert == null)
+        string alertText = "";
+        IAlert alert = null;
+        int count = 0;
+        while (alertText.Equals("") && count < 2)
         {
-            try
+            if (alert == null)
             {
-                alert = driver.SwitchTo().Alert();
+                try
+                {
+                    alert = driver.SwitchTo().Alert();
+                }
+                catch   { Thread.Sleep(50); }
             }
-            catch   { Thread.Sleep(50); }
-        }
-        else
-        {
-            try
+            else
             {
-                alert.Accept();
-                alertText = alert.Text;
+                try
+                {
+                    alert.Accept();
+                    alertText = alert.Text;
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Equals("No alert is present")) 
+                        alertText = "Already Accepted";
+                    else 
+                        Thread.Sleep(50);
+                }
             }
-            catch (Exception ex)
-            {
-                if (ex.Message.Equals("No alert is present")) 
-                    alertText = "Already Accepted";
-                else 
-                    Thread.Sleep(50);
-            }
+            count++;
         }
     }
-}
+    private void _endTest(IWebDriver driver, PublisherTarget driverSet, List<string> CaseToRun)
+    {
+        string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
+        if (!_isLandChecked)
+        {
+            errorMessage = "Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
+            commentMessage = "Landing is " + _isLandChecked;
+            Console.Error.WriteLine(driver.Url + errorMessage);
+            _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
+        }
+
+        if (!_isOnClick && _isLandChecked)
+        {
+            errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
+            commentMessage = "OnClick не отработал. Тег есть на странице";
+            Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
+            _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
+        }
+
+        if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
+        {
+            successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
+            Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
+            _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Passed, successMessage, null);
+        }
+        else if (_isLandChecked && _isOnClick)
+        {
+            retestMessage = "Landing is " + _isLandChecked + " "
+                + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
+                " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
+                "\nPlease, repeat this test";
+            Console.Error.WriteLine(errorMessage + " " + _isOnClick);
+            _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Retest, retestMessage, null);
+        }
+    }
     }
 }
     
