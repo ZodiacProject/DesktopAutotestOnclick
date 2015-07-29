@@ -23,10 +23,10 @@ namespace AutotestDesktop
         private bool _isFindZone = false;
         private IReadOnlyCollection <IWebElement> _searchWebelements;
         private List <string> _searchElement = new List<string>();
-        private List <string> _zoneIdList = new List<string>();
+        private List <string> _zoneIdList;
         public bool FindZoneOnPage(IWebDriver driver, string url, string zoneID)
         {
-            _zoneIdList = _concatZoneID(zoneID);  
+            _zoneIdList = zoneID.Split('#').ToList();
             if (_сheckZone(driver, _zoneIdList))
             {
                 _isFindZone = true;
@@ -51,6 +51,11 @@ namespace AutotestDesktop
                             _isFindZone = true;
                             return _isFindZone;
                         }
+                        else if ((driver.WindowHandles.Count) > 1) // если ссылка открылась в другой вкладке/окне
+                        {
+                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close(); 
+                            driver.Navigate().GoToUrl(url);
+                        }
                         else
                             driver.Navigate().GoToUrl(url);
                     }
@@ -71,25 +76,6 @@ private bool _сheckZone(IWebDriver driver, List <string> zoneID)
             }
         }
         return false;
-    }
-private List <string> _concatZoneID (string str)
-    {
-        List <string> LconcatZoneId = new List<string>();
-        string concatZone = null;
-        if (str.Contains("#"))
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (str[i] != '#')
-                    concatZone += str[i];
-                else
-                {
-                    LconcatZoneId.Add(concatZone);
-                    concatZone = null;
-                }
-            }
-        else
-            LconcatZoneId.Add(str);
-        return LconcatZoneId;
     }
     }
     

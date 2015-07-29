@@ -89,7 +89,7 @@
     <Compile Include="Properties\APIException.cs" />
     <Compile Include="AutomatedTest.cs" />
     <Compile Include="Driver.cs" />
-    <Compile Include="OnClickParam.cs" />
+    <Compile Include="URLSwap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublisherTarget.cs" />

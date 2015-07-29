@@ -29,8 +29,7 @@ namespace AutotestDesktop
         private Dictionary<string, string> TestCase = new Dictionary<string, string>();
         private bool _isLandChecked;
         private bool _isOnClick;
-        private bool _isLoadPage;
-        private int _countWindowClick = 0;        
+        private bool _isLoadPage;        
         public List<IWebDriver> Drivers {get; private set;}
         private TestRail _testRun;
 //Constuctor
@@ -42,6 +41,7 @@ namespace AutotestDesktop
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
+            string baseWindow = null;
             _testRun.StartTestRail();            
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
@@ -54,18 +54,17 @@ public void NavigateDriver(IWebDriver driver)
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
             //return;
-
+            
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(TestCase);
             ParserPage parsePage = new ParserPage();
-            string baseWindow = null;
-            string successMessage = "";
-            string errorMessage = "";
-            string retestMessage = "";
-            string commentMessage = "";
+            URLSwap urlSwap = new URLSwap();
             foreach (PublisherTarget driverSet in _driverSettings)
-            {                
+            {
+                urlSwap.TestUrlForSwap = driverSet.Url;
+                driverSet.Url = urlSwap.TestUrlForSwap;
                 driver.Navigate().GoToUrl(driverSet.Url);
+
                 baseWindow = driver.CurrentWindowHandle;
                 while ((driver.WindowHandles.Count) > 1)
                 {
@@ -76,6 +75,8 @@ public void NavigateDriver(IWebDriver driver)
                 {
                     Console.WriteLine(driver.Url + " Веб-страница недоступна");
                     _isLoadPage = false;
+                    _endTest(driver, driverSet, CaseToRun);
+                    continue;
                 }
                 else
                     _isLoadPage = true;
@@ -91,59 +92,30 @@ public void NavigateDriver(IWebDriver driver)
                       if (_isLandChecked)
                       {
                           _onclickProgress(driver, driverSet);
-                             if (!_isOnClick)
-                             {
-                                 errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
-                                 commentMessage = "OnClick не отработал";
-                                 Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + " OnClick is " + _isOnClick);
-                                 _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
-                                 break;
-                             }
+                          if (!_isOnClick)
+                          {
+                              _endTest(driver, driverSet, CaseToRun);
+                              break;
+                          }
                       }
                       else
                       {
-                          if (_isLoadPage)
-                              errorMessage = " Landing is " + _isLandChecked;
-                          else
-                              errorMessage = " Веб-страница недоступна";
-                           commentMessage = errorMessage;
-                           Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
-                           _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
-                           break;
-                       }
-                }
+                          _endTest(driver, driverSet, CaseToRun);
+                          break;
+                      }
+                } //end while
     // Проверка на открытие после того, как все показы уже были
                 try
                 {
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                 }
                 catch { }
+                
+                if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)                
+                    _endTest(driver, driverSet, CaseToRun);                
 
-                _countWindowClick = driver.WindowHandles.Count;
-                if (_countWindowClick == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
-                {                  
-                    successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
-                    Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Passed, successMessage, null);
-                }
-
-               else if (_isLandChecked && _isOnClick)
-                {
-                    retestMessage = "Landing is " + _isLandChecked + " "
-                        + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
-                        " & count of windows " + _countWindowClick + "\nIn the testing process is NOT open our Landing" + 
-                        "\nPlease, repeat this test";
-                    Console.Error.WriteLine(errorMessage + " " + _isOnClick);
-
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Retest, retestMessage, null);
-                }
-                //else if (!_isLandChecked && _isLoadPage)
-                //{
-                //    errorMessage = "Страница не содержит наш тег";
-                //    commentMessage = "Landing is " + _isLandChecked;
-                //    Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
-                //    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);            
-                //}                   
+               else if (_isLandChecked && _isOnClick)                
+                    _endTest(driver, driverSet, CaseToRun);                                  
             }//end foreach
         }
 
@@ -166,15 +138,15 @@ private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
 {
     try
     {
-        if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+        if ((driver.WindowHandles.Count) > 1)
         {
             _isOnClick = true;
             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
             Thread.Sleep(2000);
-            if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+            if ((driver.WindowHandles.Count) > 1)
             {
                 _acceptAlert(driver);
-                if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                if ((driver.WindowHandles.Count) > 1)
                     _acceptAlert(driver);
             }
         }
@@ -217,6 +189,44 @@ private void _acceptAlert(IWebDriver driver)
             }
         }
         count++;
+    }
+}
+private void _endTest(IWebDriver driver, PublisherTarget driverSet, List<string> CaseToRun)
+{
+    string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
+    if (!_isLandChecked)
+    {
+        if (_isLoadPage)
+            errorMessage = " Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
+        else
+            errorMessage = " Веб-страница недоступна";
+        commentMessage = errorMessage;
+        Console.Error.WriteLine(driver.Url + errorMessage);
+        _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
+    }
+    
+    if (!_isOnClick && _isLandChecked)
+    {
+        errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
+        commentMessage = "OnClick не отработал. Тег есть на странице";
+        Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
+        _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
+    }
+
+    if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
+    {
+        successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
+        Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
+        _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Passed, successMessage, null);
+    }
+    else if (_isLandChecked && _isOnClick)
+    {
+        retestMessage = "Landing is " + _isLandChecked + " "
+            + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
+            " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
+            "\nPlease, repeat this test";
+        Console.Error.WriteLine(errorMessage + " " + _isOnClick);
+        _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Retest, retestMessage, null);
     }
 }
     }
