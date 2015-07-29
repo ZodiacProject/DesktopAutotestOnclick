@@ -23,9 +23,11 @@ namespace AutotestDesktop
         private bool _isFindZone = false;
         private IReadOnlyCollection <IWebElement> _searchWebelements;
         private List <string> _searchElement = new List<string>();
-        public bool FindZoneOnPage(IWebDriver driver, string zoneID)
-        {                 
-            if (_сheckZone(driver, zoneID))
+        private List <string> _zoneIdList = new List<string>();
+        public bool FindZoneOnPage(IWebDriver driver, string url, string zoneID)
+        {
+            _zoneIdList = _concatZoneID(zoneID);  
+            if (_сheckZone(driver, _zoneIdList))
             {
                 _isFindZone = true;
                 return _isFindZone;
@@ -44,13 +46,13 @@ namespace AutotestDesktop
                     {
                         driver.FindElement(By.LinkText(element)).Click();
                         Thread.Sleep(3000);
-                        if (_сheckZone(driver, zoneID))
+                        if (_сheckZone(driver, _zoneIdList))
                         {
                             _isFindZone = true;
                             return _isFindZone;
                         }
                         else
-                            driver.Navigate().Back();
+                            driver.Navigate().GoToUrl(url);
                     }
                     catch { }
                 }
@@ -58,9 +60,9 @@ namespace AutotestDesktop
             }
         }
 
-private bool _сheckZone(IWebDriver driver, string zoneID)
+private bool _сheckZone(IWebDriver driver, List <string> zoneID)
     {
-        foreach (string zone in _concatZoneID(zoneID))
+        foreach (string zone in zoneID)
         {
             if (driver.PageSource.Contains(zone))
             {

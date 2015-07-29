@@ -58,6 +58,7 @@ public void NavigateDriver(IWebDriver driver)
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(TestCase);
             ParserPage parsePage = new ParserPage();
+            string baseWindow = null;
             string successMessage = "";
             string errorMessage = "";
             string retestMessage = "";
@@ -65,6 +66,12 @@ public void NavigateDriver(IWebDriver driver)
             foreach (PublisherTarget driverSet in _driverSettings)
             {                
                 driver.Navigate().GoToUrl(driverSet.Url);
+                baseWindow = driver.CurrentWindowHandle;
+                while ((driver.WindowHandles.Count) > 1)
+                {
+                    _closeOtherWindows(driver, baseWindow);
+                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
+                }     
                 if (driver.Title.Contains("недоступен"))
                 {
                     Console.WriteLine(driver.Url + " Веб-страница недоступна");
@@ -73,18 +80,17 @@ public void NavigateDriver(IWebDriver driver)
                 else
                     _isLoadPage = true;
 
-                if (parsePage.FindZoneOnPage(driver, driverSet.ZoneIds.ToString()))
+                if (parsePage.FindZoneOnPage(driver, driverSet.Url, driverSet.ZoneIds))
                     _isLandChecked = true;
                 else
                     _isLandChecked = false;                                        
-                string baseWindow = driver.CurrentWindowHandle;              
                 while (driverSet.CountShowPopup != 0)
                 {                 
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                     Thread.Sleep(3000);
                       if (_isLandChecked)
                       {
-                          _OnclickProgress(driver, driverSet);
+                          _onclickProgress(driver, driverSet);
                              if (!_isOnClick)
                              {
                                  errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
@@ -131,40 +137,88 @@ public void NavigateDriver(IWebDriver driver)
 
                     _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Retest, retestMessage, null);
                 }
-                else if (!_isLandChecked && _isLoadPage)
-                {
-                    errorMessage = "Страница не содержит наш тег";
-                    commentMessage = "Landing is " + _isLandChecked;
-                    Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
-                    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);            
-                }                   
+                //else if (!_isLandChecked && _isLoadPage)
+                //{
+                //    errorMessage = "Страница не содержит наш тег";
+                //    commentMessage = "Landing is " + _isLandChecked;
+                //    Console.Error.WriteLine(driver.SwitchTo().Window(baseWindow).Url + errorMessage);
+                //    _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);            
+                //}                   
             }//end foreach
         }
-private void _OnclickProgress (IWebDriver driver, PublisherTarget d_setting)
+
+private void _closeOtherWindows(IWebDriver driver, string basicWin)
+{
+    IReadOnlyCollection<string> windows = driver.WindowHandles;
+    foreach (string win in windows)
+        try
         {
-                if ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                {
-                    _isOnClick = true;                    
-                    try
-                    {
-                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                        while ((_countWindowClick = driver.WindowHandles.Count) > 1)
-                        {
-                            driver.SwitchTo().Alert().Accept(); // если появился alert      
-                        }    
-                    }
-                    catch (Exception e) { Console.WriteLine(e); }
-                }
-
-                d_setting.CountShowPopup--;
-                driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
-
-                //    if (driver.Url != "http://thevideos.tv/")
-                //      driver.Navigate().Back();
-
-                // time Interval popup
-                Thread.Sleep(d_setting.Interval); 
+            if (win != basicWin)
+            {
+                driver.SwitchTo().Window(win).Close();
+                if ((driver.WindowHandles.Count) > 1)
+                    _acceptAlert(driver);
+            }
         }
+        catch { }
+}
+private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
+{
+    try
+    {
+        if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+        {
+            _isOnClick = true;
+            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+            Thread.Sleep(2000);
+            if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+            {
+                _acceptAlert(driver);
+                if ((_countWindowClick = driver.WindowHandles.Count) > 1)
+                    _acceptAlert(driver);
+            }
+        }
+        else
+            _isOnClick = false;
+    }
+    catch { }
+        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
+        d_setting.CountShowPopup--;
+        Thread.Sleep(d_setting.Interval);
+}
+private void _acceptAlert(IWebDriver driver)
+{
+    string alertText = "";
+    IAlert alert = null;
+    int count = 0;
+    while (alertText.Equals("") && count < 2)
+    {
+        if (alert == null)
+        {
+            try
+            {
+                alert = driver.SwitchTo().Alert();
+            }
+            catch { Thread.Sleep(50); }
+        }
+        else
+        {
+            try
+            {
+                alert.Accept();
+                alertText = alert.Text;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Equals("No alert is present"))
+                    alertText = "Already Accepted";
+                else
+                    Thread.Sleep(50);
+            }
+        }
+        count++;
+    }
+}
     }
 }
     
