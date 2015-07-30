@@ -41,7 +41,6 @@ namespace AutotestDesktop
         //methods
 public void NavigateDriver(IWebDriver driver)
         {
-            string baseWindow = null;
             _testRun.StartTestRail();            
             foreach (string runCase in _testRun.GetRunCase(driver))
                      CaseToRun.Add(runCase);
@@ -65,10 +64,9 @@ public void NavigateDriver(IWebDriver driver)
                 driverSet.Url = urlSwap.TestUrlForSwap;
                 driver.Navigate().GoToUrl(driverSet.Url);
 
-                baseWindow = driver.CurrentWindowHandle;
                 while ((driver.WindowHandles.Count) > 1)
                 {
-                    _closeOtherWindows(driver, baseWindow);
+                    _closeOtherWindows(driver);
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
                 }     
                 if (driver.Title.Contains("недоступен"))
@@ -119,18 +117,13 @@ public void NavigateDriver(IWebDriver driver)
             }//end foreach
         }
 
-private void _closeOtherWindows(IWebDriver driver, string basicWin)
+private void _closeOtherWindows(IWebDriver driver)
 {
-    IReadOnlyCollection<string> windows = driver.WindowHandles;
-    foreach (string win in windows)
         try
         {
-            if (win != basicWin)
-            {
-                driver.SwitchTo().Window(win).Close();
-                if ((driver.WindowHandles.Count) > 1)
-                    _acceptAlert(driver);
-            }
+            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+            if ((driver.WindowHandles.Count) > 1)
+                 _acceptAlert(driver);
         }
         catch { }
 }

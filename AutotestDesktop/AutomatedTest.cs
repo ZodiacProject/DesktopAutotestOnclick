@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support;
@@ -41,9 +42,9 @@ namespace AutotestDesktop
             DoYouWantCreateTest();
 
             //FireFoxOnClick();
-            ChromeOnClick();
+            //ChromeOnClick();
             //OperaOnClick();
-            //IEOnClick();
+            EdgeOnClick();
             //SafariOnClick();
         }
         
@@ -92,10 +93,9 @@ namespace AutotestDesktop
             RunBrowser(new OperaDriver());
 		
 		}
-        private void IEOnClick()
+        private void EdgeOnClick()
 		{
-            RunBrowser(new InternetExplorerDriver());
-			
+            RunBrowser(new EdgeDriver());			
 		}
         private void SafariOnClick()
 		{
