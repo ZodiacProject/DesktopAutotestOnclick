@@ -102,13 +102,14 @@ public void NavigateDriver(IWebDriver driver)
                           break;
                       }
                 } //end while
-    // Проверка на открытие после того, как все показы уже были
+    /* Проверка на открытие после того, как все показы уже были
+     * Подключить тогда, когда будут доступны настройки зоны из ADP по API
                 try
                 {
                     driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
                 }
                 catch { }
-                
+    */          
                 if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)                
                     _endTest(driver, driverSet, CaseToRun);                
 
