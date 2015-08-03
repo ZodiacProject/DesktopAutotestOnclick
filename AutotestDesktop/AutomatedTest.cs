@@ -32,9 +32,9 @@ namespace AutotestDesktop
             DoYouWantCreateTest();
 
             FireFoxOnClick();
-            //ChromeOnClick();
-            //SafariOnClick();
-            //OperaOnClick();
+            ChromeOnClick();
+            SafariOnClick();
+            OperaOnClick();
             //IEOnClick();
         }
         
