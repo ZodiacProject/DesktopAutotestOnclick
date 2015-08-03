@@ -24,13 +24,27 @@ namespace AutotestDesktop
         private APIClient client = new APIClient("https://propeller.testrail.net");
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
+        private const string _monday = "44", _wednesday = "47";
         private List<string> _createCases = new List<string>();
         private string _runID = null;
         private string _suiteId = "";
         private int _numberCase;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
-        public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
+        public string GetSuiteID { get { return _suiteId; } 
+            set 
+            { 
+                switch (value)
+                {
+                    case "Monday": _suiteId = _monday;
+                        break;
+                    case "Wednesday": _suiteId = _wednesday;
+                        break;
+                    default: break;
+                }
+               
+            } 
+        }
         public string RunID { set { _runID = value; } }
         public Status Status;
     
@@ -96,8 +110,7 @@ namespace AutotestDesktop
         public void CreateRun(string suiteId, string nameSuite)
         {
             client.User = _login;
-            client.Password = _password;
-         //   _suiteId = suiteId;
+            client.Password = _password;            
             JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + _suiteId);
             foreach (var c in caseData)
                     _createCases.Add(c["id"].ToString());
@@ -112,7 +125,7 @@ namespace AutotestDesktop
         
             JObject runCreate = (JObject)client.SendPost("add_run/3", runData);
             Console.WriteLine("\nTest run is create.");
-            Console.WriteLine("Test is running...");
+            Console.WriteLine("Test is running..." + DateTime.Now);
          }
      
 
