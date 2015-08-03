@@ -32,22 +32,21 @@ namespace AutotestDesktop
             DoYouWantCreateTest();
 
             FireFoxOnClick();
-            ChromeOnClick();
-            SafariOnClick();
-            OperaOnClick();
-            IEOnClick();
+            //ChromeOnClick();
+            //SafariOnClick();
+            //OperaOnClick();
+            //IEOnClick();
         }
         
         private void DoYouWantCreateTest()
         {
+            DateTime date = DateTime.Today;
             if (_createTest == "y")
             {
-                Console.WriteLine("\nPlease, enter name of run-test & SuitesID:");
-                Console.Write("Name _");
-                string nameSuite = Console.ReadLine();
-                Console.Write("SuitesID _");
-                string suiteID = Console.ReadLine();
-                testrail.CreateRun(testrail.GetSuiteID = suiteID, nameSuite);
+                //Console.Write("Name _");
+                string nameSuite = date.DayOfWeek + " " + _getDateForJasonRequest(date);
+                Console.WriteLine("\nThe test name is: " + nameSuite);
+                testrail.CreateRun(testrail.GetSuiteID = date.DayOfWeek.ToString(), nameSuite);
             }
             else
             {
@@ -99,6 +98,24 @@ namespace AutotestDesktop
             Browser.NavigateDriver(webDriver);
             webDriver.Quit();
         }
+          private string _getDateForJasonRequest(DateTime date) 
+        { 
+            string month = null;
+            if (date.Day < 10)
+                month = "0" + date.Day  + ".";
+            else
+                month = date.Day +  ".";
+
+            if (date.Month < 10) 
+                month += "0" + date.Month + "." + date.Year; 
+            else 
+                month += date.Month + "." + date.Year; 
+ 
+ 
+             
+            return month; 
+        } 
+
     }
      
 }
