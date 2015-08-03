@@ -20,7 +20,7 @@ namespace AutotestDesktop
 {
     class ParserPage
     {
-        private bool _isFindZone = false;
+        private bool _isFindZone;
         private IReadOnlyCollection <IWebElement> _searchWebelements;
         private List <string> _searchElement = new List<string>();
         private List <string> _zoneIdList;
