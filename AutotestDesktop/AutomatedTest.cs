@@ -41,7 +41,7 @@ namespace AutotestDesktop
             Browser = new Driver (testrail);
             DoYouWantCreateTest();
 
-            //FireFoxOnClick();
+            FireFoxOnClick();
             ChromeOnClick();
             //OperaOnClick();
             //EdgeOnClick();
@@ -65,7 +65,7 @@ namespace AutotestDesktop
                 testrail.RunID = Console.ReadLine();
                 Console.Write("Input suite ID _");
                 testrail.GetSuiteID = Console.ReadLine();
-                Console.WriteLine("Test is running...");
+                Console.WriteLine("Test is running..." + DateTime.Now);
             }
         }
         private void DoYoyWantDeleteTest()

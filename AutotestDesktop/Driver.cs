@@ -29,7 +29,8 @@ namespace AutotestDesktop
         private Dictionary<string, string> TestCase = new Dictionary<string, string>();
         private bool _isLandChecked;
         private bool _isOnClick;
-        private bool _isLoadPage;        
+        private bool _isLoadPage;      
+        private bool _isZoneOnTestCase;
         public List<IWebDriver> Drivers {get; private set;}
         private TestRail _testRun;
 //Constuctor
@@ -39,84 +40,101 @@ namespace AutotestDesktop
 			Drivers = new List<IWebDriver>();
         }
         //methods
-public void NavigateDriver(IWebDriver driver)
+        public void NavigateDriver(IWebDriver driver)
         {
-            _testRun.StartTestRail();            
-            foreach (string runCase in _testRun.GetRunCase(driver))
-                     CaseToRun.Add(runCase);
-            foreach (KeyValuePair <string, string> testcase in _testRun.TestCaseName)
-                     TestCase.Add(testcase.Key, testcase.Value);
- 
+            _testRun.StartTestRail();
+            foreach (string case_id in _testRun.GetIDCaseInSection(driver))
+                CaseToRun.Add(case_id);
+            foreach (KeyValuePair<string, string> test_case_name in _testRun.GetTestCaseName)
+                TestCase.Add(test_case_name.Key, test_case_name.Value);
+
             //foreach (string topSite in _testRun.TopOnclick)
-              //  Console.WriteLine(topSite);
+            //  Console.WriteLine(topSite);
 
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
             //return;
-            
+
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(TestCase);
             ParserPage parsePage = new ParserPage();
             URLSwap urlSwap = new URLSwap();
             foreach (PublisherTarget driverSet in _driverSettings)
-            {
-                urlSwap.TestUrlForSwap = driverSet.Url;
-                driverSet.Url = urlSwap.TestUrlForSwap;
-                driver.Navigate().GoToUrl(driverSet.Url);
+            {              
+                if (parsePage.IsZoneOnTestCase(driverSet.ZoneIds))
+                {
+                    _isZoneOnTestCase = true;
+                    try
+                    {
+                        urlSwap.TestUrlForSwap = driverSet.Url;
+                        driverSet.Url = urlSwap.TestUrlForSwap;
+                        driver.Navigate().GoToUrl(driverSet.Url);
 
-                while ((driver.WindowHandles.Count) > 1)
+                        while ((driver.WindowHandles.Count) > 1)
+                        {
+                            _closeOtherWindows(driver);
+                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
+                        }
+                        if (driver.Title.Contains("недоступен"))
+                        {
+                            Console.WriteLine(driver.Url + " Веб-страница недоступна");
+                            _isLoadPage = false;
+                            _isLandChecked = false;
+                            _endTest(driver, driverSet, CaseToRun);
+                            continue;
+                        }
+                        else
+                            _isLoadPage = true;
+
+                        if (parsePage.FindZoneOnPage(driver, driverSet.Url, driverSet.ZoneIds))
+                            _isLandChecked = true;
+                        else
+                            _isLandChecked = false;
+                        while (driverSet.CountShowPopup != 0)
+                        {
+                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                            Thread.Sleep(3000);
+                            if (_isLandChecked)
+                            {
+                                _onclickProgress(driver, driverSet);
+                                if (!_isOnClick)
+                                {
+                                    _endTest(driver, driverSet, CaseToRun);
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                _endTest(driver, driverSet, CaseToRun);
+                                break;
+                            }
+                        } //end while
+                        /* Проверка на открытие после того, как все показы уже были
+                         * Подключить тогда, когда будут доступны настройки зоны из ADP по API
+                                    try
+                                    {
+                                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                                    }
+                                    catch { }
+                        */
+                        if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
+                            _endTest(driver, driverSet, CaseToRun);
+
+                        else if (_isLandChecked && _isOnClick)
+                            _endTest(driver, driverSet, CaseToRun);
+                    }
+                    catch (Exception e) { Console.WriteLine(e); }
+                }
+                else
                 {
-                    _closeOtherWindows(driver);
-                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
-                }     
-                if (driver.Title.Contains("недоступен"))
-                {
-                    Console.WriteLine(driver.Url + " Веб-страница недоступна");
-                    _isLoadPage = false;
                     _endTest(driver, driverSet, CaseToRun);
-                    continue;
                 }
-                else
-                    _isLoadPage = true;
-
-                if (parsePage.FindZoneOnPage(driver, driverSet.Url, driverSet.ZoneIds))
-                    _isLandChecked = true;
-                else
-                    _isLandChecked = false;                                        
-                while (driverSet.CountShowPopup != 0)
-                {                 
-                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
-                    Thread.Sleep(3000);
-                      if (_isLandChecked)
-                      {
-                          _onclickProgress(driver, driverSet);
-                          if (!_isOnClick)
-                          {
-                              _endTest(driver, driverSet, CaseToRun);
-                              break;
-                          }
-                      }
-                      else
-                      {
-                          _endTest(driver, driverSet, CaseToRun);
-                          break;
-                      }
-                } //end while
-    /* Проверка на открытие после того, как все показы уже были
-     * Подключить тогда, когда будут доступны настройки зоны из ADP по API
-                try
-                {
-                    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
-                }
-                catch { }
-    */          
-                if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)                
-                    _endTest(driver, driverSet, CaseToRun);                
-
-               else if (_isLandChecked && _isOnClick)                
-                    _endTest(driver, driverSet, CaseToRun);                                  
             }//end foreach
-        }
+            TestCase.Clear(); // удаление всех элементов из списка для того чтоб не было дублирование по ключу одинковых тестов для разных браузеров 
+            } //end of function
+
+        
+        
 
 private void _closeOtherWindows(IWebDriver driver)
 {
@@ -191,23 +209,34 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet, List<string>
     if (!_isLandChecked)
     {
         if (_isLoadPage)
-            errorMessage = " Landing is " + _isLandChecked + "\nНа странице отсутсвует наш тег";
+        {
+            errorMessage = " Landing is " + _isLandChecked + "\nТег на странице не найден";
+            commentMessage = errorMessage;
+            Console.Error.WriteLine(driver.Url + errorMessage);
+            _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
+        }
         else
+        {
+            if (!_isZoneOnTestCase)
+                errorMessage = "Для данного кейса нет ZoneID";
+            else
             errorMessage = " Веб-страница недоступна";
-        commentMessage = errorMessage;
-        Console.Error.WriteLine(driver.Url + errorMessage);
-        _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
+            commentMessage = errorMessage;
+            Console.Error.WriteLine(driver.Url + errorMessage);
+            _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Blocked, errorMessage, commentMessage);
+        }
     }
     
     if (!_isOnClick && _isLandChecked)
     {
-        errorMessage = "Во время клика не отработал показ. На сайте присутствует наш Network";
+        errorMessage = "Во время клика не отработал показ. На сайте присутствует наш тег";
         commentMessage = "OnClick не отработал. Тег есть на странице";
         Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
         _testRun.SetStatus(CaseToRun[driverSet.StepCase], _testRun.Status = Status.Failed, errorMessage, commentMessage);
     }
 
-    if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
+    //if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
+    if (_isOnClick && driverSet.CountShowPopup == 0)
     {
         successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
         Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);

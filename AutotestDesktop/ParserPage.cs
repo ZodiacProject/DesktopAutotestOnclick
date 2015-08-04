@@ -21,6 +21,7 @@ namespace AutotestDesktop
     class ParserPage
     {
         private bool _isFindZone;
+        private const int _elementsForRemove = 100; // когда размер ссылок на странице слишком велик
         private IReadOnlyCollection <IWebElement> _searchWebelements;
         private List <string> _searchElement = new List<string>();
         private List <string> _zoneIdList;
@@ -59,19 +60,25 @@ namespace AutotestDesktop
                         else
                             driver.Navigate().GoToUrl(url);
                     }
-                    catch { }
+                    catch (Exception e) { Console.WriteLine(e); }
                 }
                 return false;
             }
         }
-
+public bool IsZoneOnTestCase (string zoneID)
+        {
+            if (zoneID != "Zone Not Found" || zoneID != "")
+                return true;
+            else
+                return false;
+        }
 private bool _сheckZone(IWebDriver driver, List <string> zoneID)
     {
         foreach (string zone in zoneID)
         {
             if (driver.PageSource.Contains(zone))
             {
-                Console.WriteLine("Yes, I'am find zone");
+                Console.WriteLine("Yes, I'am find zone " + zone + " " + driver.Url);
                 return true;
             }
         }

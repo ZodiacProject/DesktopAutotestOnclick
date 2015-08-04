@@ -36,7 +36,7 @@ namespace AutotestDesktop
         private Dictionary<string, string> _testCaseName;
         private Dictionary<string, List<string>> _sites;
         private List<string> _createCases = new List<string>();
-        public Dictionary<string, string> TestCaseName { get { return _getRegularNameCase(); } }
+        public Dictionary<string, string> GetTestCaseName { get { return _getRegularNameCase(); } }
 
         public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
         public string RunID { set { _runID = value; } }   
@@ -129,7 +129,7 @@ namespace AutotestDesktop
         
             JObject runCreate = (JObject)client.SendPost("add_run/3", runData);
             Console.WriteLine("\nTest run is create.");
-            Console.WriteLine("Test is running...");
+            Console.WriteLine("Test is running..." + DateTime.Now);
          }
         public void CreateSuite()
         {
@@ -184,15 +184,15 @@ namespace AutotestDesktop
            Console.WriteLine("\nTest Suite is update.");
        }
      
-        public List <string> GetRunCase(IWebDriver driver)
+        public List <string> GetIDCaseInSection(IWebDriver driver)
         {
             List<string> TCases = new List<string>();
               foreach (KeyValuePair<string, List<string>> testrun in _testRun)
                 foreach (string value in testrun.Value)
                 {
                   //  Console.WriteLine(driver.GetType().Name);
-
-//Section's select Chrome, FireFox, Opera, Safari, IE if (driver.GetType().Name.Contains(testrun.Key))                     
+//Section's select Chrome, FireFox, Opera, Safari, IE 
+                    if (driver.GetType().Name.Contains(testrun.Key))                     
                         TCases.Add(value);
                 }
               return TCases;
@@ -333,7 +333,7 @@ namespace AutotestDesktop
    {
        Untestead,
        Passed = 1,
-       Blocked,
+       Blocked = 2,
        Retest = 4,
        Implementated,
        Failed = 5
