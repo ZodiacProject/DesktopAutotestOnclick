@@ -17,39 +17,48 @@ namespace AutotestDesktop
 {
 	public class AutomatedTest
 	{
-        private TestRail testrail;
-        private Driver Browser;
+        private TestRail _testrail;
+        private Driver _browsers;
+        private string _addSuite = "";
         private string _createTest = "";
         private string _deleteTest = "";
         public AutomatedTest()
         {
-            testrail = new TestRail();
-            //testrail.GetCases();
-            //return;
-            //testrail.CreateSuite();
-            //testrail.UpdateTestSuite("117", Console.ReadLine());
-            //return;
-            //testrail.AddCases();
-            testrail.GetSuitesOfProject();
-            testrail.GetRunsProject();
-            //Console.WriteLine("Do your want regular (reg) test or FULL (full) test ?");
-            //Console.Write("Do you want to delete a test-run? _");
-            //_deleteTest = Console.ReadLine();
-            //DoYoyWantDeleteTest();
-            Console.Write("Do you want create a test-run (y/n) _");
+            _testrail = new TestRail();
+            _testrail.GetSuitesOfProject();
+            _testrail.GetRunsProject();
+            Console.Write("Do you want to create a new Top sites suites (y/n)_");
+            _addSuite = Console.ReadLine();
+            _doAddSuite();
+            Console.Write("Do you want to create a test-run (y/n) OR another action (a)_");
             _createTest = Console.ReadLine();
-            Browser = new Driver (testrail);
-            DoYouWantCreateTest();
-
+            _doCreateTest();
+            _browsers = new Driver(_testrail);
             FireFoxOnClick();
-            ChromeOnClick();
+            //ChromeOnClick();
             //OperaOnClick();
-            //EdgeOnClick();
             //SafariOnClick();
+            //EdgeOnClick();
         }
-        
-        private void DoYouWantCreateTest()
+        private void _doAddSuite()
         {
+            if (_addSuite == "y")
+            {
+                _testrail.AddCases();
+            }
+                
+            else
+                Console.WriteLine("You choose NO");
+        }
+        private void _doCreateTest()
+        {
+            if (_createTest == "a")
+            {
+                DateTime date = DateTime.Today;
+                string nameSuite = date.DayOfWeek + " " + _getDateForJasonRequest(date);
+                Console.WriteLine("\nThe test name is: " + nameSuite);
+                _testrail.CreateRun(_testrail.GetSuiteID = date.DayOfWeek.ToString(), nameSuite);
+            }
             if (_createTest == "y")
             {
                 Console.WriteLine("\nPlease, enter name of run-test & SuitesID:");
@@ -57,15 +66,24 @@ namespace AutotestDesktop
                 string nameSuite = Console.ReadLine();
                 Console.Write("SuitesID _");
                 string suiteID = Console.ReadLine();
-                testrail.CreateRun(testrail.GetSuiteID = suiteID, nameSuite);
+                _testrail.CreateRun(_testrail.GetSuiteID = suiteID, nameSuite);
             }
-            else
+            if (_createTest == "n")
             {
                 Console.Write("Input run ID _");
-                testrail.RunID = Console.ReadLine();
-                Console.Write("Input suite ID _");
-                testrail.GetSuiteID = Console.ReadLine();
+                _testrail.RunID = Console.ReadLine();
+                /* suite id назначается автоматически 
+                 * из уже имеющегося, ранее созданного test run                 
+                 * текст для свойства GetSuiteID задается опционально
+                 */
+                _testrail.GetSuiteID = "#$%";
                 Console.WriteLine("Test is running..." + DateTime.Now);
+            }
+            else if (_createTest != "a" && _createTest != "y" && _createTest != "n")
+            {
+                Console.Write("InCorrect command...\nDo you want create a test-run (y/n) OR another action (a)_");
+                _createTest = Console.ReadLine();
+                _doCreateTest();
             }
         }
         private void DoYoyWantDeleteTest()
@@ -73,9 +91,9 @@ namespace AutotestDesktop
             while (_deleteTest == "y")
             {
                 Console.Write("Please, input run ID: ");
-                testrail.DeleteRun(Console.ReadLine());
-                testrail.GetSuitesOfProject();
-                testrail.GetRunsProject();
+                _testrail.DeleteRun(Console.ReadLine());
+                _testrail.GetSuitesOfProject();
+                _testrail.GetRunsProject();
                 Console.Write("Do you want to delete again? _");
                 _deleteTest = Console.ReadLine();
             }
@@ -103,11 +121,24 @@ namespace AutotestDesktop
 		}
         private void RunBrowser(IWebDriver webDriver)
         {
-            Browser.Drivers.Add(webDriver);
-            //ParserPage page = new ParserPage(webDriver);
-            Browser.NavigateDriver(webDriver);
+            //Browsers.Drivers.Add(webDriver);           
+            _browsers.NavigateDriver(webDriver);
             webDriver.Quit();
         }
+        private string _getDateForJasonRequest(DateTime date)
+        {
+            string month = null;
+            if (date.Day < 10)
+                month = "0" + date.Day + ".";
+            else
+                month = date.Day + ".";
+
+            if (date.Month < 10)
+                month += "0" + date.Month + "." + date.Year;
+            else
+                month += date.Month + "." + date.Year;
+            return month;
+        } 
     }
      
 }

@@ -26,7 +26,6 @@ namespace AutotestDesktop
 
         public List<PublisherTarget> GetDriverSettings(Dictionary<string, string> DataCase)
         {
-            int numberStep = 0;
             _dataCase = DataCase;
             DriverSetting = new List<PublisherTarget>();
             foreach (KeyValuePair <string, string> dataCase in DataCase)
@@ -34,11 +33,10 @@ namespace AutotestDesktop
                 DriverSetting.Add(new PublisherTarget()
                 {
                     Url = dataCase.Key,
-                    ZoneIds = dataCase.Value, //_GetZoneID(nameCase_Url.Key)
+                    ZoneIds = dataCase.Value,
                     CountShowPopup = _GetShowPopup(dataCase.Key),
                     Interval = _GetInterval(dataCase.Key),
-                    TargetClick = _GetTargetClick(dataCase.Key),
-                    StepCase = numberStep++
+                    //TargetClick = _GetTargetClick(dataCase.Key),
                 });
             }
                 return DriverSetting;
@@ -91,14 +89,14 @@ namespace AutotestDesktop
                 default: return 20000;
             }
         }
-        private string _GetTargetClick (string urlForFindZoneID)
-        {
-           switch (urlForFindZoneID)
-            {
-                case "http://thevideos.tv": return "morevids";         
-                default: return null;
-            }
-        }
+        //private string _GetTargetClick (string urlForFindZoneID)
+        //{
+        //   switch (urlForFindZoneID)
+        //    {
+        //        case "http://clipconverter.cc ":         
+        //        default: return null;
+        //    }
+        //}
 
         }
   }

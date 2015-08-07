@@ -26,19 +26,41 @@ namespace AutotestDesktop
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
         private const string _onclick = "_onclick";
+        private const string _monday = "44", _wednesday = "47";
         private string _runID = null;
-        private string _suiteId = "";
+        private string _suiteId = null;
         private int _numberCase;
         private JObject _topSites;
         private JObject _topZoneSites; 
         private JArray _caseData;
+        private JArray _runs;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
         private Dictionary<string, List<string>> _sites;
         private List<string> _createCases = new List<string>();
         public Dictionary<string, string> GetTestCaseName { get { return _getRegularNameCase(); } }
 
-        public string GetSuiteID { get { return _suiteId; } set { _suiteId = value; } }
+        public string GetSuiteID { get { return _suiteId; } 
+            set {
+                    switch (value)
+                    {
+                        case "Monday": _suiteId = _monday;
+                            break;
+                        case "Wednesday": _suiteId = _wednesday;
+                            break;
+                        default:
+                            if (_runID != null)
+                                foreach (var suite_for_run in _runs)
+                                {
+                                    if (suite_for_run["id"].ToString() == _runID)
+                                        _suiteId = suite_for_run["suite_id"].ToString();
+                                }
+                            else
+                                _suiteId = value;
+                            break;
+                    } 
+                } 
+        }
         public string RunID { set { _runID = value; } }   
         public Status Status;
      
@@ -87,8 +109,7 @@ namespace AutotestDesktop
                     try
                     {
                         _testRun[section["name"].ToString()].Add(testCase["id"].ToString());
-                        // (TestRun["name"].ToString()).Add(test["id"].ToString());
-                        //      Console.WriteLine(section["name"] + " " + test["title"]);
+                        //Console.WriteLine(section["name"] + " " + testCase["title"]);
                     }
                     catch (ArgumentException) { }
                 }
@@ -100,12 +121,12 @@ namespace AutotestDesktop
             //    foreach (string value in testrun.Value)
             //Console.WriteLine("name = {0}, id = {1}", testrun.Key, value);
         }
-       public void GetCases()
+       public void GetCases(string sID)
        {
            client.User = _login;
            client.Password = _password;
            int i = 0;
-           JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=117");
+           JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + sID);
            foreach (var c in caseData)
                         i++;
            Console.WriteLine(i);
@@ -156,20 +177,20 @@ namespace AutotestDesktop
                 try
                 {
                     var CaseData = new Dictionary<string, object>
-                    {
+                    {      
                     {"title", site.Key},
                     {"type_id", 6},
                     {"ptiority_id", 4},                   
                     {"custom_zone_id", String.Join("#", site.Value)},
                     };
-                    JObject suiteCreate = (JObject)client.SendPost("add_case/9446", CaseData);
+                    JObject suiteCreate = (JObject)client.SendPost("add_case/10086", CaseData); //9446 for suite_id=117
                     if (count == 38)
                         Thread.Sleep(60000);
                     count++;
                 }
                 catch (Exception e) { Console.WriteLine(e + "\n" + site.Key + " " + site.Value[count]); }
-            }
-            Console.WriteLine("\nTest case(s) is added.");
+            }            
+            Console.WriteLine("\nTest case(s) is added. Count cases: " + count);
         }
        public void UpdateTestSuite(string suiteID, string newSuiteName)
        {
@@ -184,17 +205,20 @@ namespace AutotestDesktop
            Console.WriteLine("\nTest Suite is update.");
        }
      
-        public List <string> GetIDCaseInSection(IWebDriver driver)
+        public Dictionary <string, List<string>> GetIDCaseInSection()
         {
-            List<string> TCases = new List<string>();
+            Dictionary<string, List<string>> TCases = new Dictionary<string, List<string>>();
               foreach (KeyValuePair<string, List<string>> testrun in _testRun)
-                foreach (string value in testrun.Value)
-                {
+                //foreach (string value in testrun.Value)
+                //{
                   //  Console.WriteLine(driver.GetType().Name);
-//Section's select Chrome, FireFox, Opera, Safari, IE 
-                    if (driver.GetType().Name.Contains(testrun.Key))                     
-                        TCases.Add(value);
-                }
+/*Section's select Chrome, FireFox, Opera, Safari, IE 
+ *  Данный участок кода необходим для определения из какой секции нужно брать тест, в зависимости от того какой сейчас браузер тестируется 
+ * 
+ */
+                //if (driver.GetType().Name.Contains(testrun.Key))                     
+                        TCases.Add(testrun.Key, testrun.Value);
+                //}
               return TCases;
         }
        private Dictionary <string, string> _getRegularNameCase()
@@ -216,7 +240,7 @@ namespace AutotestDesktop
            ThisMonth = _getDateForJasonRequest(thisDay);
            ThreeLastMonth = _getDateForJasonRequest(threeLastMonth);
 
-           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
+           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&platforms=1&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
            string url = null;         
            foreach (var site in _topSites)
            {
@@ -309,8 +333,8 @@ namespace AutotestDesktop
             Console.WriteLine("Актуальные test-runs:");
             client.User = _login;
             client.Password = _password;
-            JArray Runs = (JArray)client.SendGet("get_runs/3");
-            foreach (var run in Runs)
+            _runs = (JArray)client.SendGet("get_runs/3");
+            foreach (var run in _runs)
             {
                 if (Convert.ToBoolean(run["is_completed"]) == false)
                     Console.WriteLine("ID:" + run["id"].ToString() + "\tName:" + run["name"]);

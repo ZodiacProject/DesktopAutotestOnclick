@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace AutotestDesktop
 {
-    class URLSwap
+    class URLActual
     {
         private string url;
         public string TestUrlForSwap
@@ -34,10 +34,10 @@ namespace AutotestDesktop
         {
             switch (url)
             {
-                case "http://zippyshare.com": return "http://www13.zippyshare.com/v/94311818/file.html";
+                case "http://zippyshare.com": return "http://www13.zippyshare.com/v/94311818/file.html";   
                 default: return url;
             }
-        }
+        } 
     }
 
 }
