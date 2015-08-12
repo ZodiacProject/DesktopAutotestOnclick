@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Chrome;
@@ -7,7 +8,7 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support;
-using System;
+using OpenQA.Selenium.Remote;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,13 +31,13 @@ namespace AutotestDesktop
             Console.Write("Do you want to create a new Top sites suites (y/n)_");
             _addSuite = Console.ReadLine();
             _doAddSuite();
-            Console.Write("Do you want to create a test-run (y/n) OR another action (a)_");
+            Console.Write("Do you want create a test-run (y/n) OR your wiil want to regular tests (a)_");
             _createTest = Console.ReadLine();
             _doCreateTest();
             _browsers = new Driver(_testrail);
-            FireFoxOnClick();
+            //FireFoxOnClick();
             //ChromeOnClick();
-            //OperaOnClick();
+            OperaOnClick(); 
             //SafariOnClick();
             //EdgeOnClick();
         }
@@ -81,7 +82,7 @@ namespace AutotestDesktop
             }
             else if (_createTest != "a" && _createTest != "y" && _createTest != "n")
             {
-                Console.Write("InCorrect command...\nDo you want create a test-run (y/n) OR another action (a)_");
+                Console.Write("InCorrect command...\nDo you want create a test-run (y/n) OR your wiil want to regular tests (a)_");
                 _createTest = Console.ReadLine();
                 _doCreateTest();
             }
@@ -108,7 +109,12 @@ namespace AutotestDesktop
 		}
         private void OperaOnClick()
 		{
-            RunBrowser(new OperaDriver());
+            var options = new OperaOptions();
+            string path = "c:\\GitHub\\Projects\\AutotestDesktop\\AutotestDesktop\\bin\\Debug";//\\operadriver.exe";
+            //options.BinaryLocation = @"c:\\GitHub\Projects\\AutotestDesktop\\AutotestDesktop\\bin\\Debug\\operadriver.exe";
+            options.BinaryLocation = path;
+            IWebDriver d = new OperaDriver(options);
+            //RunBrowser(new OperaDriver());
 		
 		}
         private void EdgeOnClick()

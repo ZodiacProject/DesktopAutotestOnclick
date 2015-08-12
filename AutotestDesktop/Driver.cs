@@ -7,7 +7,7 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
-using OpenQA.Selenium.Support;
+using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Internal;
 using System.Threading;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace AutotestDesktop
 /* подготовка сайта для теста, 
 * процедура hard code для сайтов,
 * где нужно выполнить определенный набор действий для появления тега*/
-                        _changeTargetUrl(driver);
+                        _changeTestScripts(driver);
                         while ((driver.WindowHandles.Count) > 1)
                         {
                             _closeOtherWindows(driver);
@@ -130,19 +130,39 @@ namespace AutotestDesktop
                 }         
             }//end foreach           
             }//end of function
-private void _changeTargetUrl(IWebDriver driver)
+private void _changeTestScripts(IWebDriver driver)
 {
+    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+    IWebElement myDynamicElement; 
     try
     {
         switch (driver.Url)
         {
             case "http://www.clipconverter.cc/":
-                driver.FindElement(By.XPath("//*[@id='mediaurl']")).Click();
-                driver.FindElement(By.XPath("//*[@id='mediaurl']")).SendKeys("http://www.youtube.com/watch?v=IhhJqJV_u6M");
-                driver.FindElement(By.XPath("//*[@id='submiturl']")).Click();
-                Thread.Sleep(10000);
-                driver.FindElement(By.XPath("//*[@id='submitconvert']/input")).Click();
-                Thread.Sleep(10000);
+            myDynamicElement = wait.Until<IWebElement>((d) =>
+            {
+                return d.FindElement(By.XPath("//*[@id='mediaurl']"));
+            });
+            myDynamicElement.Click();
+            myDynamicElement.SendKeys("http://www.youtube.com/watch?v=IhhJqJV_u6M");
+
+            myDynamicElement = wait.Until<IWebElement>((d) =>
+            {
+                return d.FindElement(By.XPath("//*[@id='submiturl']"));
+
+            });
+            myDynamicElement.Click();
+            myDynamicElement = wait.Until<IWebElement>((d) =>
+            {
+                return d.FindElement(By.XPath("//*[@id='submitconvert']/input"));
+
+            });    
+                myDynamicElement.Click();
+            myDynamicElement = wait.Until<IWebElement>((d) =>
+            {
+                return d.FindElement(By.XPath("//*[@id='downloadbutton']"));
+
+            });
                 break;
             default: break;
         }

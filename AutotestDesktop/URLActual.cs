@@ -34,7 +34,8 @@ namespace AutotestDesktop
         {
             switch (url)
             {
-                case "http://zippyshare.com": return "http://www13.zippyshare.com/v/94311818/file.html";   
+                case "http://zippyshare.com": return "http://www13.zippyshare.com/v/94311818/file.html";
+                case "http://clipconverter.cc": return "http://www.clipconverter.cc/download/j9yx4hx_/796916/"; 		
                 default: return url;
             }
         } 

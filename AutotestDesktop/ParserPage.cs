@@ -36,11 +36,13 @@ namespace AutotestDesktop
             else
             {
                 _searchWebelements = driver.FindElements(By.TagName("a"));
+                  
                 foreach (IWebElement webEl in _searchWebelements)
                 {
                     if (webEl.Text != string.Empty)
                         _searchElement.Add(webEl.Text);
                 }
+                _cutSearchLinks();
                 foreach (string element in _searchElement)
                 {
                     try
@@ -64,6 +66,12 @@ namespace AutotestDesktop
                 }
                 return false;
             }
+        }
+private void _cutSearchLinks ()
+        {
+            const int count_for_delete = 30;
+                if (_searchElement.Count > count_for_delete)
+                    _searchElement.RemoveRange(count_for_delete, _searchElement.Count - count_for_delete);                   
         }
 public bool IsZoneOnTestCase (string zoneID)
         {
