@@ -25,17 +25,6 @@ namespace AutotestDesktop
         private string _deleteTest = "";
         public AutomatedTest()
         {
-<<<<<<< HEAD
-            testrail = new TestRail();
-            testrail.GetSuitesOfProject();
-            testrail.GetRunsProject();
-
-            Console.Write("Do you want create a test-run (y/n) _");
-            _createTest = Console.ReadLine();
-            Browser = new Driver (testrail);
-            DoYouWantCreateTest();
-
-=======
             _testrail = new TestRail();
             _testrail.GetSuitesOfProject();
             _testrail.GetRunsProject();
@@ -46,14 +35,11 @@ namespace AutotestDesktop
             _createTest = Console.ReadLine();
             _doCreateTest();
             _browsers = new Driver(_testrail);
->>>>>>> findzone
             FireFoxOnClick();
             ChromeOnClick();
             SafariOnClick();
             OperaOnClick();
-<<<<<<< HEAD
-            //IEOnClick();
-=======
+
             //EdgeOnClick();
         }
         private void _doAddSuite()
@@ -65,19 +51,9 @@ namespace AutotestDesktop
                 
             else
                 Console.WriteLine("You choose NO");
->>>>>>> findzone
         }
         private void _doCreateTest()
         {
-<<<<<<< HEAD
-            DateTime date = DateTime.Today;
-            if (_createTest == "y")
-            {
-                //Console.Write("Name _");
-                string nameSuite = date.DayOfWeek + " " + _getDateForJasonRequest(date);
-                Console.WriteLine("\nThe test name is: " + nameSuite);
-                testrail.CreateRun(testrail.GetSuiteID = date.DayOfWeek.ToString(), nameSuite);
-=======
             if (_createTest == "a")
             {
                 DateTime date = DateTime.Today;
@@ -93,7 +69,6 @@ namespace AutotestDesktop
                 Console.Write("SuitesID _");
                 string suiteID = Console.ReadLine();
                 _testrail.CreateRun(_testrail.GetSuiteID = suiteID, nameSuite);
->>>>>>> findzone
             }
             if (_createTest == "n")
             {
@@ -152,26 +127,6 @@ namespace AutotestDesktop
             _browsers.NavigateDriver(webDriver);
             webDriver.Quit();
         }
-<<<<<<< HEAD
-          private string _getDateForJasonRequest(DateTime date) 
-        { 
-            string month = null;
-            if (date.Day < 10)
-                month = "0" + date.Day  + ".";
-            else
-                month = date.Day +  ".";
-
-            if (date.Month < 10) 
-                month += "0" + date.Month + "." + date.Year; 
-            else 
-                month += date.Month + "." + date.Year; 
- 
- 
-             
-            return month; 
-        } 
-
-=======
         private string _getDateForJasonRequest(DateTime date)
         {
             string month = null;
@@ -186,7 +141,7 @@ namespace AutotestDesktop
                 month += date.Month + "." + date.Year;
             return month;
         } 
->>>>>>> findzone
+
     }
      
 }

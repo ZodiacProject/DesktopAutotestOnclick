@@ -26,13 +26,8 @@ namespace AutotestDesktop
         private APIClient client = new APIClient("https://propeller.testrail.net");
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
-<<<<<<< HEAD
-        private const string _monday = "44", _wednesday = "47";
-        private List<string> _createCases = new List<string>();
-=======
         private const string _onclick = "_onclick";
         private const string _monday = "44", _wednesday = "47";
->>>>>>> findzone
         private string _runID = null;
         private string _suiteId = null;
         private int _numberCase;
@@ -42,25 +37,6 @@ namespace AutotestDesktop
         private JArray _runs;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
-<<<<<<< HEAD
-        public string GetSuiteID { get { return _suiteId; } 
-            set 
-            { 
-                switch (value)
-                {
-                    case "Monday": _suiteId = _monday;
-                        break;
-                    case "Wednesday": _suiteId = _wednesday;
-                        break;
-                    default: break;
-                }
-               
-            } 
-        }
-        public string RunID { set { _runID = value; } }
-        public Status Status;
-    
-=======
         private Dictionary<string, List<string>> _sites;
         private List<string> _createCases = new List<string>();
         public Dictionary<string, string> GetTestCaseName { get { return _getRegularNameCase(); } }
@@ -89,7 +65,6 @@ namespace AutotestDesktop
         public string RunID { set { _runID = value; } }   
         public Status Status;
      
->>>>>>> findzone
        public void StartTestRail()
         {
             client.User = _login;
@@ -160,16 +135,10 @@ namespace AutotestDesktop
         public void CreateRun(string suiteId, string nameSuite)
         {
             client.User = _login;
-<<<<<<< HEAD
-            client.Password = _password;            
-            JArray caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + _suiteId);
-            foreach (var c in caseData)
-=======
             client.Password = _password;
          //   _suiteId = suiteId;
             _caseData = (JArray)client.SendGet("get_cases/3/&suite_id=" + _suiteId);
             foreach (var c in _caseData)
->>>>>>> findzone
                     _createCases.Add(c["id"].ToString());
             var runData = new Dictionary<string, object>
             {
@@ -241,23 +210,16 @@ namespace AutotestDesktop
         {
             Dictionary<string, List<string>> TCases = new Dictionary<string, List<string>>();
               foreach (KeyValuePair<string, List<string>> testrun in _testRun)
-                //foreach (string value in testrun.Value)
-                //{
-                  //  Console.WriteLine(driver.GetType().Name);
 /*Section's select Chrome, FireFox, Opera, Safari, IE 
  *  Данный участок кода необходим для определения из какой секции нужно брать тест, в зависимости от того какой сейчас браузер тестируется 
  * 
  */
-                //if (driver.GetType().Name.Contains(testrun.Key))                     
-                        TCases.Add(testrun.Key, testrun.Value);
-                //}
+              TCases.Add(testrun.Key, testrun.Value);
+         
               return TCases;
         }
-<<<<<<< HEAD
-       public List <string> GetNameCase()
-=======
+
        private Dictionary <string, string> _getRegularNameCase()
->>>>>>> findzone
         {
             Dictionary<string, string> TtestCase = new Dictionary<string, string>();
             foreach (KeyValuePair<string, string> testname in _testCaseName)
@@ -393,15 +355,9 @@ namespace AutotestDesktop
    {
        Untestead,
        Passed = 1,
-<<<<<<< HEAD
-       Blocked,
-=======
        Blocked = 2,
->>>>>>> findzone
        Retest = 4,
        Implementated,
        Failed = 5
    }
-
-   
 }

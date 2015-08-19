@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,16 +15,6 @@ namespace AutotestDesktop
 {
     class PublisherTarget
     {
-<<<<<<< HEAD
-        private List <string> _nameCase;
-        public string Url {get; set;}
-        public string ZoneId {get; private set;}
-        public string TargetClick {get; private set;}
-        public int CountShowPopup { get; set; }
-        public int Interval {get; private set;}
-        public int StepCase {get; private set;}
-      
-=======
         private Dictionary <string, string> _dataCase;
         public string Url { get; set; }
         public string ZoneIds { get; private set; }
@@ -32,7 +22,6 @@ namespace AutotestDesktop
         public int CountShowPopup { get; set; }
         public int Interval { get; private set; }
         public int StepCase { get; private set; }
->>>>>>> findzone
         public List<PublisherTarget> DriverSetting;
 
         public List<PublisherTarget> GetDriverSettings(Dictionary<string, string> DataCase)
@@ -41,26 +30,14 @@ namespace AutotestDesktop
             DriverSetting = new List<PublisherTarget>();
             foreach (KeyValuePair <string, string> dataCase in DataCase)
             {
-<<<<<<< HEAD
-    
-                DriverSetting.Add(new PublisherTarget() 
-                { 
-                  Url = nameCase_Url, 
-                  ZoneId = _getZoneID(nameCase_Url), 
-                  CountShowPopup = _getShowPopup(nameCase_Url), Interval = _getInterval(nameCase_Url),
-                  TargetClick = _getTargetClick(nameCase_Url), StepCase = numberStep++});
-                }
-=======
                 DriverSetting.Add(new PublisherTarget()
                 {
                     Url = dataCase.Key,
                     ZoneIds = dataCase.Value,
                     CountShowPopup = _GetShowPopup(dataCase.Key),
                     Interval = _GetInterval(dataCase.Key),
-                    //TargetClick = _GetTargetClick(dataCase.Key),
-                });
+                 });
             }
->>>>>>> findzone
                 return DriverSetting;
         }
         private string _GetZoneID (string urlForFindZoneID)
@@ -83,11 +60,7 @@ namespace AutotestDesktop
         {
             switch (urlForFindZoneID)
             {
-<<<<<<< HEAD
-                case "http://putlocker.is/": return 1;
-=======
                 case "http://putlocker.is": return 1;
->>>>>>> findzone
 
                 case "http://thevideos.tv": return 3;
 
@@ -115,14 +88,6 @@ namespace AutotestDesktop
                 default: return 20000;
             }
         }
-        //private string _GetTargetClick (string urlForFindZoneID)
-        //{
-        //   switch (urlForFindZoneID)
-        //    {
-        //        case "http://clipconverter.cc ":         
-        //        default: return null;
-        //    }
-        //}
 
         }
   }
