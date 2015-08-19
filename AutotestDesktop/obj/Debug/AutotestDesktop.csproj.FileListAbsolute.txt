@@ -139,3 +139,6 @@ C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Seleni
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.xml
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.xml
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.pdb
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.pdb
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.pdb

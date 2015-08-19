@@ -269,6 +269,11 @@
             Gets a value indicating whether the cookie is secure.
             </summary>
     </member>
+    <member name="P:OpenQA.Selenium.Cookie.IsHttpOnly">
+      <summary>
+            Gets a value indicating whether the cookie is an HTTP-only cookie.
+            </summary>
+    </member>
     <member name="P:OpenQA.Selenium.Cookie.Expiry">
       <summary>
             Gets the expiration date of the cookie.
@@ -543,6 +548,13 @@
             Sends keys to the alert.
             </summary>
       <param name="keysToSend">The keystrokes to send.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.IAlert.SetAuthenticationCredentials(System.String,System.String)">
+      <summary>
+            Sets the user name and password in an alert prompting for credentials.
+            </summary>
+      <param name="userName">The user name to set.</param>
+      <param name="password">The password to set.</param>
     </member>
     <member name="P:OpenQA.Selenium.IAlert.Text">
       <summary>
@@ -2114,6 +2126,12 @@
       <returns>
         <see langword="true" /> if the platforms match; otherwise <see langword="false" />.</returns>
     </member>
+    <member name="M:OpenQA.Selenium.Platform.ToString">
+      <summary>
+            Returns the string value for this platform type.
+            </summary>
+      <returns>The string value for this platform type.</returns>
+    </member>
     <member name="P:OpenQA.Selenium.Platform.CurrentPlatform">
       <summary>
             Gets the current platform.
@@ -3385,6 +3403,12 @@
             </summary>
       <param name="options">The <see cref="T:OpenQA.Selenium.Chrome.ChromeOptions" /> to be used with the Chrome driver.</param>
     </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Chrome.ChromeDriver" /> class using the specified driver service.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.Chrome.ChromeDriverService" /> used to initialize the driver.</param>
+    </member>
     <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String)">
       <summary>
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.Chrome.ChromeDriver" /> class using the specified path 
@@ -4028,6 +4052,12 @@
       <returns>A <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1" /> containing all
             <see cref="T:OpenQA.Selenium.IWebElement">IWebElements</see> matching the criteria.</returns>
     </member>
+    <member name="M:OpenQA.Selenium.Remote.RemoteWebElement.GetScreenshot">
+      <summary>
+            Gets a <see cref="T:OpenQA.Selenium.Screenshot" /> object representing the image of this element on the screen.
+            </summary>
+      <returns>A <see cref="T:OpenQA.Selenium.Screenshot" /> object containing the image.</returns>
+    </member>
     <member name="M:OpenQA.Selenium.Remote.RemoteWebElement.GetHashCode">
       <summary>
             Method to get the hash code of the element
@@ -4173,6 +4203,202 @@
       <param name="parent">Driver in use</param>
       <param name="elementId">Id of the element</param>
     </member>
+    <member name="T:OpenQA.Selenium.Edge.EdgeDriver">
+      <summary>
+            Provides a mechanism to write tests against Edge
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeOptions)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified options.
+            </summary>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> to be used with the Edge driver.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified driver service.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.Edge.EdgeDriverService" /> used to initialize the driver.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified path 
+            to the directory containing EdgeDriver.exe.
+            </summary>
+      <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified path
+            to the directory containing EdgeDriver.exe and options.
+            </summary>
+      <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> to be used with the Edge driver.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified path
+            to the directory containing EdgeDriver.exe, options, and command timeout.
+            </summary>
+      <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> to be used with the Edge driver.</param>
+      <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified 
+            <see cref="T:OpenQA.Selenium.Edge.EdgeDriverService" /> and options.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.Edge.EdgeDriverService" /> to use.</param>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> used to initialize the driver.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified <see cref="T:OpenQA.Selenium.Edge.EdgeDriverService" />.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.Edge.EdgeDriverService" /> to use.</param>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> to be used with the Edge driver.</param>
+      <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    </member>
+    <member name="T:OpenQA.Selenium.Edge.EdgeDriverService">
+      <summary>
+            Exposes the service provided by the native MicrosoftWebDriver executable.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriverService.#ctor(System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the EdgeDriverService class.
+            </summary>
+      <param name="executablePath">The full path to the EdgeDriver executable.</param>
+      <param name="executableFileName">The file name of the EdgeDriver executable.</param>
+      <param name="port">The port on which the EdgeDriver executable should listen.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService">
+      <summary>
+            Creates a default instance of the EdgeDriverService.
+            </summary>
+      <returns>A EdgeDriverService that implements default settings.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String)">
+      <summary>
+            Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.
+            </summary>
+      <param name="driverPath">The directory containing the EdgeDriver executable.</param>
+      <returns>A EdgeDriverService using a random port.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String,System.String)">
+      <summary>
+            Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name.
+            </summary>
+      <param name="driverPath">The directory containing the EdgeDriver executable.</param>
+      <param name="driverExecutableFileName">The name of the EdgeDriver executable file.</param>
+      <returns>A EdgeDriverService using a random port.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String,System.String,System.Int32)">
+      <summary>
+            Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name and listening port.
+            </summary>
+      <param name="driverPath">The directory containing the EdgeDriver executable.</param>
+      <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
+      <param name="port">The port number on which the driver will listen</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="T:OpenQA.Selenium.Edge.EdgePageLoadStrategy">
+      <summary>
+            Specifies the behavior of waiting for page loads in the Edge driver.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Edge.EdgePageLoadStrategy.Default">
+      <summary>
+            Indicates the behavior is not set.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Edge.EdgePageLoadStrategy.Normal">
+      <summary>
+            Waits for pages to load and ready state to be 'complete'.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Edge.EdgePageLoadStrategy.Eager">
+      <summary>
+            Waits for pages to load and for ready state to be 'interactive' or 'complete'.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Edge.EdgePageLoadStrategy.None">
+      <summary>
+            Does not wait for pages to load, returning immediately.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.Edge.EdgeOptions">
+      <summary>
+            Class to manage options specific to <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /></summary>
+      <example>
+        <code>
+            EdgeOptions options = new EdgeOptions();
+            </code>
+        <para>
+        </para>
+        <para>For use with EdgeDriver:</para>
+        <para>
+        </para>
+        <code>
+            EdgeDriver driver = new EdgeDriver(options);
+            </code>
+        <para>
+        </para>
+        <para>For use with RemoteWebDriver:</para>
+        <para>
+        </para>
+        <code>
+            RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
+            </code>
+      </example>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeOptions.AddAdditionalCapability(System.String,System.Object)">
+      <summary>
+            Provides a means to add additional capabilities not yet added as type safe options 
+            for the Edge driver.
+            </summary>
+      <param name="capabilityName">The name of the capability to add.</param>
+      <param name="capabilityValue">The value of the capability to add.</param>
+      <exception cref="T:System.ArgumentException">
+            thrown when attempting to add a capability for which there is already a type safe option, or 
+            when <paramref name="capabilityName" /> is <see langword="null" /> or the empty string.
+            </exception>
+      <remarks>Calling <see cref="M:OpenQA.Selenium.Edge.EdgeOptions.AddAdditionalCapability(System.String,System.Object)" /> where <paramref name="capabilityName" />
+            has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue" /></remarks>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeOptions.ToCapabilities">
+      <summary>
+            Returns DesiredCapabilities for Edge with these options included as
+            capabilities. This copies the options. Further changes will not be
+            reflected in the returned capabilities.
+            </summary>
+      <returns>The DesiredCapabilities for Edge with these options.</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Edge.EdgeOptions.PageLoadStrategy">
+      <summary>
+            Gets or sets the value for describing how the browser is to wait for pages to load in the Edge driver.
+            Defaults to <see cref="F:OpenQA.Selenium.Edge.EdgePageLoadStrategy.Default" />.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.Edge.EdgeWebElement">
+      <summary>
+            Provides a mechanism to get elements off the page for test
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Edge.EdgeWebElement.#ctor(OpenQA.Selenium.Edge.EdgeDriver,System.String)">
+      <summary>
+            Initializes a new instance of the EdgeWebElement class
+            </summary>
+      <param name="parent">Driver in use</param>
+      <param name="elementId">Id of the element</param>
+    </member>
     <member name="T:OpenQA.Selenium.Firefox.FirefoxBinary">
       <summary>
             Represents the binary associated with Firefox.
@@ -4215,12 +4441,6 @@
       <summary>
             Waits for the process to complete execution.
             </summary>
-    </member>
-    <member name="M:OpenQA.Selenium.Firefox.FirefoxBinary.Clean(OpenQA.Selenium.Firefox.FirefoxProfile)">
-      <summary>
-            Initializes the binary with the specified profile.
-            </summary>
-      <param name="profile">The <see cref="T:OpenQA.Selenium.Firefox.FirefoxProfile" /> to use to initialize the binary.</param>
     </member>
     <member name="M:OpenQA.Selenium.Firefox.FirefoxBinary.Quit">
       <summary>
@@ -5003,6 +5223,12 @@
             </summary>
       <param name="options">The <see cref="T:OpenQA.Selenium.IE.InternetExplorerOptions" /> used to initialize the driver.</param>
     </member>
+    <member name="M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.IE.InternetExplorerDriverService)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.IE.InternetExplorerDriver" /> class using the specified driver service.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.IE.InternetExplorerDriverService" /> used to initialize the driver.</param>
+    </member>
     <member name="M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.String)">
       <summary>
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.IE.InternetExplorerDriver" /> class using the specified path 
@@ -5225,6 +5451,31 @@
             Dismiss unexpected alerts.
             </summary>
     </member>
+    <member name="T:OpenQA.Selenium.IE.InternetExplorerPageLoadStrategy">
+      <summary>
+            Specifies the behavior of waiting for page loads in the IE driver.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.IE.InternetExplorerPageLoadStrategy.Default">
+      <summary>
+            Indicates the behavior is not set.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.IE.InternetExplorerPageLoadStrategy.Normal">
+      <summary>
+            Waits for pages to load and ready state to be 'complete'.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.IE.InternetExplorerPageLoadStrategy.Eager">
+      <summary>
+            Waits for pages to load and for ready state to be 'interactive' or 'complete'.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.IE.InternetExplorerPageLoadStrategy.None">
+      <summary>
+            Does not wait for pages to load, returning immediately.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.IE.InternetExplorerOptions">
       <summary>
             Class to manage options specific to <see cref="T:OpenQA.Selenium.IE.InternetExplorerDriver" /></summary>
@@ -5315,6 +5566,12 @@
       <summary>
             Gets or sets the value for describing how unexpected alerts are to be handled in the IE driver.
             Defaults to <see cref="F:OpenQA.Selenium.IE.InternetExplorerUnexpectedAlertBehavior.Default" />.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.IE.InternetExplorerOptions.PageLoadStrategy">
+      <summary>
+            Gets or sets the value for describing how the browser is to wait for pages to load in the IE driver.
+            Defaults to <see cref="F:OpenQA.Selenium.IE.InternetExplorerPageLoadStrategy.Default" />.
             </summary>
     </member>
     <member name="P:OpenQA.Selenium.IE.InternetExplorerOptions.EnablePersistentHover">
@@ -6335,7 +6592,7 @@
             Represents a cookie returned to the driver by the browser.
             </summary>
     </member>
-    <member name="M:OpenQA.Selenium.Internal.ReturnedCookie.#ctor(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Boolean)">
+    <member name="M:OpenQA.Selenium.Internal.ReturnedCookie.#ctor(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Boolean,System.Boolean)">
       <summary>
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.Internal.ReturnedCookie" /> class with a specific name, 
             value, domain, path and expiration date.
@@ -6347,6 +6604,8 @@
       <param name="expiry">The expiration date of the cookie.</param>
       <param name="isSecure">
         <see langword="true" /> if the cookie is secure; otherwise <see langword="false" /></param>
+      <param name="isHttpOnly">
+        <see langword="true" /> if the cookie is an HTTP-only cookie; otherwise <see langword="false" /></param>
       <exception cref="T:System.ArgumentException">If the name is <see langword="null" /> or an empty string,
             or if it contains a semi-colon.</exception>
       <exception cref="T:System.ArgumentNullException">If the value or currentUrl is <see langword="null" />.</exception>
@@ -6359,7 +6618,134 @@
     </member>
     <member name="P:OpenQA.Selenium.Internal.ReturnedCookie.Secure">
       <summary>
-            Gets a value determining if the cookie is secure.
+            Gets a value indicating whether the cookie is secure.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Internal.ReturnedCookie.IsHttpOnly">
+      <summary>
+            Gets a value indicating whether the cookie is an HTTP-only cookie.
+            </summary>
+    </member>
+    <member name="T:System.IO.Compression.ZipStorer">
+      <summary>
+            Unique class for compression/decompression file. Represents a Zip file.
+            </summary>
+    </member>
+    <member name="T:System.IO.Compression.ZipStorer.Compression">
+      <summary>
+            Compression method enumeration
+            </summary>
+    </member>
+    <member name="T:System.IO.Compression.ZipStorer.ZipFileEntry">
+      <summary>
+            Represents an entry in Zip file directory
+            </summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.ZipFileEntry.ToString">
+      <summary>Overriden method</summary>
+      <returns>Filename in Zip</returns>
+    </member>
+    <member name="F:System.IO.Compression.ZipStorer.EncodeUTF8">
+      <summary>True if UTF8 encoding for filename and comments, false if default (CP 437)</summary>
+    </member>
+    <member name="F:System.IO.Compression.ZipStorer.ForceDeflating">
+      <summary>Force deflate algotithm even if it inflates the stored file. Off by default.</summary>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.Create(System.String,System.String)">
+      <summary>
+            Method to create a new storage file
+            </summary>
+      <param name="_filename">Full path of Zip file to create</param>
+      <param name="_comment">General comment for Zip file</param>
+      <returns>A valid ZipStorer object</returns>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.Create(System.IO.Stream,System.String)">
+      <summary>
+            Method to create a new zip storage in a stream
+            </summary>
+      <param name="_stream">
+      </param>
+      <param name="_comment">
+      </param>
+      <returns>A valid ZipStorer object</returns>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.Open(System.String,System.IO.FileAccess)">
+      <summary>
+            Method to open an existing storage file
+            </summary>
+      <param name="_filename">Full path of Zip file to open</param>
+      <param name="_access">File access mode as used in FileStream constructor</param>
+      <returns>A valid ZipStorer object</returns>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.Open(System.IO.Stream,System.IO.FileAccess)">
+      <summary>
+            Method to open an existing storage from stream
+            </summary>
+      <param name="_stream">Already opened stream with zip contents</param>
+      <param name="_access">File access mode for stream operations</param>
+      <returns>A valid ZipStorer object</returns>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.AddFile(System.IO.Compression.ZipStorer.Compression,System.String,System.String,System.String)">
+      <summary>
+            Add full contents of a file into the Zip storage
+            </summary>
+      <param name="_method">Compression method</param>
+      <param name="_pathname">Full path of file to add to Zip storage</param>
+      <param name="_filenameInZip">Filename and path as desired in Zip directory</param>
+      <param name="_comment">Comment for stored file</param>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.AddStream(System.IO.Compression.ZipStorer.Compression,System.String,System.IO.Stream,System.DateTime,System.String)">
+      <summary>
+            Add full contents of a stream into the Zip storage
+            </summary>
+      <param name="_method">Compression method</param>
+      <param name="_filenameInZip">Filename and path as desired in Zip directory</param>
+      <param name="_source">Stream object containing the data to store in Zip</param>
+      <param name="_modTime">Modification time of the data to store</param>
+      <param name="_comment">Comment for stored file</param>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.Close">
+      <summary>
+            Updates central directory (if pertinent) and close the Zip storage
+            </summary>
+      <remarks>This is a required step, unless automatic dispose is used</remarks>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.ReadCentralDir">
+      <summary>
+            Read all the file records in the central directory 
+            </summary>
+      <returns>List of all entries in directory</returns>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.ExtractFile(System.IO.Compression.ZipStorer.ZipFileEntry,System.String)">
+      <summary>
+            Copy the contents of a stored file into a physical file
+            </summary>
+      <param name="_zfe">Entry information of file to extract</param>
+      <param name="_filename">Name of file to store uncompressed data</param>
+      <returns>True if success, false if not.</returns>
+      <remarks>Unique compression methods are Store and Deflate</remarks>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.ExtractFile(System.IO.Compression.ZipStorer.ZipFileEntry,System.IO.Stream)">
+      <summary>
+            Copy the contents of a stored file into an opened stream
+            </summary>
+      <param name="_zfe">Entry information of file to extract</param>
+      <param name="_stream">Stream to store the uncompressed data</param>
+      <returns>True if success, false if not.</returns>
+      <remarks>Unique compression methods are Store and Deflate</remarks>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.RemoveEntries(System.IO.Compression.ZipStorer@,System.Collections.Generic.List{System.IO.Compression.ZipStorer.ZipFileEntry})">
+      <summary>
+            Removes one of many files in storage. It creates a new Zip file.
+            </summary>
+      <param name="_zip">Reference to the current Zip object</param>
+      <param name="_zfes">List of Entries to remove from storage</param>
+      <returns>True if success, false if not</returns>
+      <remarks>This method only works for storage of type FileStream</remarks>
+    </member>
+    <member name="M:System.IO.Compression.ZipStorer.Dispose">
+      <summary>
+            Closes the Zip file stream
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.Opera.OperaDriver">
@@ -7037,6 +7423,11 @@
             Gets or sets the type of the proxy server ('http', 'socks5' or 'none').
             </summary>
     </member>
+    <member name="P:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.ProxyAuthentication">
+      <summary>
+            Gets or sets the proxy authentication info (e.g. username:password).
+            </summary>
+    </member>
     <member name="P:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.ScriptEncoding">
       <summary>
             Gets or sets the encoding used for the starting script (default is "utf8").
@@ -7045,6 +7436,11 @@
     <member name="P:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.SslProtocol">
       <summary>
             Gets or sets the SSL protocol for secure connections ('sslv3' (default), 'sslv2', 'tlsv1' or 'any').
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.SslCertificatesPath">
+      <summary>
+            Gets or sets the location for custom CA certificates (if none set, uses system default).
             </summary>
     </member>
     <member name="P:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.WebSecurity">
@@ -7259,6 +7655,11 @@
             Capability name used to indicate how the browser handles unexpected alerts.
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.CapabilityType.PageLoadStrategy">
+      <summary>
+            Capability name used to indicate the page load strategy for the browser.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Remote.Command">
       <summary>
             Provides a way to send commands to the remote server
@@ -7376,9 +7777,9 @@
       <param name="commandName">The <see cref="T:OpenQA.Selenium.Remote.DriverCommand" /> for which to get the information.</param>
       <returns>The <see cref="T:OpenQA.Selenium.Remote.CommandInfo" /> for the specified command.</returns>
     </member>
-    <member name="M:OpenQA.Selenium.Remote.CommandInfoRepository.TryAddAdditionalCommand(System.String,OpenQA.Selenium.Remote.CommandInfo)">
+    <member name="M:OpenQA.Selenium.Remote.CommandInfoRepository.TryAddCommand(System.String,OpenQA.Selenium.Remote.CommandInfo)">
       <summary>
-            Tries the add an additional command to the list of known commands.
+            Tries to add a command to the list of known commands.
             </summary>
       <param name="commandName">Name of the command.</param>
       <param name="commandInfo">The command information.</param>
@@ -7386,7 +7787,8 @@
         <see langword="true" /> if the new command has been added successfully; otherwise, <see langword="false" />.</returns>
       <remarks>
             This method is used by WebDriver implementations to add additional custom driver-specific commands.
-            This method will not overwrite existing commands for a specific name.
+            This method will not overwrite existing commands for a specific name, and will return <see langword="false" />
+            in that case.
             </remarks>
     </member>
     <member name="P:OpenQA.Selenium.Remote.CommandInfoRepository.Instance">
@@ -7441,6 +7843,12 @@
             Method to return a new DesiredCapabilities using defaults
             </summary>
       <returns>New instance of DesiredCapabilities for use with Internet Explorer</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.DesiredCapabilities.Edge">
+      <summary>
+            Method to return a new DesiredCapabilities using defaults
+            </summary>
+      <returns>New instance of DesiredCapabilities for use with Microsoft Edge</returns>
     </member>
     <member name="M:OpenQA.Selenium.Remote.DesiredCapabilities.HtmlUnit">
       <summary>
@@ -7796,6 +8204,11 @@
             Represents Screenshot command
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.ElementScreenshot">
+      <summary>
+            Represents the ElementScreenshot command
+            </summary>
+    </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetOrientation">
       <summary>
             Represents GetOrientation command
@@ -7849,6 +8262,11 @@
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.SetAlertValue">
       <summary>
             Represents the SetAlertValue command
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.SetAlertCredentials">
+      <summary>
+            Represents the Authenticate command
             </summary>
     </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.ImplicitlyWait">
@@ -8077,6 +8495,13 @@
             Sends keys to the alert.
             </summary>
       <param name="keysToSend">The keystrokes to send.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.RemoteAlert.SetAuthenticationCredentials(System.String,System.String)">
+      <summary>
+            Sets the user name and password in an alert prompting for credentials.
+            </summary>
+      <param name="userName">The user name to set.</param>
+      <param name="password">The password to set.</param>
     </member>
     <member name="P:OpenQA.Selenium.Remote.RemoteAlert.Text">
       <summary>

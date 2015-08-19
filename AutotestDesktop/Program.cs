@@ -12,7 +12,7 @@ namespace AutotestDesktop
         static void Main(string[] args)
         {
             AutomatedTest BeginTest = new AutomatedTest();
-            Console.WriteLine("Тест выполнился!");
+            Console.WriteLine("Тест выполнился! " + DateTime.Now);
         }
     }
 }
