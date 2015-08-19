@@ -36,9 +36,9 @@ namespace AutotestDesktop
             _doCreateTest();
             _browsers = new Driver(_testrail);
             //FireFoxOnClick();
-            //ChromeOnClick();
-            OperaOnClick(); 
-            //SafariOnClick();
+            ChromeOnClick();
+            SafariOnClick();
+            //OperaOnClick();
             //EdgeOnClick();
         }
         private void _doAddSuite()
@@ -110,11 +110,9 @@ namespace AutotestDesktop
         private void OperaOnClick()
 		{
             var options = new OperaOptions();
-            string path = "c:\\GitHub\\Projects\\AutotestDesktop\\AutotestDesktop\\bin\\Debug";//\\operadriver.exe";
-            //options.BinaryLocation = @"c:\\GitHub\Projects\\AutotestDesktop\\AutotestDesktop\\bin\\Debug\\operadriver.exe";
+            string path = @"c:\Program Files (x86)\Opera\launcher.exe";         
             options.BinaryLocation = path;
-            IWebDriver d = new OperaDriver(options);
-            //RunBrowser(new OperaDriver());
+            RunBrowser(new OperaDriver(options));
 		
 		}
         private void EdgeOnClick()

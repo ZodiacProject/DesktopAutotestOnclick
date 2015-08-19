@@ -1,0 +1,15 @@
+﻿Test Name:	FireFoxOnClick
+Test Outcome:	Passed
+Result StandardOutput:	
+OpenQA.Selenium.Remote.RemoteCookieJar
+ + http://activities.aliexpress.com/weekenddeals.php?aff_platform=aaf&sk=Jnmyamu%3ArBQ72Zn6M&cpt=1429475017942&af=94736&dp=yE9d02h9Kf560AJIpUF600wbgdSxw7X1-F2HXKP-sjSdtzEj7zo7u2bUkk4QG5ZFlHplL33CuSQJJVazxMo2CkBmG-mViYSbkShLNEuuugx1DS1eO1gXwwZBZmubyy9-a66EoVvbVO-BYbX7GkZQXcWTkAFKWbxjuN-XQ8Vp9ckr7QnFYkjd9eMulbT9bX7ojGdJMFJCO56c_pfSnmP0B3M9GMZKvI3_hasu0XIEKMI__34435&cv=4096_55340ec8e4b050f63eb99740___
+ + http://offer.alibaba.com/exclusive.html?alpsm=true&sms=suginter&smcon=p&tv=1&imp=2m19brl19j9lk93hou0u&xp=Yysy08Tq7hRN4V3MapraDAjueknSzDeY-shQFGKewBiOm4TOorwIdDKevqJtro9rTPD88TNV7BRCK1j9Dmm5oiwxt5qccAirBxMQBFPntL4&pid=10802&td=Propellerads&cv=147001&aff_id=182463618&ct=1&size=000_000&cn=RU&an=1000000046001&bm=cpa&tp1=55561525863&src=saf
+Joycasino.com play best NetEnt online casino + http://goodjoycasino.com/joycasino/main/?partner=p13319p26133p5423&promo=jc_prop_april_mc_10802&id=10802
+Result StandardError:	
+OpenQA.Selenium.NoSuchWindowException: Unable to locate window "{4e144e32-0b7e-4aca-a53b-e9e6179099e6}"
+   в OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   в OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   в OpenQA.Selenium.Remote.RemoteTargetLocator.Window(String windowName)
+   в AutotestDesktop.Driver.NavigateDriver(IWebDriver driver) в c:\Users\Userrr\Documents\Visual Studio 2013\Projects\AutotestDesktop\AutotestDesktop\Driver.cs:строка 85
+OnClick: popups is 0 & count of windows 2 Failed
+

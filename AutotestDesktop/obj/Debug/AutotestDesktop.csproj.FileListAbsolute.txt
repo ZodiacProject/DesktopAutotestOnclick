@@ -142,3 +142,4 @@ C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csp
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.pdb
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Selenium.Core.pdb
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.pdb
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.pdb
