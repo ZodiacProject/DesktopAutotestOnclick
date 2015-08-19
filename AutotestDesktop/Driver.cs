@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support.UI;
@@ -69,12 +69,6 @@ namespace AutotestDesktop
 /* подготовка сайта для теста, 
 * процедура hard code для сайтов,
 * где нужно выполнить определенный набор действий для появления тега*/
-                        _changeTestScripts(driver);
-                        //while ((driver.WindowHandles.Count) > 1)
-                        //{
-                        //    _closeOtherWindows(driver);
-                        //    driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0));
-                        //}
                         if (driver.Title.Contains("недоступен") || driver.Title.Contains("недоступна") || driver.Title.Contains("Проблема при загрузке страницы"))
                         {
                             _isLoadPage = false;

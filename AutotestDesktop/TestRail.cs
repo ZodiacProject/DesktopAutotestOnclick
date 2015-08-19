@@ -15,6 +15,7 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Internal;
 

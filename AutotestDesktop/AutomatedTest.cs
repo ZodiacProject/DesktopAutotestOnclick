@@ -35,10 +35,10 @@ namespace AutotestDesktop
             _createTest = Console.ReadLine();
             _doCreateTest();
             _browsers = new Driver(_testrail);
-            //FireFoxOnClick();
+            FireFoxOnClick();
             ChromeOnClick();
             SafariOnClick();
-            //OperaOnClick();
+            OperaOnClick();
             //EdgeOnClick();
         }
         private void _doAddSuite()
@@ -104,19 +104,16 @@ namespace AutotestDesktop
 			RunBrowser(new FirefoxDriver());
 		}
 		private void ChromeOnClick()
-		{              
+		{             
             RunBrowser(new ChromeDriver());
 		}
         private void OperaOnClick()
 		{
-            var options = new OperaOptions();
-            string path = @"c:\Program Files (x86)\Opera\launcher.exe";         
-            options.BinaryLocation = path;
-            RunBrowser(new OperaDriver(options));
-		
-		}
+            RunBrowser(new OperaDriver());
+        }
         private void EdgeOnClick()
 		{
+
             RunBrowser(new EdgeDriver());			
 		}
         private void SafariOnClick()
