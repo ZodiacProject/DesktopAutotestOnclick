@@ -26,6 +26,8 @@ namespace AutotestDesktop
         public AutomatedTest()
         {
             _testrail = new TestRail();
+            //_testrail.GetCases("180");
+            //return;
             _testrail.GetSuitesOfProject();
             _testrail.GetRunsProject();
             Console.Write("Do you want to create a new Top sites suites (y/n)_");
@@ -35,10 +37,10 @@ namespace AutotestDesktop
             _createTest = Console.ReadLine();
             _doCreateTest();
             _browsers = new Driver(_testrail);
-            FireFoxOnClick();
+            //FireFoxOnClick();
             ChromeOnClick();
-            SafariOnClick();
-            OperaOnClick();
+            //SafariOnClick();
+            //OperaOnClick();
             //EdgeOnClick();
         }
         private void _doAddSuite()

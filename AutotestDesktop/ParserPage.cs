@@ -63,20 +63,20 @@ namespace AutotestDesktop
                         else
                             driver.Navigate().GoToUrl(url);
                     }
-                    catch (Exception e) { Console.WriteLine(e); }
+                    catch { }
                 }
                 return false;
             }
         }
 private void _cutSearchLinks ()
         {
-            const int count_for_delete = 30;
+            const int count_for_delete = 40;
                 if (_searchElement.Count > count_for_delete)
                     _searchElement.RemoveRange(count_for_delete, _searchElement.Count - count_for_delete);                   
         }
 public bool IsZoneOnTestCase (string zoneID)
         {
-            if (zoneID != "Zone Not Found" || zoneID != "")
+            if (zoneID != "ZoneIsNull" || zoneID != "")
                 return true;
             else
                 return false;

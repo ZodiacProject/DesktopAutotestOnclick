@@ -189,7 +189,7 @@ namespace AutotestDesktop
                         Thread.Sleep(60000);
                     count++;
                 }
-                catch (Exception e) { Console.WriteLine(e + "\n" + site.Key + " " + site.Value[count]); }
+                catch {}// (Exception e) { Console.WriteLine(e + "\n" + site.Key + " " + site.Value[count]); }
             }            
             Console.WriteLine("\nTest case(s) is added. Count cases: " + count);
         }
@@ -241,23 +241,60 @@ namespace AutotestDesktop
            ThisMonth = _getDateForJasonRequest(thisDay);
            ThreeLastMonth = _getDateForJasonRequest(threeLastMonth);
 
-           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&platforms=1&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=50");
+           _topSites = (JObject)client.GetTopSitesData(ThreeLastMonth + "&day_to=" + ThisMonth + "&platforms=1&dept=onclick&group=affiliate&cut[revenue]=more0&order=revenue+desc&limit=80");
            string url = null;         
            foreach (var site in _topSites)
            {
                url = "http://" + site.Value.SelectToken("affiliate_name").ToString().Substring(0, site.Value.SelectToken("affiliate_name").ToString().Length - _onclick.Length); // какая жесть :)
-               _topZoneSites = (JObject)client.GetTopSitesData(ThisMonth + "&day_to=" + ThisMonth + "&affiliates=" + site.Value.SelectToken("affiliate").ToString() + "&group=zone&cut[impressions]=more100&order=revenue&limit=30");
-               _sites.Add(url, new List <string>());
+               if (_enabledUrl(url))
+               {
+                   _topZoneSites = (JObject)client.GetTopSitesData(ThisMonth + "&day_to=" + ThisMonth + "&affiliates=" + site.Value.SelectToken("affiliate").ToString() + "&group=zone&cut[impressions]=more10&order=revenue&limit=30");
+                   _sites.Add(url, new List<string>());
 
-               if (_topZoneSites.Count != 0)
-                   foreach (var topZone in _topZoneSites)
-                   {
-                       if (Convert.ToInt64(topZone.Value.SelectToken("zone")) != 0)
-                           _sites[url].Add(topZone.Value.SelectToken("zone").ToString());
-                   }
-               else
-                   _sites[url].Add("Zone Not Found");
+                   if (_topZoneSites.Count != 0)
+                       foreach (var topZone in _topZoneSites)
+                       {
+                           if (Convert.ToInt64(topZone.Value.SelectToken("zone")) != 0)
+                               _sites[url].Add(topZone.Value.SelectToken("zone").ToString());
+                       }
+                   else
+                       _sites[url].Add("ZoneIsNull");
+               }
            }
+       }
+
+       private bool _enabledUrl(string url)
+       {
+           if (!url.Contains("revshare")
+               && !url.Contains("watchmovies")
+               && !url.Contains("media")
+               && !url.Contains("wizard") 
+               && !url.Contains("promoter")
+               && !url.Contains("adf.ly")
+               && !url.Contains("sergplugin")
+               && !url.Contains("clipconverter")
+               && !url.Contains("publited")
+               && !url.Contains("bc.vc")
+               && !url.Contains("uptobox")
+               && !url.Contains("prolads")
+               && !url.Contains("rapidgator")
+               && !url.Contains("norm")
+               && !url.Contains("testXML")
+               && !url.Contains("movietube")
+               && !url.Contains("tuto4pc")
+               && !url.Contains("moevideo")
+               && !url.Contains("vkpass")
+               && !url.Contains("imgsrc")
+               && !url.Contains("novamov")
+               && !url.Contains("grandslam")
+               && !url.Contains("videosites")
+               && !url.Contains("ihost.md")
+               && !url.Contains("videowood")
+               && !url.Contains("vimplevideo")
+               && !url.Contains("vivo"))
+           { return true; }
+           else
+               return false;
        }
        private string _getDateForJasonRequest(DateTime date)
        {

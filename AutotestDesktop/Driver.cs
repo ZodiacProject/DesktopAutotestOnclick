@@ -66,14 +66,16 @@ namespace AutotestDesktop
                         urlSwap.TestUrlForSwap = driverSet.Url;
                         driverSet.Url = urlSwap.TestUrlForSwap;
                         driver.Navigate().GoToUrl(driverSet.Url);
+                        _changeTestScripts(driver);
+                        Console.WriteLine("url " + driverSet.Url);
 /* подготовка сайта для теста, 
 * процедура hard code для сайтов,
 * где нужно выполнить определенный набор действий для появления тега*/
-                        if (driver.Title.Contains("недоступен") || driver.Title.Contains("недоступна") || driver.Title.Contains("Проблема при загрузке страницы"))
+                        if (_notLoadPage(driver.Title))
                         {
                             _isLoadPage = false;
                             _isLandChecked = false;
-                            _endTest(driver, driverSet, _getCaseIDForTestStatus(driver));
+                            _endTest(driver, driverSet);
                             continue;
                         }
                         else
@@ -92,13 +94,13 @@ namespace AutotestDesktop
                                 _onclickProgress(driver, driverSet);
                                 if (!_isOnClick)
                                 {
-                                    _endTest(driver, driverSet, _getCaseIDForTestStatus(driver));
+                                    _endTest(driver, driverSet);
                                     break;
                                 }
                             }
                             else
                             {
-                                _endTest(driver, driverSet, _getCaseIDForTestStatus(driver));
+                                _endTest(driver, driverSet);
                                 break;
                             }
                         } //end while
@@ -111,19 +113,31 @@ namespace AutotestDesktop
                                     catch { }
                         */
                         if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
-                            _endTest(driver, driverSet, _getCaseIDForTestStatus(driver));
+                            _endTest(driver, driverSet);
 
                         else if (_isLandChecked && _isOnClick)
-                            _endTest(driver, driverSet, _getCaseIDForTestStatus(driver));
+                            _endTest(driver, driverSet);
                     }
-                    catch (Exception e) { Console.WriteLine(e); }
+                    catch { }
                 }
                 else
                 {
-                    _endTest(driver, driverSet, _getCaseIDForTestStatus(driver));
+                    _endTest(driver, driverSet);
                 }         
             }//end foreach           
             }//end of function
+
+        private bool _notLoadPage(string p)
+        {
+            if (p.Contains("недоступен")
+               || p.Contains("недоступна")
+               || p.Contains("Проблема при загрузке страницы")
+               || p.Contains("error")
+               || p.Contains("Forbidden"))
+            { return true; }
+            else
+                return false;
+        }
 private void _changeTestScripts(IWebDriver driver)
 {
     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
@@ -132,36 +146,25 @@ private void _changeTestScripts(IWebDriver driver)
     {
         switch (driver.Url)
         {
-            case "http://www.clipconverter.cc/":
-            myDynamicElement = wait.Until<IWebElement>((d) =>
-            {
-                return d.FindElement(By.XPath("//*[@id='mediaurl']"));
-            });
-            myDynamicElement.Click();
-            myDynamicElement.SendKeys("http://www.youtube.com/watch?v=IhhJqJV_u6M");
-
-            myDynamicElement = wait.Until<IWebElement>((d) =>
-            {
-                return d.FindElement(By.XPath("//*[@id='submiturl']"));
-
-            });
-            myDynamicElement.Click();
-            myDynamicElement = wait.Until<IWebElement>((d) =>
-            {
-                return d.FindElement(By.XPath("//*[@id='submitconvert']/input"));
-
-            });    
-                myDynamicElement.Click();
-            myDynamicElement = wait.Until<IWebElement>((d) =>
-            {
-                return d.FindElement(By.XPath("//*[@id='downloadbutton']"));
-
-            });
+            //case "http://megafilmeshd.net/henrique-iv-o-grande-rei-da-franca/":
+            //    driver.SwitchTo().ActiveElement().Click();
+            //    break;
+            case "http://www.dardarkom.com/28365-watch-and-download-drillbit-taylor-2008-online.html":
+                myDynamicElement = wait.Until<IWebElement>((d) =>
+                {
+                    return d.FindElement(By.XPath("//*[@id='txtselect_marker']"));
+                });
+                break;
+            case "http://dreamfilmhd.org/movies/details/683244446-dead-rising-watchtower/":
+                  myDynamicElement = wait.Until<IWebElement>((d) =>
+                {
+                    return d.FindElement(By.XPath("//*[@id='viplayer_display']"));
+                });
                 break;
             default: break;
         }
     }
-    catch (WebDriverException e) { Console.WriteLine(e); }
+    catch { }
 }
 private string _getCaseIDForTestStatus(IWebDriver driver)
 {
@@ -176,6 +179,7 @@ private string _getCaseIDForTestStatus(IWebDriver driver)
                      * а после этого id удаляется из списка, 
                      * да в такой последовательности работает корректно*/                     
                     case_id.Value.Remove(id);
+                    Console.WriteLine("my debug false");
                     return id;
                 }
             }
@@ -187,6 +191,12 @@ private string _getCaseIDForTestStatus(IWebDriver driver)
             foreach (string id in case_id.Value)
             {             
                 case_id.Value.Remove(id);
+                if (id == null)
+                {
+                    Console.WriteLine("case id " + id);
+                    Console.ReadLine();
+                }
+                
                 return id;
             }
     }
@@ -259,7 +269,7 @@ private void _acceptAlert(IWebDriver driver)
         count++;
     }
 }
-private void _endTest(IWebDriver driver, PublisherTarget driverSet, string caseID)
+private void _endTest(IWebDriver driver, PublisherTarget driverSet)
 {
     string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
     if (!_isLandChecked)
@@ -268,8 +278,8 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet, string caseI
         {
             errorMessage = driver.Url + " Landing is " + _isLandChecked + "\nТег на странице не найден";
             commentMessage = "Landing is " + _isLandChecked + "\nТег на странице не найден";
-            Console.Error.WriteLine(driver.Url + errorMessage);
-            _testRun.SetStatus(caseID, _testRun.Status = Status.Failed, errorMessage, commentMessage);
+            Console.Error.WriteLine(driver.Url + errorMessage + "\n");
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
         }
         else
         {
@@ -278,8 +288,8 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet, string caseI
             else
                 commentMessage = " Веб-страница недоступна";
             errorMessage = driver.Url + commentMessage;
-            Console.Error.WriteLine(errorMessage);
-            _testRun.SetStatus(caseID, _testRun.Status = Status.Blocked, errorMessage, commentMessage);
+            Console.Error.WriteLine(errorMessage + "\n");
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
         }
     }
     
@@ -287,25 +297,25 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet, string caseI
     {
         errorMessage = driver.Url + " Во время клика не отработал показ. На сайте присутствует наш тег";
         commentMessage = "OnClick не отработал. Тег есть на странице";
-        Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick);
-        _testRun.SetStatus(caseID, _testRun.Status = Status.Failed, errorMessage, commentMessage);
+        Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick + "\n");
+        _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
     }
 
     //if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
     if (_isOnClick && driverSet.CountShowPopup == 0)
     {
         successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
-        Console.WriteLine(successMessage + " " + _isLandChecked + " " + _isOnClick);
-        _testRun.SetStatus(caseID, _testRun.Status = Status.Passed, successMessage, null);
+        Console.WriteLine(successMessage + "\n");
+        _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Passed, successMessage, null);
     }
     else if (_isLandChecked && _isOnClick)
     {
         retestMessage = "Landing is " + _isLandChecked + " "
             + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
             " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
-            "\nPlease, repeat this test";        
-        Console.Error.WriteLine(errorMessage + " " + _isOnClick);
-        _testRun.SetStatus(caseID, _testRun.Status = Status.Retest, retestMessage, null);
+            "\nPlease, repeat this test";
+        Console.Error.WriteLine(errorMessage + " " + _isOnClick + "\n");
+        _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Retest, retestMessage, null);
     }
 }
     }
