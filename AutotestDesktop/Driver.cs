@@ -67,7 +67,7 @@ namespace AutotestDesktop
                         driverSet.Url = urlSwap.TestUrlForSwap;
                         driver.Navigate().GoToUrl(driverSet.Url);
                         _changeTestScripts(driver);
-                        Console.WriteLine("url " + driverSet.Url);
+                        Console.WriteLine(driver.GetType().Name + ": url " + driverSet.Url);
 /* подготовка сайта для теста, 
 * процедура hard code для сайтов,
 * где нужно выполнить определенный набор действий для появления тега*/
@@ -179,7 +179,6 @@ private string _getCaseIDForTestStatus(IWebDriver driver)
                      * а после этого id удаляется из списка, 
                      * да в такой последовательности работает корректно*/                     
                     case_id.Value.Remove(id);
-                    Console.WriteLine("my debug false");
                     return id;
                 }
             }

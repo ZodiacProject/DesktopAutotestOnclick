@@ -37,10 +37,10 @@ namespace AutotestDesktop
             _createTest = Console.ReadLine();
             _doCreateTest();
             _browsers = new Driver(_testrail);
-            //FireFoxOnClick();
+            FireFoxOnClick();
             ChromeOnClick();
-            //SafariOnClick();
-            //OperaOnClick();
+            SafariOnClick();
+            OperaOnClick();
             //EdgeOnClick();
         }
         private void _doAddSuite()

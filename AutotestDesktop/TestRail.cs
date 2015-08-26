@@ -145,7 +145,7 @@ namespace AutotestDesktop
                     {"suite_id", _suiteId},
                     {"name", nameSuite},
                     {"include_all", true},
-                    {"description", "Автоматическое тестирование Desktop OnClick для браузеров: Chrome, FireFox, Opera, IE, Safari"},
+                    {"description", "Автоматическое тестирование Desktop OnClick для браузеров: Chrome, FireFox, Opera, Edge, Safari"},
                     {"case_ids", _createCases.ToArray()},
             };
         
