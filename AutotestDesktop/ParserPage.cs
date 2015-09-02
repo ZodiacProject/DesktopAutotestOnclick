@@ -76,7 +76,7 @@ private void _cutSearchLinks ()
         }
 public bool IsZoneOnTestCase (string zoneID)
         {
-            if (zoneID != "ZoneIsNull" || zoneID != "")
+            if (zoneID != "ZoneIsNull" && zoneID != "")
                 return true;
             else
                 return false;

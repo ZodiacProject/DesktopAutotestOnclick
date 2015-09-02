@@ -368,7 +368,7 @@ namespace AutotestDesktop
         }
         public void GetRunsProject()
         {
-            Console.WriteLine("Актуальные test-runs:");
+            Console.WriteLine("Actual test-runs:");
             client.User = _login;
             client.Password = _password;
             _runs = (JArray)client.SendGet("get_runs/3");
