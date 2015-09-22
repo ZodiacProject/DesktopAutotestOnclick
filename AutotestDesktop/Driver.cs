@@ -51,13 +51,16 @@ namespace AutotestDesktop
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
             //return;
-
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(_testCase);
             ParserPage parsePage = new ParserPage();
             URLActual urlSwap = new URLActual();
             foreach (PublisherTarget driverSet in _driverSettings)
             {
+                _isZoneOnTestCase = false;
+                _isLoadPage = false;
+                _isLandChecked = false;
+                _isOnClick = false;
                 if (parsePage.IsZoneOnTestCase(driverSet.ZoneIds))
                 {
                     _isZoneOnTestCase = true;
@@ -88,6 +91,7 @@ namespace AutotestDesktop
                         while (driverSet.CountShowPopup != 0)
                         {
                             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                            Console.WriteLine(driver.WindowHandles.ElementAt(1));
                             Thread.Sleep(3000);
                             if (_isLandChecked)
                             {
@@ -286,7 +290,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                 commentMessage = " Для данного кейса нет ZoneID";
             else
                 commentMessage = " Веб-страница недоступна";
-            errorMessage = driver.Url + commentMessage;
+            errorMessage = driverSet.Url + commentMessage;
             Console.Error.WriteLine(errorMessage + "\n");
             _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
         }

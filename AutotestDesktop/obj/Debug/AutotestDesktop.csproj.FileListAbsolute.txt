@@ -142,3 +142,5 @@ C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csp
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.pdb
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.pdb
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.pdb
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\phantomjs.exe
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\phantomjs-license.txt

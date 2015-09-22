@@ -9,6 +9,7 @@ using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.PhantomJS;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,8 +26,8 @@ namespace AutotestDesktop
             _testrail = new TestRail();
             _doCreateTest();
             _browsers = new Driver(_testrail);
-            FireFoxOnClick();
-            //ChromeOnClick();
+            //FireFoxOnClick();
+            PhantomOnClick();
         }
         private void _doCreateTest()
         {
@@ -45,23 +46,12 @@ namespace AutotestDesktop
 		{   
 			RunBrowser(new FirefoxDriver());
 		}
-		private void ChromeOnClick()
+		private void PhantomOnClick()
 		{             
-            RunBrowser(new ChromeDriver());
+            RunBrowser(new PhantomJSDriver());
 		}
-        private void OperaOnClick()
-		{
-            RunBrowser(new OperaDriver());
-        }
-        private void EdgeOnClick()
-		{
+      
 
-            RunBrowser(new EdgeDriver());			
-		}
-        private void SafariOnClick()
-		{
-            RunBrowser(new SafariDriver());
-		}
         private void RunBrowser(IWebDriver webDriver)
         {
             //Browsers.Drivers.Add(webDriver);           
