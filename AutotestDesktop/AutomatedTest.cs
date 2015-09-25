@@ -26,8 +26,8 @@ namespace AutotestDesktop
             _testrail = new TestRail();
             _doCreateTest();
             _browsers = new Driver(_testrail);
-            //FireFoxOnClick();
-            PhantomOnClick();
+            FireFoxOnClick();
+            //PhantomOnClick();
         }
         private void _doCreateTest()
         {

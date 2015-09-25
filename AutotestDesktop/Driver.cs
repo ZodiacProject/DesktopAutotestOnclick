@@ -16,7 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using NuLog;
-
+using System.Drawing.Imaging;
 
 namespace AutotestDesktop
 {
@@ -31,6 +31,7 @@ namespace AutotestDesktop
         private bool _isOnClick;
         private bool _isLoadPage;      
         private bool _isZoneOnTestCase;
+        private int  _countScr;
         private TestRail _testRun;
 //Constuctor
         public Driver(TestRail test)
@@ -50,13 +51,14 @@ namespace AutotestDesktop
 
             //foreach (string c in CaseToRun)
             //    Console.WriteLine(c);
-            //return;
+            //return;            
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(_testCase);
             ParserPage parsePage = new ParserPage();
             URLActual urlSwap = new URLActual();
             foreach (PublisherTarget driverSet in _driverSettings)
             {
+                _countScr = 0;
                 _isZoneOnTestCase = false;
                 _isLoadPage = false;
                 _isLandChecked = false;
@@ -68,8 +70,7 @@ namespace AutotestDesktop
                     {
                         urlSwap.TestUrlForSwap = driverSet.Url;
                         driverSet.Url = urlSwap.TestUrlForSwap;
-                        driver.Navigate().GoToUrl(driverSet.Url);
-                        _changeTestScripts(driver);
+                        driver.Navigate().GoToUrl(driverSet.Url);                        
                         Console.WriteLine(driver.GetType().Name + ": url " + driverSet.Url);
 /* подготовка сайта для теста, 
 * процедура hard code для сайтов,
@@ -90,8 +91,7 @@ namespace AutotestDesktop
                             _isLandChecked = false;
                         while (driverSet.CountShowPopup != 0)
                         {
-                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
-                            Console.WriteLine(driver.WindowHandles.ElementAt(1));
+                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();                                                  
                             Thread.Sleep(3000);
                             if (_isLandChecked)
                             {
@@ -142,34 +142,7 @@ namespace AutotestDesktop
             else
                 return false;
         }
-private void _changeTestScripts(IWebDriver driver)
-{
-    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
-    IWebElement myDynamicElement; 
-    try
-    {
-        switch (driver.Url)
-        {
-            //case "http://megafilmeshd.net/henrique-iv-o-grande-rei-da-franca/":
-            //    driver.SwitchTo().ActiveElement().Click();
-            //    break;
-            case "http://www.dardarkom.com/28365-watch-and-download-drillbit-taylor-2008-online.html":
-                myDynamicElement = wait.Until<IWebElement>((d) =>
-                {
-                    return d.FindElement(By.XPath("//*[@id='txtselect_marker']"));
-                });
-                break;
-            case "http://dreamfilmhd.org/movies/details/683244446-dead-rising-watchtower/":
-                  myDynamicElement = wait.Until<IWebElement>((d) =>
-                {
-                    return d.FindElement(By.XPath("//*[@id='viplayer_display']"));
-                });
-                break;
-            default: break;
-        }
-    }
-    catch { }
-}
+
 private string _getCaseIDForTestStatus(IWebDriver driver)
 {
     if (_sectionCaseToRun.Count > 1)
@@ -217,12 +190,17 @@ private void _closeOtherWindows(IWebDriver driver)
 }
 private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
 {
+    string scrUrl = null;
+    _countScr++;
     try
     {
         if ((driver.WindowHandles.Count) > 1)
         {
             _isOnClick = true;
-            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+            scrUrl = d_setting.Url.ToString().Substring(d_setting.Url.LastIndexOf("/")).Remove(0, 1) + "_scan_" + _countScr;
+            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1));
+            ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
+            driver.Close();
             Thread.Sleep(2000);
             if ((driver.WindowHandles.Count) > 1)
             {
