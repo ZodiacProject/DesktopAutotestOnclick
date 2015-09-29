@@ -20,28 +20,22 @@ namespace AutotestDesktop
 	public class AutomatedTest
 	{
         private TestRail _testrail;
-        private Driver _browsers;
-        public AutomatedTest()
+        private Driver _browsers;        
+        public AutomatedTest(string runID)
         {
             _testrail = new TestRail();
-            _doCreateTest();
+/* suite id назначается автоматически 
+*  из уже имеющегося, ранее созданного test run                 
+*  текст для свойства GetSuiteID задается опционально
+*/
+            _testrail.GetRunsProject();
+            _testrail.RunID = runID;
+            _testrail.GetSuiteID = "#$%";
+            Console.WriteLine("Test is running..." + DateTime.Now);
             _browsers = new Driver(_testrail);
             FireFoxOnClick();
             //PhantomOnClick();
-        }
-        private void _doCreateTest()
-        {
-            /* suite id назначается автоматически 
-                * из уже имеющегося, ранее созданного test run                 
-                * текст для свойства GetSuiteID задается опционально
-                */
-            _testrail.GetRunsProject();
-            Console.Write("Run ID: ");
-            _testrail.RunID = Console.ReadLine();
-            _testrail.GetSuiteID = "#$%";
-            Console.WriteLine("Test is running..." + DateTime.Now);
-          }
-     
+        }    
 		private void FireFoxOnClick()
 		{   
 			RunBrowser(new FirefoxDriver());
@@ -53,8 +47,7 @@ namespace AutotestDesktop
       
 
         private void RunBrowser(IWebDriver webDriver)
-        {
-            //Browsers.Drivers.Add(webDriver);           
+        {                
             _browsers.NavigateDriver(webDriver);
             webDriver.Quit();
         }

@@ -70,7 +70,8 @@ namespace AutotestDesktop
                     {
                         urlSwap.TestUrlForSwap = driverSet.Url;
                         driverSet.Url = urlSwap.TestUrlForSwap;
-                        driver.Navigate().GoToUrl(driverSet.Url);                        
+                        driver.Navigate().GoToUrl(driverSet.Url);                     
+                        _changeTestScripts(driver);
                         Console.WriteLine(driver.GetType().Name + ": url " + driverSet.Url);
 /* подготовка сайта для теста, 
 * процедура hard code для сайтов,
@@ -130,8 +131,28 @@ namespace AutotestDesktop
                 }         
             }//end foreach           
             }//end of function
-
-        private bool _notLoadPage(string p)
+private void _changeTestScripts(IWebDriver driver)
+{    
+    //try
+    //{
+        switch (driver.Url)
+        {            
+            case "http://www.dardarkom.com/28365-watch-and-download-drillbit-taylor-2008-online.html": driver.FindElement(By.XPath("//*[@id='txtselect_marker']")).Click();               
+                break;
+            case "http://dreamfilmhd.org/movies/details/683244446-dead-rising-watchtower/": driver.FindElement(By.XPath("//*[@id='viplayer_display']")).Click();               
+                break;
+            case "http://www.cloudy.ec/v/cf68e58f56d11": driver.FindElement(By.XPath("//*[@id='player']")).Click();
+                break;
+            case "http://www.filmesonlinegratis.net/assistir-escola-de-espioes-dublado-online.html": driver.FindElement(By.XPath("/html/body/script[3]")).Click();           
+                break;
+            case "http://megafilmeshd.net/henrique-iv-o-grande-rei-da-franca/": driver.FindElement(By.XPath("//*[@id='left']/div[1]/input")).Click();               
+                break;
+            default: break;
+        }
+    //}
+    //catch { }
+}
+private bool _notLoadPage(string p)
         {
             if (p.Contains("недоступен")
                || p.Contains("недоступна")
@@ -142,7 +163,6 @@ namespace AutotestDesktop
             else
                 return false;
         }
-
 private string _getCaseIDForTestStatus(IWebDriver driver)
 {
     if (_sectionCaseToRun.Count > 1)
@@ -199,7 +219,9 @@ private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
             _isOnClick = true;
             scrUrl = d_setting.Url.ToString().Substring(d_setting.Url.LastIndexOf("/")).Remove(0, 1) + "_scan_" + _countScr;
             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1));
-            ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
+//wait load page
+            Thread.Sleep(3000);
+            //((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\autotest\StartTest\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
             driver.Close();
             Thread.Sleep(2000);
             if ((driver.WindowHandles.Count) > 1)

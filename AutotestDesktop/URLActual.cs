@@ -51,6 +51,7 @@ namespace AutotestDesktop
                 case "http://vkpass.com": return "http://dreamfilmhd.org/movies/details/683244446-dead-rising-watchtower/";
                 case "http://cima4u.tv": return "http://cima4u.tv/online/?p=690";
                 case "http://kinoman.tv": return "http://kinoman.tv/film/skazani-na-shawshank";
+                case "http://cloudy.ec": return "http://www.cloudy.ec/v/cf68e58f56d11";               
                 default: return url;
             }
         } 
