@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
+using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
@@ -21,7 +22,8 @@ using System.Drawing.Imaging;
 namespace AutotestDesktop
 {
     class Driver
-    {
+    {        
+        private IWebDriver _driver;      
         private List<PublisherTarget> _driverSettings; // for many publishers
         private PublisherTarget _publishers;
         private List<string> TopSitesOnClick = new List<string>();
@@ -44,97 +46,99 @@ namespace AutotestDesktop
                 _testCase.Add(test_case_name.Key, test_case_name.Value);
         }
         //methods
-        public void NavigateDriver(IWebDriver driver)
-        {          
-            //foreach (string topSite in _testRun.TopOnclick)
-            //  Console.WriteLine(topSite);
-
-            //foreach (string c in CaseToRun)
-            //    Console.WriteLine(c);
-            //return;            
+        public void NavigateDriver()
+        {                      
             _publishers = new PublisherTarget();
             _driverSettings = _publishers.GetDriverSettings(_testCase);
             ParserPage parsePage = new ParserPage();
             URLActual urlSwap = new URLActual();
             foreach (PublisherTarget driverSet in _driverSettings)
             {
-                _countScr = 0;
-                _isZoneOnTestCase = false;
-                _isLoadPage = false;
-                _isLandChecked = false;
-                _isOnClick = false;
-                if (parsePage.IsZoneOnTestCase(driverSet.ZoneIds))
+                try
                 {
-                    _isZoneOnTestCase = true;
-                    try
+                    _driver = new FirefoxDriver();
+                    _countScr = 0;
+                    _isZoneOnTestCase = false;
+                    _isLoadPage = false;
+                    _isLandChecked = false;
+                    _isOnClick = false;
+                    if (parsePage.IsZoneOnTestCase(driverSet.ZoneIds))
                     {
+                        _isZoneOnTestCase = true;                  
                         urlSwap.TestUrlForSwap = driverSet.Url;
                         driverSet.Url = urlSwap.TestUrlForSwap;
-                        driver.Navigate().GoToUrl(driverSet.Url);                     
-                        _changeTestScripts(driver);
-                        Console.WriteLine(driver.GetType().Name + ": url " + driverSet.Url);
-/* подготовка сайта для теста, 
-* процедура hard code для сайтов,
-* где нужно выполнить определенный набор действий для появления тега*/
-                        if (_notLoadPage(driver.Title))
+                        _driver.Navigate().GoToUrl(driverSet.Url);
+                        Console.WriteLine(_driver.GetType().Name + ": url " + driverSet.Url);
+                        /* подготовка сайта для теста, 
+                        * процедура hard code для сайтов,
+                        * где нужно выполнить определенный набор действий для появления тега*/
+                        if (_notLoadPage(_driver.Title))
                         {
                             _isLoadPage = false;
-                            _isLandChecked = false;
-                            _endTest(driver, driverSet);
+                            _endTest(_driver, driverSet);
+                            _driver.Quit();
                             continue;
                         }
                         else
-                            _isLoadPage = true;
-
-                        if (parsePage.FindZoneOnPage(driver, driverSet.Url, driverSet.ZoneIds))
-                            _isLandChecked = true;
-                        else
-                            _isLandChecked = false;
-                        while (driverSet.CountShowPopup != 0)
                         {
-                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();                                                  
-                            Thread.Sleep(3000);
-                            if (_isLandChecked)
+                            _isLoadPage = true;
+                            _changeTestScripts(_driver);
+
+
+                            if (parsePage.FindZoneOnPage(_driver, driverSet.Url, driverSet.ZoneIds))
+                                _isLandChecked = true;
+                            else
+                                _isLandChecked = false;
+                            while (driverSet.CountShowPopup != 0)
                             {
-                                _onclickProgress(driver, driverSet);
-                                if (!_isOnClick)
+                                _driver.SwitchTo().Window(_driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                                Thread.Sleep(3000);
+                                if (_isLandChecked)
                                 {
-                                    _endTest(driver, driverSet);
+                                    _onclickProgress(_driver, driverSet);
+                                    if (!_isOnClick && _isLoadPage)
+                                    {
+                                        _endTest(_driver, driverSet);
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    _endTest(_driver, driverSet);
                                     break;
                                 }
-                            }
-                            else
+                            } //end while
+                            /* Проверка на открытие после того, как все показы уже были
+                             * Подключить тогда, когда будут доступны настройки зоны из ADP по API
+                                        try
+                                        {
+                                            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
+                                        }
+                                        catch { }
+                            */
+                            if ((_driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
                             {
-                                _endTest(driver, driverSet);
-                                break;
+                                _endTest(_driver, driverSet);
                             }
-                        } //end while
-                        /* Проверка на открытие после того, как все показы уже были
-                         * Подключить тогда, когда будут доступны настройки зоны из ADP по API
-                                    try
-                                    {
-                                        driver.SwitchTo().Window(driver.WindowHandles.ElementAt(0)).SwitchTo().ActiveElement().Click();
-                                    }
-                                    catch { }
-                        */
-                        if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
-                            _endTest(driver, driverSet);
-
-                        else if (_isLandChecked && _isOnClick)
-                            _endTest(driver, driverSet);
+                            else if (_isLandChecked && _isOnClick)
+                            {
+                                _endTest(_driver, driverSet);
+                            }
+                        } //end else _isloadPage = true;                                          
                     }
-                    catch { }
-                }
-                else
-                {
-                    _endTest(driver, driverSet);
-                }         
+                    else
+                    {
+                        _endTest(_driver, driverSet);
+                    }
+                    _driver.Quit();
+                }// end try
+                catch { }
             }//end foreach           
             }//end of function
 private void _changeTestScripts(IWebDriver driver)
 {    
-    //try
-    //{
+    try
+    {
         switch (driver.Url)
         {            
             case "http://www.dardarkom.com/28365-watch-and-download-drillbit-taylor-2008-online.html": driver.FindElement(By.XPath("//*[@id='txtselect_marker']")).Click();               
@@ -149,8 +153,8 @@ private void _changeTestScripts(IWebDriver driver)
                 break;
             default: break;
         }
-    //}
-    //catch { }
+    }
+    catch { }
 }
 private bool _notLoadPage(string p)
         {
@@ -158,7 +162,8 @@ private bool _notLoadPage(string p)
                || p.Contains("недоступна")
                || p.Contains("Проблема при загрузке страницы")
                || p.Contains("error")
-               || p.Contains("Forbidden"))
+               || p.Contains("Forbidden")
+               || p.Contains("Web server is down"))            
             { return true; }
             else
                 return false;
@@ -221,7 +226,8 @@ private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1));
 //wait load page
             Thread.Sleep(3000);
-            //((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\autotest\StartTest\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
+            ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\autotest\StartTest\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
+            //((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
             driver.Close();
             Thread.Sleep(2000);
             if ((driver.WindowHandles.Count) > 1)
@@ -274,6 +280,8 @@ private void _acceptAlert(IWebDriver driver)
 }
 private void _endTest(IWebDriver driver, PublisherTarget driverSet)
 {
+    if (!driver.Url.Contains(driverSet.Url))
+        Console.WriteLine("ERROR! " + driver.Url + " " + driverSet.Url);
     string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
     if (!_isLandChecked)
     {

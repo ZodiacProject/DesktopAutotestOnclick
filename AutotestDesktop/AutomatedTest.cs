@@ -9,7 +9,6 @@ using OpenQA.Selenium.Opera;
 using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.PhantomJS;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,24 +32,9 @@ namespace AutotestDesktop
             _testrail.GetSuiteID = "#$%";
             Console.WriteLine("Test is running..." + DateTime.Now);
             _browsers = new Driver(_testrail);
-            FireFoxOnClick();
-            //PhantomOnClick();
-        }    
-		private void FireFoxOnClick()
-		{   
-			RunBrowser(new FirefoxDriver());
-		}
-		private void PhantomOnClick()
-		{             
-            RunBrowser(new PhantomJSDriver());
-		}
-      
-
-        private void RunBrowser(IWebDriver webDriver)
-        {                
-            _browsers.NavigateDriver(webDriver);
-            webDriver.Quit();
-        }
+            _browsers.NavigateDriver();            
+        }                  
+        
         private string _getDateForJasonRequest(DateTime date)
         {
             string month = null;
