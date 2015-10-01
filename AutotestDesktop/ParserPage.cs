@@ -20,9 +20,7 @@ using Newtonsoft.Json.Linq;
 namespace AutotestDesktop
 {
     class ParserPage
-    {
-        private bool _isFindZone;
-        private const int _elementsForRemove = 100; // когда размер ссылок на странице слишком велик
+    {                
         private IReadOnlyCollection <IWebElement> _searchWebelements;
         private List <string> _searchElement = new List<string>();
         private List <string> _zoneIdList;
@@ -30,11 +28,13 @@ namespace AutotestDesktop
         {
             _zoneIdList = zoneID.Split('#').ToList();
             if (_сheckZone(driver, _zoneIdList))
-            {
-                _isFindZone = true;
-                return _isFindZone;
-            }
-            else
+                return true;
+            else if (_isfindoneOnLink(driver, url))
+                return true;
+            else 
+                return false;
+        }
+        private bool _isfindoneOnLink(IWebDriver driver, string url)
             {
                 _searchWebelements = driver.FindElements(By.TagName("a"));
                   
@@ -52,8 +52,7 @@ namespace AutotestDesktop
                         Thread.Sleep(3000);
                         if (_сheckZone(driver, _zoneIdList))
                         {
-                            _isFindZone = true;
-                            return _isFindZone;
+                            return true;
                         }
                         else if ((driver.WindowHandles.Count) > 1) // если ссылка открылась в другой вкладке/окне
                         {
@@ -63,20 +62,19 @@ namespace AutotestDesktop
                         else
                             driver.Navigate().GoToUrl(url);
                     }
-                    catch (Exception e) { Console.WriteLine(e); }
+                    catch { }
                 }
                 return false;
             }
-        }
 private void _cutSearchLinks ()
         {
-            const int count_for_delete = 30;
+            const int count_for_delete = 40;
                 if (_searchElement.Count > count_for_delete)
                     _searchElement.RemoveRange(count_for_delete, _searchElement.Count - count_for_delete);                   
         }
 public bool IsZoneOnTestCase (string zoneID)
         {
-            if (zoneID != "Zone Not Found" || zoneID != "")
+            if (zoneID != "ZoneIsNull" && zoneID != "")
                 return true;
             else
                 return false;

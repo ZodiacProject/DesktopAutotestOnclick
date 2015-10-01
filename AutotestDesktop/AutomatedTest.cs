@@ -19,22 +19,20 @@ namespace AutotestDesktop
 	public class AutomatedTest
 	{
         private TestRail _testrail;
-        private Driver _browsers;
-        private string _addSuite = "";
-        private string _createTest = "";
-        private string _deleteTest = "";
-        public AutomatedTest()
+        private Driver _browsers;        
+        public AutomatedTest(string runID)
         {
             _testrail = new TestRail();
-            _testrail.GetSuitesOfProject();
+/* suite id назначается автоматически 
+*  из уже имеющегося, ранее созданного test run                 
+*  текст для свойства GetSuiteID задается опционально
+*/
             _testrail.GetRunsProject();
-            Console.Write("Do you want to create a new Top sites suites (y/n)_");
-            _addSuite = Console.ReadLine();
-            _doAddSuite();
-            Console.Write("Do you want create a test-run (y/n) OR your wiil want to regular tests (a)_");
-            _createTest = Console.ReadLine();
-            _doCreateTest();
+            _testrail.RunID = runID;
+            _testrail.GetSuiteID = "#$%";
+            Console.WriteLine("Test is running..." + DateTime.Now);
             _browsers = new Driver(_testrail);
+<<<<<<< HEAD
             FireFoxOnClick();
             ChromeOnClick();
             SafariOnClick();
@@ -127,6 +125,11 @@ namespace AutotestDesktop
             _browsers.NavigateDriver(webDriver);
             webDriver.Quit();
         }
+=======
+            _browsers.NavigateDriver();            
+        }                  
+        
+>>>>>>> runAnyTest
         private string _getDateForJasonRequest(DateTime date)
         {
             string month = null;
