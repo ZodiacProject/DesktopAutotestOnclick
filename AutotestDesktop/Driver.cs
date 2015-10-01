@@ -299,16 +299,9 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                 commentMessage = " Для данного кейса нет ZoneID";
             else
                 commentMessage = " Веб-страница недоступна";
-<<<<<<< HEAD
-            errorMessage = driver.Url + commentMessage;
-            Console.Error.WriteLine(errorMessage);
-            _testRun.SetStatus(caseID, _testRun.Status = Status.Blocked, errorMessage, commentMessage);
-
-=======
             errorMessage = driverSet.Url + commentMessage;
             Console.Error.WriteLine(errorMessage + "\n");
             _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
->>>>>>> runAnyTest
         }
 
     }
