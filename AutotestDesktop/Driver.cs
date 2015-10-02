@@ -132,7 +132,11 @@ namespace AutotestDesktop
                     }
                     _driver.Quit();
                 }// end try
-                catch { }
+                catch 
+                {
+                    _getCaseIDForTestStatus(_driver);
+                    _driver.Quit();
+                } // если происходт crash, то будет удален из списка case_id тот id тест, на котором покрашился тест
             }//end foreach           
             }//end of function
 private void _changeTestScripts(IWebDriver driver)
@@ -226,8 +230,8 @@ private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1));
 //wait load page
             Thread.Sleep(3000);
-            ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\autotest\StartTest\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
-            //((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
+            //((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\autotest\StartTest\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
+            ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(@"C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\TestScreenshot\" + scrUrl + ".png", ImageFormat.Png);
             driver.Close();
             Thread.Sleep(2000);
             if ((driver.WindowHandles.Count) > 1)
@@ -280,54 +284,62 @@ private void _acceptAlert(IWebDriver driver)
 }
 private void _endTest(IWebDriver driver, PublisherTarget driverSet)
 {
-    if (!driver.Url.Contains(driverSet.Url))
-        Console.WriteLine("ERROR! " + driver.Url + " " + driverSet.Url);
-    string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
-    if (!_isLandChecked)
+    try
     {
-        if (_isLoadPage)
+        if (!driver.Url.Contains(driverSet.Url))
+            Console.WriteLine("ERROR! " + driver.Url + " " + driverSet.Url);
+        string successMessage = null, errorMessage = null, commentMessage = null, retestMessage = null;
+        if (!_isLandChecked)
         {
-            errorMessage = driver.Url + " Landing is " + _isLandChecked + "\nТег на странице не найден";
-            commentMessage = "Landing is " + _isLandChecked + "\nТег на странице не найден";
-            Console.Error.WriteLine(driver.Url + errorMessage + "\n");
+            if (_isLoadPage)
+            {
+                errorMessage = driver.Url + " Landing is " + _isLandChecked + "\nТег на странице не найден";
+                commentMessage = "Landing is " + _isLandChecked + "\nТег на странице не найден";
+                Console.Error.WriteLine(driver.Url + errorMessage + "\n");
+                _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
+            }
+            else
+            {
+                if (!_isZoneOnTestCase)
+                    commentMessage = " Для данного кейса нет ZoneID";
+                else
+                    commentMessage = " Веб-страница недоступна";
+                errorMessage = driverSet.Url + commentMessage;
+                Console.Error.WriteLine(errorMessage + "\n");
+                _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
+            }
+        }
+
+        if (!_isOnClick && _isLandChecked)
+        {
+            errorMessage = driver.Url + " Во время клика не отработал показ. На сайте присутствует наш тег";
+            commentMessage = "OnClick не отработал. Тег есть на странице";
+            Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick + "\n");
             _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
         }
-        else
+
+        //if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
+        if (_isOnClick && driverSet.CountShowPopup == 0)
         {
-            if (!_isZoneOnTestCase)
-                commentMessage = " Для данного кейса нет ZoneID";
-            else
-                commentMessage = " Веб-страница недоступна";
-            errorMessage = driverSet.Url + commentMessage;
-            Console.Error.WriteLine(errorMessage + "\n");
-            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
+            successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
+            Console.WriteLine(successMessage + "\n");
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Passed, successMessage, null);
+        }
+        else if (_isLandChecked && _isOnClick)
+        {
+            retestMessage = "Landing is " + _isLandChecked + " "
+                + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
+                " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
+                "\nPlease, repeat this test";
+            Console.Error.WriteLine(errorMessage + " " + _isOnClick + "\n");
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Retest, retestMessage, null);
         }
     }
-    
-    if (!_isOnClick && _isLandChecked)
-    {
-        errorMessage = driver.Url + " Во время клика не отработал показ. На сайте присутствует наш тег";
-        commentMessage = "OnClick не отработал. Тег есть на странице";
-        Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick + "\n");
-        _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
-    }
-
-    //if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
-    if (_isOnClick && driverSet.CountShowPopup == 0)
-    {
-        successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
-        Console.WriteLine(successMessage + "\n");
-        _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Passed, successMessage, null);
-    }
-    else if (_isLandChecked && _isOnClick)
-    {
-        retestMessage = "Landing is " + _isLandChecked + " "
-            + driver.Url + " OnClick: popups is " + driverSet.CountShowPopup +
-            " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
-            "\nPlease, repeat this test";
-        Console.Error.WriteLine(errorMessage + " " + _isOnClick + "\n");
-        _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Retest, retestMessage, null);
-    }
+    catch 
+    { 
+        _getCaseIDForTestStatus(driver);
+        driver.Quit();   
+    } // если происходт crash, то будет удален из списка case_id тот id тест, на котором покрашился тест
 }
     }
 }
