@@ -2132,6 +2132,13 @@
             </summary>
       <returns>The string value for this platform type.</returns>
     </member>
+    <member name="M:OpenQA.Selenium.Platform.FromString(System.String)">
+      <summary>
+            Creates a <see cref="T:OpenQA.Selenium.Platform" /> object from a string name of the platform.
+            </summary>
+      <param name="platformName">The name of the platform to create.</param>
+      <returns>The Platform object represented by the string name.</returns>
+    </member>
     <member name="P:OpenQA.Selenium.Platform.CurrentPlatform">
       <summary>
             Gets the current platform.
@@ -2150,6 +2157,11 @@
     <member name="P:OpenQA.Selenium.Platform.PlatformType">
       <summary>
             Gets the type of the platform.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Platform.ProtocolPlatformType">
+      <summary>
+            Gets the value of the platform type for transmission using the JSON Wire Protocol.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.ProxyKind">
@@ -4230,14 +4242,14 @@
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified path 
             to the directory containing EdgeDriver.exe.
             </summary>
-      <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+      <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
     </member>
     <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions)">
       <summary>
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified path
             to the directory containing EdgeDriver.exe and options.
             </summary>
-      <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+      <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
       <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> to be used with the Edge driver.</param>
     </member>
     <member name="M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)">
@@ -4245,7 +4257,7 @@
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.Edge.EdgeDriver" /> class using the specified path
             to the directory containing EdgeDriver.exe, options, and command timeout.
             </summary>
-      <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+      <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
       <param name="options">The <see cref="T:OpenQA.Selenium.Edge.EdgeOptions" /> to be used with the Edge driver.</param>
       <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
     </member>
@@ -4459,11 +4471,6 @@
             </summary>
       <param name="builder">A <see cref="T:System.Diagnostics.Process" /> object used to start Firefox.</param>
     </member>
-    <member name="P:OpenQA.Selenium.Firefox.FirefoxBinary.TimeoutInMilliseconds">
-      <summary>
-            Gets or sets the timeout (in milliseconds) to wait for command execution.
-            </summary>
-    </member>
     <member name="P:OpenQA.Selenium.Firefox.FirefoxBinary.Timeout">
       <summary>
             Gets or sets the timeout to wait for Firefox to be available for command execution.
@@ -4597,6 +4604,26 @@
             to be used in starting Firefox.</param>
       <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
     </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxOptions)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Firefox.FirefoxDriver" /> class using the specified options. Uses the Mozilla-provided Marionette driver implementation.
+            </summary>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Firefox.FirefoxOptions" /> to be used with the Firefox driver.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Firefox.FirefoxDriver" /> class using the specified driver service. Uses the Mozilla-provided Marionette driver implementation.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.Firefox.FirefoxDriverService" /> used to initialize the driver.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService,OpenQA.Selenium.Firefox.FirefoxOptions,System.TimeSpan)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Firefox.FirefoxDriver" /> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.
+            </summary>
+      <param name="service">The <see cref="T:OpenQA.Selenium.Firefox.FirefoxDriverService" /> to use.</param>
+      <param name="options">The <see cref="T:OpenQA.Selenium.Firefox.FirefoxOptions" /> to be used with the Firefox driver.</param>
+      <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    </member>
     <member name="M:OpenQA.Selenium.Firefox.FirefoxDriver.PrepareEnvironment">
       <summary>
             In derived classes, the <see cref="M:OpenQA.Selenium.Firefox.FirefoxDriver.PrepareEnvironment" /> method prepares the environment for test execution.
@@ -4643,6 +4670,11 @@
       <param name="commandToExecute">The command you wish to execute</param>
       <returns>A response from the browser</returns>
     </member>
+    <member name="P:OpenQA.Selenium.Remote.ICommandExecutor.CommandInfoRepository">
+      <summary>
+            Gets the repository of objects containin information about commands.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Firefox.FirefoxDriverCommandExecutor">
       <summary>
             Provides a way of executing Commands using the FirefoxDriver.
@@ -4663,6 +4695,11 @@
             </summary>
       <param name="commandToExecute">The command you wish to execute</param>
       <returns>A response from the browser</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxDriverCommandExecutor.CommandInfoRepository">
+      <summary>
+            Gets the repository of objects containin information about commands.
+            </summary>
     </member>
     <member name="T:OpenQA.Selenium.Firefox.FirefoxDriverServer">
       <summary>
@@ -4701,6 +4738,65 @@
             Gets the <see cref="T:System.Uri" /> for communicating with this server.
             </summary>
     </member>
+    <member name="T:OpenQA.Selenium.Firefox.FirefoxDriverService">
+      <summary>
+            Exposes the service provided by the native FirefoxDriver executable.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriverService.#ctor(System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the FirefoxDriverService class.
+            </summary>
+      <param name="executablePath">The full path to the Firefox driver executable.</param>
+      <param name="executableFileName">The file name of the Firefox driver executable.</param>
+      <param name="port">The port on which the Firefox driver executable should listen.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService">
+      <summary>
+            Creates a default instance of the FirefoxDriverService.
+            </summary>
+      <returns>A FirefoxDriverService that implements default settings.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String)">
+      <summary>
+            Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable.
+            </summary>
+      <param name="driverPath">The directory containing the Firefox driver executable.</param>
+      <returns>A FirefoxDriverService using a random port.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String,System.String)">
+      <summary>
+            Creates a default instance of the FirefoxDriverService using a specified path to the ChromeDriver executable with the given name.
+            </summary>
+      <param name="driverPath">The directory containing the Firefox driver executable.</param>
+      <param name="driverExecutableFileName">The name of th  Firefox driver executable file.</param>
+      <returns>A FirefoxDriverService using a random port.</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxDriverService.FirefoxBinaryPath">
+      <summary>
+            Gets or sets the location of the Firefox binary executable.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxDriverService.BrowserCommunicationPort">
+      <summary>
+            Gets or sets the port used by the driver executable to communicate with the browser.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxDriverService.IgnoreMissingStatusEndPoint">
+      <summary>
+            Gets a value indicating whether to ignore the absence of a status end point.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxDriverService.InitialConnectionTimeout">
+      <summary>
+            Gets a value indicating the time to wait for an initial connection before timing out.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxDriverService.CommandLineArguments">
+      <summary>
+            Gets the command-line arguments for the driver service.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Firefox.FirefoxExtension">
       <summary>
             Provides the ability to install extensions into a <see cref="T:OpenQA.Selenium.Firefox.FirefoxProfile" />.
@@ -4733,7 +4829,48 @@
       <summary>
             Installs the extension into a profile directory.
             </summary>
-      <param name="profileDir">The Firefox profile directory into which to install the extension.</param>
+      <param name="profileDirectory">The Firefox profile directory into which to install the extension.</param>
+    </member>
+    <member name="T:OpenQA.Selenium.Firefox.FirefoxOptions">
+      <summary>
+            Class to manage options specific to <see cref="T:OpenQA.Selenium.Firefox.FirefoxDriver" /></summary>
+      <remarks>
+            Used with the marionette executable wires.exe.
+            </remarks>
+      <example>
+        <code>
+            FirefoxOptions options = new FirefoxOptions();
+            </code>
+        <para>
+        </para>
+        <para>For use with FirefoxDriver:</para>
+        <para>
+        </para>
+        <code>
+            FirefoxDriver driver = new FirefoxDriver(options);
+            </code>
+        <para>
+        </para>
+        <para>For use with RemoteWebDriver:</para>
+        <para>
+        </para>
+        <code>
+            RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
+            </code>
+      </example>
+    </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxOptions.ToCapabilities">
+      <summary>
+            Returns DesiredCapabilities for Firefox with these options included as
+            capabilities. This does not copy the options. Further changes will be
+            reflected in the returned capabilities.
+            </summary>
+      <returns>The DesiredCapabilities for Firefox with these options.</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Firefox.FirefoxOptions.IsMarionette">
+      <summary>
+            Gets or sets a value indicating whether or not to use the Mozilla-provided Marionette implementation.
+            </summary>
     </member>
     <member name="T:OpenQA.Selenium.Firefox.FirefoxProfile">
       <summary>
@@ -6587,6 +6724,14 @@
             algorithm:
             <para><list type="numbered"><item>In the same directory as the calling assembly.</item><item>In the full path specified by the <paramref name="fileName" /> argument.</item><item>Inside the calling assembly as an embedded resource.</item></list></para></remarks>
     </member>
+    <member name="M:OpenQA.Selenium.Internal.ResourceUtilities.IsValidResourceName(System.String)">
+      <summary>
+            Returns a value indicating whether a resource exists with the specified ID.
+            </summary>
+      <param name="resourceId">ID of the embedded resource to check for.</param>
+      <returns>
+        <see langword="true" /> if the resource exists in the calling assembly; otherwise <see langword="false" />.</returns>
+    </member>
     <member name="T:OpenQA.Selenium.Internal.ReturnedCookie">
       <summary>
             Represents a cookie returned to the driver by the browser.
@@ -6982,7 +7127,7 @@
             Adds arguments to be excluded from the list of arguments passed by default 
             to the Opera.exe command line by operadriver.exe.
             </summary>
-      <param name="arguments">An array of arguments to exclude.</param>
+      <param name="argumentsToExclude">An array of arguments to exclude.</param>
     </member>
     <member name="M:OpenQA.Selenium.Opera.OperaOptions.AddExcludedArguments(System.Collections.Generic.IEnumerable{System.String})">
       <summary>
@@ -7791,9 +7936,9 @@
             in that case.
             </remarks>
     </member>
-    <member name="P:OpenQA.Selenium.Remote.CommandInfoRepository.Instance">
+    <member name="M:OpenQA.Selenium.Remote.CommandInfoRepository.InitializeCommandDictionary">
       <summary>
-            Gets the singleton instance of the <see cref="T:OpenQA.Selenium.Remote.CommandInfoRepository" />.
+            Initializes the dictionary of commands for the CommandInfoRepository
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.Remote.DesiredCapabilities">
@@ -7920,6 +8065,12 @@
       <param name="capability">The capability to get.</param>
       <param name="capabilityValue">The value for the capability.</param>
     </member>
+    <member name="M:OpenQA.Selenium.Remote.DesiredCapabilities.ToDictionary">
+      <summary>
+            Converts the <see cref="T:OpenQA.Selenium.ICapabilities" /> object to a <see cref="T:System.Collections.Generic.Dictionary`2" />.
+            </summary>
+      <returns>The <see cref="T:System.Collections.Generic.Dictionary`2" /> containing the capabilities.</returns>
+    </member>
     <member name="M:OpenQA.Selenium.Remote.DesiredCapabilities.GetHashCode">
       <summary>
             Return HashCode for the DesiredCapabilities that has been created
@@ -7959,7 +8110,7 @@
             Gets or sets a value indicating whether the browser is JavaScript enabled
             </summary>
     </member>
-    <member name="P:OpenQA.Selenium.Remote.DesiredCapabilities.Capabilities">
+    <member name="P:OpenQA.Selenium.Remote.DesiredCapabilities.CapabilitiesDictionary">
       <summary>
             Gets the internal capabilities dictionary.
             </summary>
@@ -8034,6 +8185,11 @@
             Represents getting all cookies command
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetCookie">
+      <summary>
+            Represents getting cookie command
+            </summary>
+    </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.DeleteCookie">
       <summary>
             Represents deleting a cookie command
@@ -8082,6 +8238,11 @@
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.SendKeysToElement">
       <summary>
             Represents SendKeysToElements command
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.TapElement">
+      <summary>
+            Represents TapElement command
             </summary>
     </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.SubmitElement">
@@ -8184,9 +8345,19 @@
             Represents GetElementSize command
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetElementRect">
+      <summary>
+            Represents GetElementRect command
+            </summary>
+    </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetElementAttribute">
       <summary>
             Represents GetElementAttribute command
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetElementProperty">
+      <summary>
+            Represents GetElementProperty command
             </summary>
     </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetElementValueOfCssProperty">
@@ -8244,6 +8415,11 @@
             Represents MaximizeWindow command
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.FullScreenWindow">
+      <summary>
+            Represents FullScreenWindow command
+            </summary>
+    </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.DismissAlert">
       <summary>
             Represents the DismissAlert command
@@ -8282,6 +8458,11 @@
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.SetTimeout">
       <summary>
             Represents the SetTimeout command
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.Actions">
+      <summary>
+            Represents the Actions command.
             </summary>
     </member>
     <member name="F:OpenQA.Selenium.Remote.DriverCommand.MouseClick">
@@ -8453,6 +8634,11 @@
             </summary>
       <param name="commandToExecute">The command you wish to execute</param>
       <returns>A response from the browser</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Remote.HttpCommandExecutor.CommandInfoRepository">
+      <summary>
+            Gets the repository of objects containin information about commands.
+            </summary>
     </member>
     <member name="T:OpenQA.Selenium.Remote.LocalFileDetector">
       <summary>
@@ -8993,6 +9179,15 @@
       <param name="value">The JSON string to deserialize into a <see cref="T:OpenQA.Selenium.Remote.Response" />.</param>
       <returns>A <see cref="T:OpenQA.Selenium.Remote.Response" /> object described by the JSON string.</returns>
     </member>
+    <member name="M:OpenQA.Selenium.Remote.Response.FromJson(System.String,System.Int32)">
+      <summary>
+            Returns a new <see cref="T:OpenQA.Selenium.Remote.Response" /> from a JSON-encoded string.
+            </summary>
+      <param name="value">The JSON string to deserialize into a <see cref="T:OpenQA.Selenium.Remote.Response" />.</param>
+      <param name="protocolSpecLevel">The specification level of the protocol from which to
+            create the response.</param>
+      <returns>A <see cref="T:OpenQA.Selenium.Remote.Response" /> object described by the JSON string.</returns>
+    </member>
     <member name="M:OpenQA.Selenium.Remote.Response.ToJson">
       <summary>
             Returns this object as a JSON-encoded string.
@@ -9092,6 +9287,40 @@
             Gets or sets the Method name in the stack trace
             </summary>
     </member>
+    <member name="T:OpenQA.Selenium.Remote.W3CWireProtocolCommandInfoRepository">
+      <summary>
+            Holds the information about all commands specified by the JSON wire protocol.
+            This class cannot be inherited, as it is intended to be a singleton, and 
+            allowing subclasses introduces the possibility of multiple instances.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.W3CWireProtocolCommandInfoRepository.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Remote.WebDriverWireProtocolCommandInfoRepository" /> class.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.W3CWireProtocolCommandInfoRepository.InitializeCommandDictionary">
+      <summary>
+            Initializes the dictionary of commands for the CommandInfoRepository
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.Remote.WebDriverWireProtocolCommandInfoRepository">
+      <summary>
+            Holds the information about all commands specified by the JSON wire protocol.
+            This class cannot be inherited, as it is intended to be a singleton, and 
+            allowing subclasses introduces the possibility of multiple instances.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.WebDriverWireProtocolCommandInfoRepository.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Remote.WebDriverWireProtocolCommandInfoRepository" /> class.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.WebDriverWireProtocolCommandInfoRepository.InitializeCommandDictionary">
+      <summary>
+            Initializes the dictionary of commands for the CommandInfoRepository
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Remote.CharArrayJsonConverter">
       <summary>
             Provides a way to convert a Char array to JSON
@@ -9121,66 +9350,6 @@
       <param name="existingValue">Existing Value to be read</param>
       <param name="serializer">JSON Serializer instance</param>
       <returns>Object from JSON</returns>
-    </member>
-    <member name="T:OpenQA.Selenium.Remote.DesiredCapabilitiesJsonConverter">
-      <summary>
-            Provides a way to convert DesiredCapabilities objects to JSON and back
-            </summary>
-    </member>
-    <member name="M:OpenQA.Selenium.Remote.DesiredCapabilitiesJsonConverter.CanConvert(System.Type)">
-      <summary>
-            Checks if the object can be converted
-            </summary>
-      <param name="objectType">Type of the object</param>
-      <returns>A value indicating if it can be converted</returns>
-    </member>
-    <member name="M:OpenQA.Selenium.Remote.DesiredCapabilitiesJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-      <summary>
-            Get the capabilities from the JSON reader
-            </summary>
-      <param name="reader">JSON Reader instance</param>
-      <param name="objectType">Object type being read</param>
-      <param name="existingValue">The existing value of the object</param>
-      <param name="serializer">JSON Serializer instance</param>
-      <returns>Platform from JSON reader</returns>
-    </member>
-    <member name="M:OpenQA.Selenium.Remote.DesiredCapabilitiesJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-      <summary>
-            Creates a JSON string representing the DesiredCapabilities object
-            </summary>
-      <param name="writer">The JSON writer with a string</param>
-      <param name="value">Value of the string</param>
-      <param name="serializer">JSON serializer instance</param>
-    </member>
-    <member name="T:OpenQA.Selenium.Remote.PlatformJsonConverter">
-      <summary>
-            Provides a mechanism to get the platform from JSON and write the platform 
-            </summary>
-    </member>
-    <member name="M:OpenQA.Selenium.Remote.PlatformJsonConverter.CanConvert(System.Type)">
-      <summary>
-            Checks if the type can be converted
-            </summary>
-      <param name="objectType">Object type to be converted</param>
-      <returns>A value indicating if it can be converted</returns>
-    </member>
-    <member name="M:OpenQA.Selenium.Remote.PlatformJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-      <summary>
-            Get the platform from the JSON reader
-            </summary>
-      <param name="reader">JSON Reader instance</param>
-      <param name="objectType">Object type being read</param>
-      <param name="existingValue">The existing value of the object</param>
-      <param name="serializer">JSON Serializer instance</param>
-      <returns>Platform from JSON reader</returns>
-    </member>
-    <member name="M:OpenQA.Selenium.Remote.PlatformJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-      <summary>
-            Writes the platform to JSON
-            </summary>
-      <param name="writer">JSON Writer instance</param>
-      <param name="value">the platform</param>
-      <param name="serializer">JSON Serializer Instance</param>
     </member>
     <member name="T:OpenQA.Selenium.Remote.ResponseValueJsonConverter">
       <summary>
@@ -9334,6 +9503,11 @@
             </summary>
       <param name="commandToExecute">The command you wish to execute</param>
       <returns>A response from the browser</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Safari.SafariDriverCommandExecutor.CommandInfoRepository">
+      <summary>
+            Gets the repository of objects containin information about commands.
+            </summary>
     </member>
     <member name="T:OpenQA.Selenium.Safari.SafariDriverConnection">
       <summary>
@@ -10744,7 +10918,7 @@
       <summary>
             Processes data received by the connection.
             </summary>
-      <param name="data">The data to be processed.</param>
+      <param name="dataToProcess">The data to be processed.</param>
     </member>
     <member name="M:OpenQA.Selenium.Safari.Internal.Handlers.RequestHandler.CreateHandshake">
       <summary>

@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gallio.Framework;
+using Gallio.Model;
+using MbUnit.Framework;
 
 namespace AutotestDesktop
 {
@@ -30,9 +33,9 @@ namespace AutotestDesktop
             _testrail.GetRunsProject();
             _testrail.RunID = runID;
             _testrail.GetSuiteID = "#$%";
-            Console.WriteLine("Test is running..." + DateTime.Now);
+            Console.WriteLine("Test is running..." + DateTime.Now + "\n");
             _browsers = new Driver(_testrail);
-            _browsers.NavigateDriver();            
+            _browsers.SauceLabsTest();            
         }                  
         
         private string _getDateForJasonRequest(DateTime date)
