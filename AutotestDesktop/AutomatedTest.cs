@@ -34,7 +34,7 @@ namespace AutotestDesktop
             if (nameSuite == "Monday" || nameSuite == "Wednesday")
             {
                 Console.WriteLine("Test is running..." + DateTime.Now + "\n");
-                //_testrail.isTheRunAlreadyExists(nameSuite);
+                _testrail.isTheRunAlreadyExists(nameSuite);
                 _browsers = new Driver(_testrail);
                 _browsers.SauceLabsTest();
             }

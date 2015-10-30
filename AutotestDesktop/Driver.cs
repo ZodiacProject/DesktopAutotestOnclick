@@ -349,7 +349,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                 errorMessage = driver.Url + " Landing is " + _isLandChecked + "\nТег на странице не найден";
                 commentMessage = "Landing is " + _isLandChecked + "\nТег на странице не найден";
                 Console.Error.WriteLine(driver.Url + errorMessage + "\n");
-                //_testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
+                _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
             }
             else
             {
@@ -359,7 +359,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                     commentMessage = " Веб-страница недоступна";
                 errorMessage = driverSet.Url + commentMessage;
                 Console.Error.WriteLine(errorMessage + "\n");
-                //_testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
+                _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
             }
         }
 
@@ -368,7 +368,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
             errorMessage = driver.Url + " Во время клика не отработал показ. На сайте присутствует наш тег";
             commentMessage = "OnClick не отработал. Тег есть на странице";
             Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick + "\n");
-            //_testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
         }
 
         //if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
@@ -376,7 +376,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
         {
             successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
             Console.WriteLine(successMessage + "\n");
-            //_testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Passed, successMessage, null);
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Passed, successMessage, null);
         }
         else if (_isLandChecked && _isOnClick)
         {
@@ -385,7 +385,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                 " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
                 "\nPlease, repeat this test";
             Console.Error.WriteLine(errorMessage + " " + _isOnClick + "\n");
-            //_testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Retest, retestMessage, null);
+            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Retest, retestMessage, null);
         }
     }
     catch 
