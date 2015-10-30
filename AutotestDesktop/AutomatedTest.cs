@@ -23,19 +23,26 @@ namespace AutotestDesktop
 	{
         private TestRail _testrail;
         private Driver _browsers;        
-        public AutomatedTest(string runID)
-        {
-            _testrail = new TestRail();
+        public AutomatedTest()
+        {            
 /* suite id назначается автоматически 
 *  из уже имеющегося, ранее созданного test run                 
 *  текст для свойства GetSuiteID задается опционально
-*/
-            _testrail.GetRunsProject();
-            _testrail.RunID = runID;
-            _testrail.GetSuiteID = "#$%";
-            Console.WriteLine("Test is running..." + DateTime.Now + "\n");
-            _browsers = new Driver(_testrail);
-            _browsers.SauceLabsTest();            
+*/          _testrail = new TestRail();
+            DateTime date = DateTime.Today;
+            string nameSuite = date.DayOfWeek.ToString();
+            if (nameSuite == "Monday" || nameSuite == "Wednesday")
+            {
+                Console.WriteLine("Test is running..." + DateTime.Now + "\n");
+                //_testrail.isTheRunAlreadyExists(nameSuite);
+                _browsers = new Driver(_testrail);
+                _browsers.SauceLabsTest();
+            }
+            else
+            {
+                Console.WriteLine("\nToday is " + date.DayOfWeek.ToString() + ". The regular test is not create!");
+                return;
+            }
         }                  
         
         private string _getDateForJasonRequest(DateTime date)

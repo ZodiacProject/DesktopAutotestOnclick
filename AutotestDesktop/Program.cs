@@ -11,17 +11,8 @@ namespace AutotestDesktop
     {
         static void Main(string[] args)
         {
-            //if (args.Length != 0)
-            //{
-            string _id = "2177";
-                AutomatedTest BeginTest = new AutomatedTest(_id);
-                Console.WriteLine("Тест выполнился! " + DateTime.Now);
-            //}
-            //else
-            //    Console.WriteLine("Not found Run ID!");
-            //string str = "2118";
-            //AutomatedTest test = new AutomatedTest(str);
-            //Console.WriteLine("Тест выполнился! " + DateTime.Now);
+            AutomatedTest BeginTest = new AutomatedTest();
+            Console.WriteLine("Тест выполнился! " + DateTime.Now);
         }
     }
 }
