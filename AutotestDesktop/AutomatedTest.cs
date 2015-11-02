@@ -29,6 +29,8 @@ namespace AutotestDesktop
 *  из уже имеющегося, ранее созданного test run                 
 *  текст для свойства GetSuiteID задается опционально
 */          _testrail = new TestRail();
+            _testrail.GetPlansProject();
+            return;      
             DateTime date = DateTime.Today;
             string nameSuite = date.DayOfWeek.ToString();
             if (nameSuite == "Monday" || nameSuite == "Wednesday")

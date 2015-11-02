@@ -35,10 +35,12 @@ namespace AutotestDesktop
         private JObject _topZoneSites;
         private JArray _caseData;
         private JArray _runs;
+        private JObject _plans;
         private Dictionary<string, List<string>> _testRun;
         private Dictionary<string, string> _testCaseName;
         private Dictionary<string, List<string>> _sites;
         private List<string> _createCases = new List<string>();
+        private List<string> _lRunID = new List<string>();           
         public Dictionary<string, string> GetTestCaseName { get { return _getRegularNameCase(); } }
 
         public string GetSuiteID
@@ -71,36 +73,21 @@ namespace AutotestDesktop
         public void StartTestRail()
         {
             client.User = _login;
-            client.Password = _password;
-            int created_on = 0; // переменной присваивается самый полесденй по номеру test-run
+            client.Password = _password;            
             _testRun = new Dictionary<string, List<string>>();
             _testCaseName = new Dictionary<string, string>();
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
-            JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
+            //JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
             //foreach (var s in Sections)
             //{
             //    Console.WriteLine(s.ToString());
-            //}
-
-            if (String.IsNullOrEmpty(_runID)) // Создание нового test-run (когда run ID имеет пустое значение)
-            {
-                foreach (var run in Runs)
-                {
-                    if (Convert.ToBoolean(run["is_completed"]) == false)
-                        if (Convert.ToInt32(run["created_on"]) > created_on)
-                        {
-                            created_on = Convert.ToInt32(run["created_on"]);
-                            _runID = run["id"].ToString();
-                        }
-                }
-            }
+            //}         
             JArray TestCases = (JArray)client.SendGet("get_tests/" + _runID);
 
             foreach (var caseName in TestCases.Take(TestCases.Count / Sections.Count))
             {
                 _testCaseName.Add(caseName["title"].ToString(), caseName["custom_zone_id"].ToString());
             }
-
             _numberCase = TestCases.Count / Sections.Count;
             foreach (var section in Sections)
             {
@@ -370,7 +357,7 @@ namespace AutotestDesktop
         }
         public void GetRunsProject()
         {
-            Console.WriteLine("Актуальные test-runs:");
+            Console.WriteLine("Topical test-runs:");
             client.User = _login;
             client.Password = _password;
             _runs = (JArray)client.SendGet("get_runs/3");
@@ -379,6 +366,27 @@ namespace AutotestDesktop
                 if (Convert.ToBoolean(run["is_completed"]) == false)
                     Console.WriteLine("ID:" + run["id"].ToString() + "\tName:" + run["name"]);
             }
+            Console.WriteLine();
+        }
+        public void GetPlansProject(string nSuite)
+        {
+            Console.Write("Topical test-plans: ");
+            client.User = _login;
+            client.Password = _password;
+            GetSuiteID = nSuite;
+            _plans = (JObject)client.SendGet("get_plan/2225");            
+            foreach (var plan in _plans)
+            {
+                if (plan.Key == "id")
+                    Console.WriteLine(plan.Value);
+                if (plan.Key == "entries")
+                    foreach (var entries in plan.Value)
+                        foreach (var ent_runs in entries["runs"])
+                        {
+                            _lRunID.Add(ent_runs["id"].ToString());
+                            Console.WriteLine("Run ID: " + ent_runs["id"].ToString() + " " + ent_runs["config"].ToString());
+                        }                                                                                              
+            }            
             Console.WriteLine();
         }
         public void isTheRunAlreadyExists(string nSuite)
@@ -401,7 +409,7 @@ namespace AutotestDesktop
             {
                 CreateRun(nSuite);
             }
-        }
+        }        
         public void GetSuitesOfProject()
         {
             Console.WriteLine("Test Suites now:");
