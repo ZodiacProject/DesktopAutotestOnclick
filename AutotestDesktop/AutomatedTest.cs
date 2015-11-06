@@ -24,21 +24,21 @@ namespace AutotestDesktop
         private TestRail _testrail;
         private Driver _browsers;        
         public AutomatedTest()
-        {            
-/* suite id назначается автоматически 
-*  из уже имеющегося, ранее созданного test run                 
-*  текст для свойства GetSuiteID задается опционально
-*/          _testrail = new TestRail();
-            _testrail.GetPlansProject();
-            return;      
+        {
+            _testrail = new TestRail();
+            int testRunCount = 0;            
             DateTime date = DateTime.Today;
             string nameSuite = date.DayOfWeek.ToString();
-            if (nameSuite == "Monday" || nameSuite == "Wednesday")
+            if (nameSuite == "Monday" || nameSuite == "Wednesday" || nameSuite == "Tuesday" || nameSuite == "Friday")
             {
                 Console.WriteLine("Test is running..." + DateTime.Now + "\n");
-                _testrail.isTheRunAlreadyExists(nameSuite);
                 _browsers = new Driver(_testrail);
-                _browsers.SauceLabsTest();
+                 testRunCount = _testrail.GetPlansProject(nameSuite);
+                while (testRunCount != 0)
+                {
+                    _browsers.SauceLabsTest();
+                    testRunCount--;
+                }
             }
             else
             {

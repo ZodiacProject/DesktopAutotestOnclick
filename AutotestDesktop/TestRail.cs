@@ -52,29 +52,24 @@ namespace AutotestDesktop
                 {
                     case "Monday": _suiteId = _monday;
                         break;
+                    case "Tuesday": _suiteId = _monday;
+                        break;
+                    case "Friday": _suiteId = _monday;
+                        break;
                     case "Wednesday": _suiteId = _wednesday;
                         break;
-                    default:
-                        if (_runID != null)
-                            foreach (var suite_for_run in _runs)
-                            {
-                                if (suite_for_run["id"].ToString() == _runID)
-                                    _suiteId = suite_for_run["suite_id"].ToString();
-                            }
-                        else
-                            _suiteId = value;
+                    default:                    
                         break;
                 }
             }
         }
-        public string RunID { set { _runID = value; } }
         public Status Status;
 
         public void StartTestRail()
         {
             client.User = _login;
             client.Password = _password;            
-            _testRun = new Dictionary<string, List<string>>();
+            _testRun = new Dictionary <string, List<string>>();
             _testCaseName = new Dictionary<string, string>();
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
             //JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
@@ -82,30 +77,35 @@ namespace AutotestDesktop
             //{
             //    Console.WriteLine(s.ToString());
             //}         
-            JArray TestCases = (JArray)client.SendGet("get_tests/" + _runID);
-
-            foreach (var caseName in TestCases.Take(TestCases.Count / Sections.Count))
+            
+            JArray TestCases = (JArray)client.SendGet("get_tests/" + _lRunID.First());
+            _lRunID.RemoveAt(_lRunID.Count - _lRunID.Count); // удаление первого индекса в последовательности _lRunID;
+            foreach (var caseName in TestCases)
             {
-                _testCaseName.Add(caseName["title"].ToString(), caseName["custom_zone_id"].ToString());
-            }
-            _numberCase = TestCases.Count / Sections.Count;
+                if (_testCaseName.ContainsKey(caseName["title"].ToString()))
+                    continue;// если коллекция уже содержит такой ключ, то переход к следующей записи
+                else
+                    _testCaseName.Add(caseName["title"].ToString(), caseName["custom_zone_id"].ToString());
+            }            
             foreach (var section in Sections)
             {
-                _testRun.Add(section["name"].ToString(), new List<string>());
-                //Console.WriteLine(TestCases.Count);
-                //return;
-                foreach (var testCase in TestCases.Take(_numberCase))
+                if (section["parent_id"].ToString() == "")
+                    continue;
+                else
+                _testRun.Add(section["name"].ToString(), new List<string>());           
+                foreach (var testCase in TestCases.Take(_testCaseName.Count)) // кол-во уникальных тестов в section  
                 {
                     // Console.WriteLine(testCase["id"] + " " + testCase["title"]);
                     try
                     {
-                        _testRun[section["name"].ToString()].Add(testCase["id"].ToString());
-                        //Console.WriteLine(section["name"] + " " + testCase["title"]);
+                        _testRun[section["name"].ToString()].Add(testCase["id"].ToString());                        
                     }
                     catch (ArgumentException) { }
                 }
-                for (int i = _numberCase - 1; i >= 0; i--)
-                    TestCases.RemoveAt(i);
+                for (int i = 0; i < _testCaseName.Count; i++)
+                {
+                    TestCases.RemoveAt(TestCases.Count - TestCases.Count);   
+                }                    
 
             }
             //  foreach (KeyValuePair<string, List<string>> testrun in TestRun)
@@ -368,7 +368,7 @@ namespace AutotestDesktop
             }
             Console.WriteLine();
         }
-        public void GetPlansProject(string nSuite)
+        public int GetPlansProject(string nSuite)
         {
             Console.Write("Topical test-plans: ");
             client.User = _login;
@@ -388,6 +388,7 @@ namespace AutotestDesktop
                         }                                                                                              
             }            
             Console.WriteLine();
+            return _lRunID.Count;
         }
         public void isTheRunAlreadyExists(string nSuite)
         {

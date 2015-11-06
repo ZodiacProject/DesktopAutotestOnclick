@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using System.Threading;
@@ -27,20 +28,20 @@ namespace AutotestDesktop
         private Dictionary<string, List<string>> _browsers = new Dictionary<string, List<string>>() 
         { 
             {"chrome", new List<string>(){"39", "46", "beta"}},
-            {"firefox", new List<string>(){"34", "41", "beta"}},
-            {"internet explorer", new List<string>(){"11"}},
-            {"edge", new List<string>(){"20"}},
-            {"safari", new List<string>(){"9"}},
-            {"opera", new List<string>(){"12"}}
+            //{"firefox", new List<string>(){"34", "41", "beta"}},
+            //{"internet explorer", new List<string>(){"11"}},
+            //{"edge", new List<string>(){"20"}},
+            //{"safari", new List<string>(){"9"}},
+            //{"opera", new List<string>(){"12"}}
         };
         private List<string> _platforms = new List<string> 
         { 
-          "Windows XP", 
-          "Windows 7", 
-          "Windows 8.1", 
+          //"Windows XP", 
+          //"Windows 7", 
+          //"Windows 8.1", 
           "Windows 10",
-          "OS X 10.11",
-          "Linux"
+          //"OS X 10.11",
+          //"Linux"
         };
         private TestRail _testRun;
         private ParserPage _parsePage;
@@ -53,14 +54,7 @@ namespace AutotestDesktop
 //Constuctor
         public Driver(TestRail test)
         {
-            _testRun = test;
-            _testRun.StartTestRail();
-
-            foreach (KeyValuePair <string, List <string>> case_id_section in _testRun.GetIDCaseInSection())          
-                _sectionCaseToRun.Add(case_id_section.Key, case_id_section.Value);
-            foreach (KeyValuePair<string, string> test_case_name in _testRun.GetTestCaseName)
-                _testCase.Add(test_case_name.Key, test_case_name.Value);
-
+            _testRun = test;                        
             _publishers = new PublisherTarget();            
             _parsePage = new ParserPage();
             _urlSwap = new URLActual();
@@ -68,11 +62,16 @@ namespace AutotestDesktop
 //SauceLabs
         public void SauceLabsTest()
         {
+            _testRun.StartTestRail();
+            foreach (KeyValuePair<string, List<string>> case_id_section in _testRun.GetIDCaseInSection())
+                _sectionCaseToRun.Add(case_id_section.Key, case_id_section.Value);
+            foreach (KeyValuePair<string, string> test_case_name in _testRun.GetTestCaseName)
+                _testCase.Add(test_case_name.Key, test_case_name.Value);
+
             foreach (string platform in _platforms)
             {
                 foreach (KeyValuePair<string, List<string>> browser in _browsers)
                     {
-
                         if (browser.Key == "safari" && (platform == "Windows XP" || platform == "Windows 7" || platform == "Windows 8.1" || platform == "Windows 10" || platform == "Linux"))
                             continue;
                         if (browser.Key == "opera" && (platform == "Windows 7" || platform == "Windows 8.1" || platform == "Windows 10" || platform == "OS X 10.11"))
@@ -115,7 +114,7 @@ namespace AutotestDesktop
                         if (_notLoadPage(_driver.Title))
                         {
                             _isLoadPage = false;
-                            _endTest(_driver, driverSet);                         
+                            _endTest(_driver, driverSet, brwVersion);                         
                             continue;
                         }
                         else
@@ -137,13 +136,13 @@ namespace AutotestDesktop
                                     _onclickProgress(_driver, driverSet);
                                     if (!_isOnClick && _isLoadPage)
                                     {
-                                        _endTest(_driver, driverSet);
+                                        _endTest(_driver, driverSet, brwVersion);
                                         break;
                                     }
                                 }
                                 else
                                 {
-                                    _endTest(_driver, driverSet);
+                                    _endTest(_driver, driverSet, brwVersion);
                                     break;
                                 }
                             } //end while
@@ -157,25 +156,25 @@ namespace AutotestDesktop
                             */
                             if ((_driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0 && _isLandChecked)
                             {
-                                _endTest(_driver, driverSet);
+                                _endTest(_driver, driverSet, brwVersion);
                             }
                             else if (_isLandChecked && _isOnClick)
                             {
-                                _endTest(_driver, driverSet);
+                                _endTest(_driver, driverSet, brwVersion);
                             }
                         } //end else _isloadPage = true;                                          
                     }
                     else
                     {
-                        _endTest(_driver, driverSet);
+                        _endTest(_driver, driverSet, brwVersion);
                     }                    
                 }// end try
                 catch 
                 {
-                    _getCaseIDForTestStatus(_driver);                 
+                   // _getCaseIDForTestStatus(_driver, brwVersion);                 
                 } // если происходт crash, то будет удален из списка case_id тот id тест, на котором покрашился тест
             }//end foreach    
-            _driver.Quit(); // closed webdriver
+            _CleanUp(_driver); // closed webdriver
             }//end of function
 private IWebDriver _Setup(string browser, string version, string platform)
 {
@@ -186,7 +185,7 @@ private IWebDriver _Setup(string browser, string version, string platform)
     desiredCapabilites.SetCapability("platform", platform); // operating system to use
     desiredCapabilites.SetCapability("username", Constants.SAUCE_LABS_ACCOUNT_NAME); // supply sauce labs username
     desiredCapabilites.SetCapability("accessKey", Constants.SAUCE_LABS_ACCOUNT_KEY);  // supply sauce labs account key
-    desiredCapabilites.SetCapability("name", "OS X/Linux"); // give the test a name
+    desiredCapabilites.SetCapability("name", "TestRail test/linux Chrome"); // give the test a name
 
     try
     {
@@ -196,6 +195,21 @@ private IWebDriver _Setup(string browser, string version, string platform)
     }
     catch (WebDriverException e) { Console.WriteLine(e); }
     return _driver;
+}
+private void _CleanUp(IWebDriver _Driver)
+{
+    // get the status of the current test
+    bool passed = TestContext.CurrentContext.Outcome.Status == TestStatus.Passed;
+    try
+    {
+        // log the result to sauce labs
+        ((IJavaScriptExecutor)_Driver).ExecuteScript("sauce:job-result=" + (passed ? "passed" : "failed"));
+    }
+    finally
+    {
+        // terminate the remote webdriver session
+        _Driver.Quit();
+    }
 }
 private void _changeTestScripts(IWebDriver driver)
 {    
@@ -230,14 +244,14 @@ private bool _notLoadPage(string p)
             else
                 return false;
         }
-private string _getCaseIDForTestStatus(IWebDriver driver)
+private string _getCaseIDForTestStatus(IWebDriver driver, string brwVersion)
 {
     if (_sectionCaseToRun.Count > 1)
     {
         foreach (KeyValuePair<string, List<string>> case_id in _sectionCaseToRun)
             foreach (string id in case_id.Value)
             {
-                if (driver.GetType().Name.Contains(case_id.Key))
+                if (brwVersion.Contains(case_id.Key))
                 {
                     /*Возвращает case_id для testrail
                      * а после этого id удаляется из списка, 
@@ -335,7 +349,7 @@ private void _acceptAlert(IWebDriver driver)
         count++;
     }
 }
-private void _endTest(IWebDriver driver, PublisherTarget driverSet)
+private void _endTest(IWebDriver driver, PublisherTarget driverSet, string brVer)
 {
     try
     {
@@ -349,7 +363,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                 errorMessage = driver.Url + " Landing is " + _isLandChecked + "\nТег на странице не найден";
                 commentMessage = "Landing is " + _isLandChecked + "\nТег на странице не найден";
                 Console.Error.WriteLine(driver.Url + errorMessage + "\n");
-                _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
+                //_testRun.SetStatus(_getCaseIDForTestStatus(driver, brVer), _testRun.Status = Status.Failed, errorMessage, commentMessage);
             }
             else
             {
@@ -359,7 +373,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                     commentMessage = " Веб-страница недоступна";
                 errorMessage = driverSet.Url + commentMessage;
                 Console.Error.WriteLine(errorMessage + "\n");
-                _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
+                //_testRun.SetStatus(_getCaseIDForTestStatus(driver, brVer), _testRun.Status = Status.Blocked, errorMessage, commentMessage);
             }
         }
 
@@ -368,7 +382,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
             errorMessage = driver.Url + " Во время клика не отработал показ. На сайте присутствует наш тег";
             commentMessage = "OnClick не отработал. Тег есть на странице";
             Console.Error.WriteLine(driver.Url + " OnClick is " + _isOnClick + "\n");
-            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Failed, errorMessage, commentMessage);
+            //_testRun.SetStatus(_getCaseIDForTestStatus(driver, brVer), _testRun.Status = Status.Failed, errorMessage, commentMessage);
         }
 
         //if ((driver.WindowHandles.Count) == 1 && driverSet.CountShowPopup == 0)
@@ -376,7 +390,7 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
         {
             successMessage = driver.Url + "\nLanding is - " + _isLandChecked;
             Console.WriteLine(successMessage + "\n");
-            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Passed, successMessage, null);
+            //_testRun.SetStatus(_getCaseIDForTestStatus(driver, brVer), _testRun.Status = Status.Passed, successMessage, null);
         }
         else if (_isLandChecked && _isOnClick)
         {
@@ -385,12 +399,12 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet)
                 " & count of windows " + driver.WindowHandles.Count + "\nIn the testing process is NOT open our Landing" +
                 "\nPlease, repeat this test";
             Console.Error.WriteLine(errorMessage + " " + _isOnClick + "\n");
-            _testRun.SetStatus(_getCaseIDForTestStatus(driver), _testRun.Status = Status.Retest, retestMessage, null);
+            //_testRun.SetStatus(_getCaseIDForTestStatus(driver, brVer), _testRun.Status = Status.Retest, retestMessage, null);
         }
     }
     catch 
-    { 
-        _getCaseIDForTestStatus(driver);        
+    {
+        _getCaseIDForTestStatus(driver, brVer);        
     } // если происходт crash, то будет удален из списка case_id тот id тест, на котором покрашился тест
 }
     }
