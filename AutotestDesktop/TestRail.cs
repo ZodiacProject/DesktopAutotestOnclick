@@ -28,19 +28,21 @@ namespace AutotestDesktop
         private const string _password = "302bis";
         private const string _onclick = "_onclick";
         private const string _monday = "44", _wednesday = "47";
+        private const string _planMonday = "2225", _planWednesday = "2253";
         private string _runID = null;
         private string _suiteId = null;
-        private int _numberCase;
+        private string _planID = null;
         private JObject _topSites;
         private JObject _topZoneSites;
         private JArray _caseData;
         private JArray _runs;
         private JObject _plans;
-        private Dictionary<string, List<string>> _testRun;
+        private List<string> _testRun;
         private Dictionary<string, string> _testCaseName;
         private Dictionary<string, List<string>> _sites;
+        private List<string> _lRunID;
+        private List<string> _lConfigNameTestRun;
         private List<string> _createCases = new List<string>();
-        private List<string> _lRunID = new List<string>();           
         public Dictionary<string, string> GetTestCaseName { get { return _getRegularNameCase(); } }
 
         public string GetSuiteID
@@ -50,36 +52,33 @@ namespace AutotestDesktop
             {
                 switch (value)
                 {
-                    case "Monday": _suiteId = _monday;
-                        break;
-                    case "Tuesday": _suiteId = _monday;
-                        break;
-                    case "Friday": _suiteId = _monday;
-                        break;
-                    case "Wednesday": _suiteId = _wednesday;
+                    case "Monday": 
+                        _suiteId = _monday; 
+                        _planID = _planMonday;
+                        break;              
+                    case "Wednesday": 
+                        _suiteId = _wednesday;
+                        _planID = _planWednesday;
                         break;
                     default:                    
                         break;
                 }
             }
         }
+        public string GetConfigNameTestRun { get { return _lConfigNameTestRun.First(); }}
         public Status Status;
 
-        public void StartTestRail()
+        public void TakeParamToStartTestRail()
         {
             client.User = _login;
             client.Password = _password;            
-            _testRun = new Dictionary <string, List<string>>();
+            _testRun = new List<string>();
             _testCaseName = new Dictionary<string, string>();
-            JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
-            //JArray Runs = (JArray)client.SendGet("get_runs/3&suite_id=" + _suiteId);
-            //foreach (var s in Sections)
-            //{
-            //    Console.WriteLine(s.ToString());
-            //}         
-            
-            JArray TestCases = (JArray)client.SendGet("get_tests/" + _lRunID.First());
-            _lRunID.RemoveAt(_lRunID.Count - _lRunID.Count); // удаление первого индекса в последовательности _lRunID;
+            JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);             
+            Console.WriteLine("\nRun ID: " + _lRunID.First());
+            JArray TestCases = (JArray)client.SendGet("get_tests/" + _lRunID.First());          
+            _lRunID.RemoveAt(_lRunID.Count - _lRunID.Count); // удаление первого run id в последовательности _lRunID
+            _lConfigNameTestRun.RemoveAt(_lConfigNameTestRun.Count - _lConfigNameTestRun.Count); // удаление первого config name run в последовательности _lConfigNameTestRun
             foreach (var caseName in TestCases)
             {
                 if (_testCaseName.ContainsKey(caseName["title"].ToString()))
@@ -87,30 +86,28 @@ namespace AutotestDesktop
                 else
                     _testCaseName.Add(caseName["title"].ToString(), caseName["custom_zone_id"].ToString());
             }            
-            foreach (var section in Sections)
+            foreach (var section in Sections.Take(TestCases.Count))
             {
                 if (section["parent_id"].ToString() == "")
                     continue;
                 else
-                _testRun.Add(section["name"].ToString(), new List<string>());           
+               // _testRun.Add(section["name"].ToString(), new List<string>());           
                 foreach (var testCase in TestCases.Take(_testCaseName.Count)) // кол-во уникальных тестов в section  
                 {
                     // Console.WriteLine(testCase["id"] + " " + testCase["title"]);
                     try
                     {
-                        _testRun[section["name"].ToString()].Add(testCase["id"].ToString());                        
+                        _testRun.Add(testCase["id"].ToString());                        
                     }
-                    catch (ArgumentException) { }
+                    catch { }
                 }
+                if (TestCases.Count > 0)
                 for (int i = 0; i < _testCaseName.Count; i++)
                 {
                     TestCases.RemoveAt(TestCases.Count - TestCases.Count);   
                 }                    
 
-            }
-            //  foreach (KeyValuePair<string, List<string>> testrun in TestRun)
-            //    foreach (string value in testrun.Value)
-            //Console.WriteLine("name = {0}, id = {1}", testrun.Key, value);
+            }            
         }
         public void GetCases(string sID)
         {
@@ -195,10 +192,10 @@ namespace AutotestDesktop
             Console.WriteLine("\nTest Suite is update.");
         }
 
-        public Dictionary<string, List<string>> GetIDCaseInSection()
+        public List<string> GetIDCaseInSection()
         {
-            Dictionary<string, List<string>> TCases = new Dictionary<string, List<string>>();
-            foreach (KeyValuePair<string, List<string>> testrun in _testRun)
+            List<string> TCases = new List<string>();
+            foreach (string testrun in _testRun)
                 //foreach (string value in testrun.Value)
                 //{
                 //  Console.WriteLine(driver.GetType().Name);
@@ -207,7 +204,7 @@ namespace AutotestDesktop
                  * 
                  */
                 //if (driver.GetType().Name.Contains(testrun.Key))                     
-                TCases.Add(testrun.Key, testrun.Value);
+                TCases.Add(testrun);
             //}
             return TCases;
         }
@@ -302,17 +299,22 @@ namespace AutotestDesktop
 
         public void SetStatus(string caseID, Status statusID, string resultMessage, string commentMessage)
         {
-            client.User = _login;
-            client.Password = _password;
-
-            var addResultData = new Dictionary<string, object>
+            if (!caseID.Equals("case_id is not found"))
             {
+                client.User = _login;
+                client.Password = _password;
 
-                {"status_id", statusID}, 
-                {"comment", resultMessage},
-                {"custom_comment_test", commentMessage}
-            };
-            JObject r = (JObject)client.SendPost("add_result/" + caseID, addResultData);
+                var addResultData = new Dictionary<string, object>
+                     {
+
+                    {"status_id", statusID}, 
+                    {"comment", resultMessage},
+                    {"custom_comment_test", commentMessage}
+                     };
+                JObject r = (JObject)client.SendPost("add_result/" + caseID, addResultData);
+            }
+            else
+                Console.WriteLine(caseID);
         }
         public void CloseRun()
         {
@@ -374,18 +376,24 @@ namespace AutotestDesktop
             client.User = _login;
             client.Password = _password;
             GetSuiteID = nSuite;
-            _plans = (JObject)client.SendGet("get_plan/2225");            
+            _lRunID = new List<string>();
+            _lConfigNameTestRun = new List<string>();
+            _plans = (JObject)client.SendGet("get_plan/" + _planID);            
             foreach (var plan in _plans)
             {
                 if (plan.Key == "id")
                     Console.WriteLine(plan.Value);
                 if (plan.Key == "entries")
                     foreach (var entries in plan.Value)
+                    {
                         foreach (var ent_runs in entries["runs"])
                         {
                             _lRunID.Add(ent_runs["id"].ToString());
+                            _lConfigNameTestRun.Add(ent_runs["config"].ToString());
                             Console.WriteLine("Run ID: " + ent_runs["id"].ToString() + " " + ent_runs["config"].ToString());
-                        }                                                                                              
+                        }
+                    }
+                                                                                                                      
             }            
             Console.WriteLine();
             return _lRunID.Count;

@@ -63,11 +63,11 @@ namespace AutotestDesktop
             {
                 case "http://putlocker.is": return 1;
 
-                case "http://thevideos.tv": return 3;
+                case "http://thevideos.tv": return 1; //3
 
-                case "http://www13.zippyshare.com/v/94311818/file.html": return 2;
+                case "http://www13.zippyshare.com/v/94311818/file.html": return 1; //2
 
-                case "http://um-fabolous.blogspot.ru": return 3;
+                case "http://um-fabolous.blogspot.ru": return 1; //3
 
                 case "http://www.flashx.tv/&?": return 1;
                 default: return 1;
@@ -77,16 +77,16 @@ namespace AutotestDesktop
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is": return 10000;
+                case "http://putlocker.is": return 1000; //10000
 
-                case "http://thevideos.tv": return 45000;
+                case "http://thevideos.tv": return 1000; //45000
 
-                case "http://www13.zippyshare.com/v/94311818/file.html": return 45000;
+                case "http://www13.zippyshare.com/v/94311818/file.html": return 1000; //45000
 
-                case "http://um-fabolous.blogspot.ru": return 45000;
+                case "http://um-fabolous.blogspot.ru": return 1000; //45000
 
-                case "http://www.flashx.tv/&?": return 20000;
-                default: return 20000;
+                case "http://www.flashx.tv/&?": return 1000; //20000
+                default: return 3000; //20000
             }
         }
         //private string _GetTargetClick (string urlForFindZoneID)

@@ -29,11 +29,11 @@ namespace AutotestDesktop
             int testRunCount = 0;            
             DateTime date = DateTime.Today;
             string nameSuite = date.DayOfWeek.ToString();
-            if (nameSuite == "Monday" || nameSuite == "Wednesday" || nameSuite == "Tuesday" || nameSuite == "Friday")
+            if (nameSuite == "Monday" || nameSuite == "Wednesday" || nameSuite == "Thursday")
             {
                 Console.WriteLine("Test is running..." + DateTime.Now + "\n");
                 _browsers = new Driver(_testrail);
-                 testRunCount = _testrail.GetPlansProject(nameSuite);
+                 testRunCount = _testrail.GetPlansProject(nameSuite);               
                 while (testRunCount != 0)
                 {
                     _browsers.SauceLabsTest();
