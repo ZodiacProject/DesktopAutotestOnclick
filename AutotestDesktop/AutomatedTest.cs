@@ -13,26 +13,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gallio.Framework;
+using Gallio.Model;
+using MbUnit.Framework;
 
 namespace AutotestDesktop
 {
 	public class AutomatedTest
 	{
         private TestRail _testrail;
-        private Driver _browsers;
-        public AutomatedTest(string runID)
+        private Driver _browsers;        
+        public AutomatedTest()
         {
             _testrail = new TestRail();
-            /* suite id назначается автоматически 
-            *  из уже имеющегося, ранее созданного test run                 
-            *  текст для свойства GetSuiteID задается опционально
-            */
-            _testrail.GetRunsProject();
-            _testrail.RunID = runID;
-            _testrail.GetSuiteID = "#$%";
-            Console.WriteLine("Test is running..." + DateTime.Now);
-            _browsers = new Driver(_testrail);
-        }
+            int testRunCount = 0;            
+            DateTime date = DateTime.Today;
+            string nameSuite = date.DayOfWeek.ToString();
+            if (nameSuite == "Monday" || nameSuite == "Wednesday" || nameSuite == "Thursday")
+            {
+                Console.WriteLine("Test is running..." + DateTime.Now + "\n");
+                _browsers = new Driver(_testrail);
+                 testRunCount = _testrail.GetPlansProject(nameSuite);               
+                while (testRunCount != 0)
+                {
+                    _browsers.SauceLabsTest();
+                    testRunCount--;
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nToday is " + date.DayOfWeek.ToString() + ". The regular test is not create!");
+                return;
+            }
+        }                          
         private string _getDateForJasonRequest(DateTime date)
         {
             string month = null;

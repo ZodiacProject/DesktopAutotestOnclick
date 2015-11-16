@@ -139,8 +139,9 @@ C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\ThoughtWorks.Seleni
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.xml
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.xml
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\obj\Debug\AutotestDesktop.csprojResolveAssemblyReference.cache
-C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Selenium.WebDriverBackedSelenium.pdb
-C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.pdb
-C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\WebDriver.Support.pdb
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\phantomjs.exe
 C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\phantomjs-license.txt
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Gallio.dll
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\Gallio40.dll
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\MbUnit.dll
+C:\GitHub\Projects\AutotestDesktop\AutotestDesktop\bin\Debug\MbUnit40.dll

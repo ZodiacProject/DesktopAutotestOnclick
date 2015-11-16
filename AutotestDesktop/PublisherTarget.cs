@@ -15,7 +15,7 @@ namespace AutotestDesktop
 {
     class PublisherTarget
     {
-        private Dictionary <string, string> _dataCase;
+        private Dictionary<string, string> _dataCase;
         public string Url { get; set; }
         public string ZoneIds { get; private set; }
         public string TargetClick { get; private set; }
@@ -28,7 +28,7 @@ namespace AutotestDesktop
         {
             _dataCase = DataCase;
             DriverSetting = new List<PublisherTarget>();
-            foreach (KeyValuePair <string, string> dataCase in DataCase)
+            foreach (KeyValuePair<string, string> dataCase in DataCase)
             {
                 DriverSetting.Add(new PublisherTarget()
                 {
@@ -36,58 +36,58 @@ namespace AutotestDesktop
                     ZoneIds = dataCase.Value,
                     CountShowPopup = _GetShowPopup(dataCase.Key),
                     Interval = _GetInterval(dataCase.Key),
-                 });
+                    //TargetClick = _GetTargetClick(dataCase.Key),
+                });
             }
-                return DriverSetting;
+            return DriverSetting;
         }
-        private string _GetZoneID (string urlForFindZoneID)
+        private string _GetZoneID(string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is/": return "10802";
-                   
+                case "http://putlocker.is": return "10802";
+
                 case "http://thevideos.tv": return "90446";
-  
+
                 case "http://www13.zippyshare.com/v/94311818/file.html": return "180376";
 
                 case "http://um-fabolous.blogspot.ru": return "199287";
 
                 case "http://www.flashx.tv/&?": return "119133";
                 default: return "NOTZONE";
-            }         
+            }
         }
-        private int _GetShowPopup (string urlForFindZoneID)
+        private int _GetShowPopup(string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {
                 case "http://putlocker.is": return 1;
 
-                case "http://thevideos.tv": return 3;
+                case "http://thevideos.tv": return 1; //3
 
-                case "http://www13.zippyshare.com/v/94311818/file.html": return 2;
+                case "http://www13.zippyshare.com/v/94311818/file.html": return 1; //2
 
-                case "http://um-fabolous.blogspot.ru": return 3;
+                case "http://um-fabolous.blogspot.ru": return 1; //3
 
                 case "http://www.flashx.tv/&?": return 1;
                 default: return 1;
             }
         }
-        private int _GetInterval (string urlForFindZoneID)
+        private int _GetInterval(string urlForFindZoneID)
         {
             switch (urlForFindZoneID)
             {
-                case "http://putlocker.is/": return 10000;
+                case "http://putlocker.is": return 1000; //10000
 
-                case "http://thevideos.tv": return 45000;
+                case "http://thevideos.tv": return 1000; //45000
 
-                case "http://www13.zippyshare.com/v/94311818/file.html": return 45000;
+                case "http://www13.zippyshare.com/v/94311818/file.html": return 1000; //45000
 
-                case "http://um-fabolous.blogspot.ru": return 45000;
+                case "http://um-fabolous.blogspot.ru": return 1000; //45000
 
-                case "http://www.flashx.tv/&?": return 20000;
-                default: return 20000;
+                case "http://www.flashx.tv/&?": return 1000; //20000
+                default: return 3000; //20000
             }
         }
-
-        }
-  }
+    }
+}
