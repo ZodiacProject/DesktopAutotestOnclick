@@ -34,20 +34,18 @@ namespace AutotestDesktop
             {"opera", new List<string>(){"12"}}
         };
         private TestRail _testRun;
-        private ParserPage _parsePage;
-        private URLActual _urlSwap;
         private bool _isLandChecked;
         private bool _isOnClick;
         private bool _isLoadPage;
         private bool _isZoneOnTestCase;
-        private string _statusSauceLabs = null;
-        //Constuctor
+        private string _statusSauceLabs = String.Empty;
+        private string _urlCheck = String.Empty;
+//Constuctor
         public Driver(TestRail test)
         {
-            _testRun = test;
-            _publishers = new PublisherTarget();
-            _parsePage = new ParserPage();
-            _urlSwap = new URLActual();
+            _testRun = test;                        
+            _publishers = new PublisherTarget();                                  
+
         }
         //SauceLabs
         public void SauceLabsTest()
@@ -60,24 +58,23 @@ namespace AutotestDesktop
                 _sectionCaseToRun.Add(case_id_section);
             foreach (KeyValuePair<string, string> test_case_name in _testRun.GetTestCaseName)
                 _testCase.Add(test_case_name.Key, test_case_name.Value);
+                             
+                foreach (KeyValuePair<string, List<string>> browser in _browsers)
+                    {
+                        if (browser.Key == "safari" && (platform == "Windows XP" || platform == "Windows 7" || platform == "Windows 8.1" || platform == "Windows 10" || platform == "Linux"))
+                            continue;
+                        if (browser.Key == "opera" && (platform == "Windows 8.1" || platform == "Windows 10" || platform == "OS X 10.11"))
+                            continue;                        
+                        if (browser.Key == "internet explorer" && (platform == "Windows XP" || platform == "OS X 10.11" || platform == "Linux"))
+                            continue;                  
+                        foreach (string browser_version in browser.Value)
+                        {
+                            _Setup(browser.Key, browser_version, platform);                   
+                            _NavigateDriver(platform, browser.Key, browser_version);
+                            _CleanUp();
+                        }                                                                          
+                    }                            
 
-            foreach (KeyValuePair<string, List<string>> browser in _browsers)
-            {
-                if (browser.Key == "safari" && (platform == "Windows XP" || platform == "Windows 7" || platform == "Windows 8.1" || platform == "Windows 10" || platform == "Linux"))
-                    continue;
-                if (browser.Key == "opera" && (platform == "Windows 8.1" || platform == "Windows 10" || platform == "OS X 10.11"))
-                    continue;
-                if (browser.Key == "internet explorer" && (platform == "Windows XP" || platform == "OS X 10.11" || platform == "Linux"))
-                    continue;
-                if (browser.Key == "firefox" && platform == "OS X 10.11")
-                    continue;
-                foreach (string browser_version in browser.Value)
-                {
-                    _Setup(browser.Key, browser_version, platform);
-                    _NavigateDriver(platform, browser.Key, browser_version);
-                    _CleanUp();
-                }
-            }
         }
         //methods
         private void _NavigateDriver(string plfName, string brwName, string brwVersion)
@@ -94,11 +91,20 @@ namespace AutotestDesktop
                     _isLoadPage = false;
                     _isLandChecked = false;
                     _isOnClick = false;
-                    if (_parsePage.IsZoneOnTestCase(driverSet.ZoneIds))
+
+                    if ((_driver.WindowHandles.Count) > 1)
+                        _closeOtherWindows(_driver);
+
+                    if (ParserPage.IsZoneOnTestCase(driverSet.ZoneIds))
                     {
-                        _isZoneOnTestCase = true;
-                        _urlSwap.TestUrlForSwap = driverSet.Url;
-                        driverSet.Url = _urlSwap.TestUrlForSwap;
+                        _isZoneOnTestCase = true;                  
+                        URLActual.TestUrlForSwap = driverSet.Url;
+                        driverSet.Url = URLActual.TestUrlForSwap;
+
+                        if (!String.IsNullOrEmpty(_urlCheck = ParserPage.GetFoundUrlCheck))
+                            if (_urlCheck.Contains(driverSet.Url))
+                                driverSet.Url = _urlCheck;
+
                         _driver.Navigate().GoToUrl(driverSet.Url);
                         Console.WriteLine(plfName + ": " + brwName + " ver " + brwVersion + "\nUrl: " + driverSet.Url);
                         /* подготовка сайта для теста, 
@@ -116,7 +122,7 @@ namespace AutotestDesktop
                             //_changeTestScripts(_driver);
 
 
-                            if (_parsePage.FindZoneOnPage(_driver, driverSet.Url, driverSet.ZoneIds))
+                            if (ParserPage.FindZoneOnPage(_driver, driverSet.Url, driverSet.ZoneIds))
                                 _isLandChecked = true;
                             else
                                 _isLandChecked = false;
@@ -179,20 +185,22 @@ namespace AutotestDesktop
             desiredCapabilites.SetCapability("accessKey", Constants.SAUCE_LABS_ACCOUNT_KEY);  // supply sauce labs account key
             desiredCapabilites.SetCapability("name", TestContext.CurrentContext.Test.Name = DateTime.Today.DayOfWeek.ToString() + " Onclick test"); // give the test a name
 
-            try
-            {
-                // start a new remote web driver session on sauce labs
-                _driver = new FirefoxDriver(desiredCapabilites);//new RemoteWebDriver(commandExecutorUri, desiredCapabilites);
-                _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
-            }
-            catch (WebDriverException e) { Console.WriteLine(e); }
-            return _driver;
-        }
-        private void _CleanUp()
-        {
-            Console.WriteLine("# Saucelabs is " + _statusSauceLabs);
-            try
-            {
+
+    try
+    {
+        // start a new remote web driver session on sauce labs
+        _driver = new RemoteWebDriver(commandExecutorUri, desiredCapabilites);
+        _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
+    }
+    catch (WebDriverException e) { Console.WriteLine(e); }
+    return _driver;
+}
+private void _CleanUp()
+{
+    Console.WriteLine("# Saucelabs is " + _statusSauceLabs + "\n");
+    try
+    {
+        // get the status of the current test
                 // get the status of the current test
                 switch (_statusSauceLabs)
                 {
@@ -207,12 +215,12 @@ namespace AutotestDesktop
                     default: ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
                         break;
                 }
-            }
+     }
             finally
             {
                 _driver.Quit();
             }
-        }
+}
         private void _changeTestScripts(IWebDriver driver)
         {
             try
@@ -246,28 +254,30 @@ namespace AutotestDesktop
             else
                 return false;
         }
-        private string _getCaseIDForTestStatus(IWebDriver driver, string brwVersion)
-        {
-            foreach (string case_id in _sectionCaseToRun)
-            {
-                /*Возвращает case_id для testrail
-                 * а после этого id удаляется из списка, 
-                 * да в такой последовательности работает корректно*/
-                _sectionCaseToRun.Remove(case_id);
-                return case_id;
-            }
-            return "case_id is not found";
+
+private string _getCaseIDForTestStatus(IWebDriver driver, string brwVersion)
+{   
+        foreach (string case_id in _sectionCaseToRun)
+        {            
+            /*Возвращает case_id для testrail
+             * а после этого id удаляется из списка, 
+             * да в такой последовательности работает корректно*/
+            Console.WriteLine("case id " + case_id);
+            _sectionCaseToRun.Remove(case_id);
+            return case_id;
         }
-        private void _closeOtherWindows(IWebDriver driver)
+        return "case_id is not found";
+} 
+private void _closeOtherWindows(IWebDriver driver)
+{
+        try
         {
-            try
-            {
-                driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
-                if ((driver.WindowHandles.Count) > 1)
-                    _acceptAlert(driver);
-            }
-            catch { }
+            driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1)).Close();
+            if ((driver.WindowHandles.Count) > 1)
+                 _acceptAlert(driver);
         }
+        catch { }
+}
         private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
         {
             try
@@ -383,7 +393,7 @@ namespace AutotestDesktop
                 }
             }
             catch { }
-            Console.WriteLine();
+          
         }
     }
 }

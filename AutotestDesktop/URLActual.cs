@@ -16,10 +16,10 @@ using System.Threading.Tasks;
 
 namespace AutotestDesktop
 {
-    class URLActual
+    internal static class URLActual
     {
-        private string url;
-        public string TestUrlForSwap
+        private static string url;
+        public static string TestUrlForSwap
         {
             get
             {
@@ -27,10 +27,10 @@ namespace AutotestDesktop
             }
             set
             {
-                this.url = value;
+                url = value;
             }
         }
-      private string SwapUrl ()
+      private static string SwapUrl ()
         {
             switch (url)
             {

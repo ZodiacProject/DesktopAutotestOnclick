@@ -56,7 +56,7 @@ namespace AutotestDesktop
                         _suiteId = _monday; 
                         _planID = _planMonday;
                         break;              
-                    case "Wednesday": 
+                    case "Wednesday":
                         _suiteId = _wednesday;
                         _planID = _planWednesday;
                         break;
