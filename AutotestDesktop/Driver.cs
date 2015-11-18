@@ -34,20 +34,17 @@ namespace AutotestDesktop
             {"opera", new List<string>(){"12"}}
         };    
         private TestRail _testRun;
-        private ParserPage _parsePage;
-        private URLActual _urlSwap;
         private bool _isLandChecked;
         private bool _isOnClick;
         private bool _isLoadPage;
         private bool _isZoneOnTestCase;
-        private string _statusSauceLabs = null;
+        private string _statusSauceLabs = String.Empty;
+        private string _urlCheck = String.Empty;
 //Constuctor
         public Driver(TestRail test)
         {
             _testRun = test;                        
-            _publishers = new PublisherTarget();            
-            _parsePage = new ParserPage();
-            _urlSwap = new URLActual();
+            _publishers = new PublisherTarget();                                  
         }
 //SauceLabs
         public void SauceLabsTest()
@@ -68,9 +65,7 @@ namespace AutotestDesktop
                         if (browser.Key == "opera" && (platform == "Windows 8.1" || platform == "Windows 10" || platform == "OS X 10.11"))
                             continue;                        
                         if (browser.Key == "internet explorer" && (platform == "Windows XP" || platform == "OS X 10.11" || platform == "Linux"))
-                            continue;
-                        if (browser.Key == "firefox" && platform == "OS X 10.11")
-                            continue;
+                            continue;                  
                         foreach (string browser_version in browser.Value)
                         {
                             _Setup(browser.Key, browser_version, platform);                   
@@ -94,11 +89,20 @@ namespace AutotestDesktop
                     _isLoadPage = false;
                     _isLandChecked = false;
                     _isOnClick = false;
-                    if (_parsePage.IsZoneOnTestCase(driverSet.ZoneIds))
+
+                    if ((_driver.WindowHandles.Count) > 1)
+                        _closeOtherWindows(_driver);
+
+                    if (ParserPage.IsZoneOnTestCase(driverSet.ZoneIds))
                     {
                         _isZoneOnTestCase = true;                  
-                        _urlSwap.TestUrlForSwap = driverSet.Url;
-                        driverSet.Url = _urlSwap.TestUrlForSwap;
+                        URLActual.TestUrlForSwap = driverSet.Url;
+                        driverSet.Url = URLActual.TestUrlForSwap;
+
+                        if (!String.IsNullOrEmpty(_urlCheck = ParserPage.GetFoundUrlCheck))
+                            if (_urlCheck.Contains(driverSet.Url))
+                                driverSet.Url = _urlCheck;
+
                         _driver.Navigate().GoToUrl(driverSet.Url);
                         Console.WriteLine(plfName + ": " + brwName + " ver " + brwVersion + "\nUrl: " + driverSet.Url);
                         /* подготовка сайта для теста, 
@@ -116,7 +120,7 @@ namespace AutotestDesktop
                             //_changeTestScripts(_driver);
 
 
-                            if (_parsePage.FindZoneOnPage(_driver, driverSet.Url, driverSet.ZoneIds))
+                            if (ParserPage.FindZoneOnPage(_driver, driverSet.Url, driverSet.ZoneIds))
                                 _isLandChecked = true;
                             else
                                 _isLandChecked = false;
@@ -190,28 +194,28 @@ private IWebDriver _Setup(string browser, string version, string platform)
 }
 private void _CleanUp()
 {
-    Console.WriteLine("# Saucelabs is " + _statusSauceLabs);
-    try
-    {
-        // get the status of the current test
-        switch (_statusSauceLabs)
-        {
-            case "passed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs); //isStatus = TestContext.CurrentContext.Outcome.Status == TestStatus.Passed;
-                break;
-            case "failed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs);
-                break;
-            case "blocked": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=skipped");
-                break;
-            case "retest": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
-                break;
-            default: ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
-                break;
-        }
-    }
-    finally
-    {
+    Console.WriteLine("# Saucelabs is " + _statusSauceLabs + "\n");
+    //try
+    //{
+    //    // get the status of the current test
+    //    switch (_statusSauceLabs)
+    //    {
+    //        case "passed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs); //isStatus = TestContext.CurrentContext.Outcome.Status == TestStatus.Passed;
+    //            break;
+    //        case "failed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs);
+    //            break;
+    //        case "blocked": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=skipped");
+    //            break;
+    //        case "retest": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
+    //            break;
+    //        default: ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
+    //            break;
+    //    }
+    //}
+    //finally
+    //{
         _driver.Quit();
-    }
+    //}
 }
 private void _changeTestScripts(IWebDriver driver)
 {    
@@ -253,6 +257,7 @@ private string _getCaseIDForTestStatus(IWebDriver driver, string brwVersion)
             /*Возвращает case_id для testrail
              * а после этого id удаляется из списка, 
              * да в такой последовательности работает корректно*/
+            Console.WriteLine("case id " + case_id);
             _sectionCaseToRun.Remove(case_id);
             return case_id;
         }
@@ -276,7 +281,7 @@ private void _onclickProgress(IWebDriver driver, PublisherTarget d_setting)
         {
             _isOnClick = true;
             driver.SwitchTo().Window(driver.WindowHandles.ElementAt(1));
-//wait load page            
+            //wait load page            
             driver.Close();
             Thread.Sleep(2000);
             if ((driver.WindowHandles.Count) > 1)
@@ -383,7 +388,6 @@ private void _endTest(IWebDriver driver, PublisherTarget driverSet, string brVer
         }
     }
     catch { }
-    Console.WriteLine();
 }
     }
 }
