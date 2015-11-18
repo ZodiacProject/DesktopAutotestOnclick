@@ -186,7 +186,7 @@ private IWebDriver _Setup(string browser, string version, string platform)
     try
     {
         // start a new remote web driver session on sauce labs
-        _driver = new FirefoxDriver(desiredCapabilites);//new RemoteWebDriver(commandExecutorUri, desiredCapabilites);
+        _driver = new RemoteWebDriver(commandExecutorUri, desiredCapabilites);
         _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
     }
     catch (WebDriverException e) { Console.WriteLine(e); }
@@ -195,27 +195,27 @@ private IWebDriver _Setup(string browser, string version, string platform)
 private void _CleanUp()
 {
     Console.WriteLine("# Saucelabs is " + _statusSauceLabs + "\n");
-    //try
-    //{
-    //    // get the status of the current test
-    //    switch (_statusSauceLabs)
-    //    {
-    //        case "passed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs); //isStatus = TestContext.CurrentContext.Outcome.Status == TestStatus.Passed;
-    //            break;
-    //        case "failed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs);
-    //            break;
-    //        case "blocked": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=skipped");
-    //            break;
-    //        case "retest": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
-    //            break;
-    //        default: ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
-    //            break;
-    //    }
-    //}
-    //finally
-    //{
+    try
+    {
+        // get the status of the current test
+        switch (_statusSauceLabs)
+        {
+            case "passed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs); //isStatus = TestContext.CurrentContext.Outcome.Status == TestStatus.Passed;
+                break;
+            case "failed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs);
+                break;
+            case "blocked": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=skipped");
+                break;
+            case "retest": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
+                break;
+            default: ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
+                break;
+        }
+    }
+    finally
+    {
         _driver.Quit();
-    //}
+    }
 }
 private void _changeTestScripts(IWebDriver driver)
 {    
