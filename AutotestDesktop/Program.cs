@@ -11,8 +11,13 @@ namespace AutotestDesktop
     {
         static void Main(string[] args)
         {
-            AutomatedTest BeginTest = new AutomatedTest();
-            Console.WriteLine("Тест выполнился! " + DateTime.Now);
+            if (args.Length != 0)
+            {
+                AutomatedTest BeginTest = new AutomatedTest(args[0]);
+                Console.WriteLine("Тест выполнился! " + DateTime.Now);
+            }
+            else
+                Console.WriteLine("Not found Plan ID!");           
         }
     }
 }

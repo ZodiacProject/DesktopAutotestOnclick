@@ -52,22 +52,7 @@ namespace AutotestDesktop
         public string GetSuiteID
         {
             get { return _suiteId; }
-            set
-            {
-                switch (value)
-                {
-                    case "Monday": 
-                        _suiteId = _monday; 
-                        _planID = _planMonday;
-                        break;                     
-                    case "Wednesday":
-                        _suiteId = _wednesday;
-                        _planID = _planWednesday;
-                        break;
-                    default:                    
-                        break;
-                }
-            }
+            set { _suiteId = value; }
         }
         public string TheCurrentPlatform { get { return _lPlatformName.First(); } }
         public Dictionary <string, List<string>> GetBrow_BrVersion { get { return _browserAndBrVersion; } }
@@ -383,12 +368,12 @@ namespace AutotestDesktop
             }
             Console.WriteLine();
         }
-        public int GetPlansProject(string nSuite)
+        public int GetPlansProject(string planID)
         {
             Console.Write("Topical test-plans: ");
             client.User = _login;
             client.Password = _password;
-            GetSuiteID = nSuite;           
+            this._planID = planID;          
             _lRunID = new List<string>();
             _lBrowserVersionTestRun = new List<string>();
             _plans = (JObject)client.SendGet("get_plan/" + _planID);            
@@ -403,6 +388,7 @@ namespace AutotestDesktop
                         {                                                       
                             _lRunID.Add(ent_runs["id"].ToString());
                             _lPlatformName.Add(ent_runs["config"].ToString());
+                            GetSuiteID = ent_runs["suite_id"].ToString();
                             Console.WriteLine("Run ID: " + ent_runs["id"].ToString() + " " + ent_runs["config"].ToString());                             
                         }
                     }

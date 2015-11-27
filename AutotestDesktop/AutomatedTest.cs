@@ -23,28 +23,19 @@ namespace AutotestDesktop
 	{
         private TestRail _testrail;
         private Driver _browsers;        
-        public AutomatedTest()
+        public AutomatedTest(string planID)
         {
             _testrail = new TestRail();
-            int testRunCount = 0;          
-            DateTime date = DateTime.Today;
-            string nameSuite = date.DayOfWeek.ToString();
-            if (nameSuite == "Monday" || nameSuite == "Wednesday")
-            {
-                Console.WriteLine("Test is running..." + DateTime.Now + "\n");
+            int testRunCount = 0;
+
+                 Console.WriteLine("Test is running..." + DateTime.Now + "\n");
                 _browsers = new Driver(_testrail);
-                testRunCount = _testrail.GetPlansProject(nameSuite);
+                testRunCount = _testrail.GetPlansProject(planID);
                 while (testRunCount != 0)
                 {
                     _browsers.SauceLabsTest();
                     testRunCount--;
-                }
-            }
-            else
-            {
-                Console.WriteLine("\nToday is " + date.DayOfWeek.ToString() + ". The regular test is not create!");
-                return;
-            }
+                }          
         }                          
         private string _getDateForJasonRequest(DateTime date)
         {
