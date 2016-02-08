@@ -17,7 +17,7 @@ namespace AutotestDesktop
                 Console.WriteLine("Тест выполнился! " + DateTime.Now);
             }
             else
-                Console.WriteLine("Not found Plan ID!");           
+                Console.WriteLine("Not found Plan ID!");    
         }
     }
 }

@@ -26,13 +26,10 @@ namespace AutotestDesktop
         private APIClient client = new APIClient("https://propeller.testrail.net");
         private const string _login = "stepanov.guap@gmail.com";
         private const string _password = "302bis";
-        private const string _onclick = "_onclick";
-        private const string _monday = "44", _wednesday = "47";
-        private const string _planMonday = "2225", _planWednesday = "2253";
+        private const string _onclick = "_onclick";  
         private string _runID = null;
         private string _suiteId = null;
         private string _planID = null;
-        private bool _isIteration;
         private JObject _topSites;
         private JObject _topZoneSites;
         private JArray _caseData;
@@ -40,13 +37,13 @@ namespace AutotestDesktop
         private JObject _plans;
         private List<string> _testRun;
         private Dictionary<string, string> _testCaseName;
-        private Dictionary<string, List<string>> _sites;
-        private Dictionary<string, List<string>> _browserAndBrVersion;  
-        private List<string> _lRunID;
-        private List<string> _lBrowserVersionTestRun = new List<string>();
+        private Dictionary<string, List<string>> _sites;       
+        private List<string> _lRunID;       
         private List<string> _lPlatformName = new List<string>();
         private List<string> _createCases = new List<string>();
         private List<string> _lTheCurrentBrowser = new List<string>();
+
+        public List<PublisherTarget> LDriverSetting;
         public Dictionary<string, string> GetTestCaseName { get { return _getRegularNameCase(); } }
 
         public string GetSuiteID
@@ -54,66 +51,54 @@ namespace AutotestDesktop
             get { return _suiteId; }
             set { _suiteId = value; }
         }
-        public string TheCurrentPlatform { get { return _lPlatformName.First(); } }
-        public Dictionary <string, List<string>> GetBrow_BrVersion { get { return _browserAndBrVersion; } }
-        public List<string> GetCurrentBrowser { get { return _lTheCurrentBrowser; } }
-        public List<string> GetBrowserVersion { get { return _lBrowserVersionTestRun; } }
+        public string TheCurrentPlatform { get { return _lPlatformName.First(); } }        
+        public List<string> GetCurrentBrowser { get { return _lTheCurrentBrowser; } }        
         public Status Status;
         public void TakeParamToStartTestRail()
         {
             client.User = _login;
-            client.Password = _password;            
+            client.Password = _password;
+            _runID = _lRunID.First();
             _testRun = new List<string>();
-            _testCaseName = new Dictionary<string, string>();
-            _browserAndBrVersion = new Dictionary<string, List<string>>();
+            _testCaseName = new Dictionary<string, string>();            
+            LDriverSetting = new List<PublisherTarget>();           
             JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);            
             Console.WriteLine("\nRun ID: " + _lRunID.First());
             JArray TestCases = (JArray)client.SendGet("get_tests/" + _lRunID.First());
             JObject GetCase;
             JObject GetBrowserVersion;
-            JObject GetBrowser;
-            string browserName = null;     
+            JObject GetBrowser;          
+            string titleNameOfCase = null;           
             _lRunID.RemoveAt(_lRunID.Count - _lRunID.Count); // удаление первого run id в последовательности _lRunID
             _lPlatformName.RemoveAt(_lPlatformName.Count - _lPlatformName.Count); // удаление первого config name run (ex.Linux or Windows XP) в последовательности _lPlatformName
-            foreach (var caseName in TestCases)
+            foreach (var testCase in TestCases)
             {                            
                 // если коллекция уже содержит такой ключ, то переход к следующей записи
-                if (_testCaseName.ContainsKey(caseName["title"].ToString()))
+                if (_testCaseName.ContainsKey(testCase["title"].ToString()))
+                {
+                    titleNameOfCase = testCase["title"].ToString();
                     continue;
+                }
                 else
                 {
-                    // Проверка на untestead case во время второй итерации
-                      _testCaseName.Add(caseName["title"].ToString(), caseName["custom_zone_id"].ToString());         
+                    if (titleNameOfCase != testCase["title"].ToString())
+                    {
+                        GetCase = (JObject)client.SendGet("get_case/" + testCase["case_id"]);
+                        GetBrowserVersion = (JObject)client.SendGet("get_section/" + GetCase["section_id"]);
+                        GetBrowser = (JObject)client.SendGet("get_section/" + GetBrowserVersion["parent_id"]);                
+                        LDriverSetting.Add(new PublisherTarget()
+                        {
+                            CaseID = testCase["id"].ToString(),
+                            Url = testCase["title"].ToString(),
+                            ZoneIds = testCase["custom_zone_id"].ToString(),
+                            BrName = GetBrowser["name"].ToString(),
+                            BrVersion = GetBrowserVersion["name"].ToString(),
+                            CountShowPopup = 1,
+                            Interval = 3000,
+                        });
+                    }                                       
                 }                    
-            }            
-                foreach (var section in Sections.Take(TestCases.Count)) // кол-во тестов в текущем test-run
-                {                  
-                        foreach (var testCase in TestCases.Take(_testCaseName.Count)) // кол-во уникальных тестов в section  
-                        {                            
-                                _testRun.Add(testCase["id"].ToString());
-                                GetCase = (JObject)client.SendGet("get_case/" + testCase["case_id"]);
-                                GetBrowserVersion = (JObject)client.SendGet("get_section/" + GetCase["section_id"]);
-                                GetBrowser = (JObject)client.SendGet("get_section/" + GetBrowserVersion["parent_id"]);
-
-                                if (browserName != GetBrowser["name"].ToString())
-                                {
-                                    _browserAndBrVersion.Add(GetBrowser["name"].ToString(), new List<string>());
-                                    browserName = GetBrowser["name"].ToString();
-                                }
-
-                                if (_browserAndBrVersion[GetBrowser["name"].ToString()].Count == 0)
-                                   _browserAndBrVersion[GetBrowser["name"].ToString()].Add(GetBrowserVersion["name"].ToString());       
-    
-                                if (!_browserAndBrVersion[GetBrowser["name"].ToString()].Last().Equals(GetBrowserVersion["name"].ToString()))
-                                   _browserAndBrVersion[GetBrowser["name"].ToString()].Add(GetBrowserVersion["name"].ToString());                 
-                        }
-                        if (TestCases.Count > 0)
-                            for (int i = 0; i < _testCaseName.Count; i++)
-                            {
-                                TestCases.RemoveAt(TestCases.Count - TestCases.Count);
-                            } 
-                 }                                                   
-                                                                                                             
+            }                                                                                                                                                                          
         }
         public void GetCases(string sID)
         {
@@ -314,6 +299,33 @@ namespace AutotestDesktop
             else
                 Console.WriteLine(caseID);
         }
+        public void SetStatusForRun(Dictionary <string, Status> caseRusults, Dictionary<string, string> urlResults, Dictionary<string, string> caseComment)
+        {           
+                client.User = _login;
+                client.Password = _password;
+                JArray arr = new JArray();                                
+                foreach (var result in caseRusults)
+                {
+                    JObject obj = new JObject();    
+                    obj.Add("test_id", result.Key);                                                                                 
+                    obj.Add("status_id", Convert.ToInt32(result.Value));
+                    foreach (var url_res in urlResults)
+                    {
+                        if (result.Key.Contains(url_res.Key))
+                            obj.Add("comment", url_res.Value);                       
+                    }
+                    foreach (var case_comm in caseComment)
+                    {
+                        if (result.Key.Contains(case_comm.Key))
+                            obj.Add("custom_comment_test", case_comm.Value);
+                    }
+                    arr.Add(obj);
+                }                
+               
+                var addResultData = new Dictionary<string, object>();
+                addResultData.Add("results", arr);                                         
+                JArray response = (JArray)client.SendPost("add_results/" + _runID, addResultData);
+        }        
         public void CloseRun()
         {
 
@@ -374,8 +386,7 @@ namespace AutotestDesktop
             client.User = _login;
             client.Password = _password;
             this._planID = planID;          
-            _lRunID = new List<string>();
-            _lBrowserVersionTestRun = new List<string>();
+            _lRunID = new List<string>();            
             _plans = (JObject)client.SendGet("get_plan/" + _planID);            
             foreach (var plan in _plans)
             {

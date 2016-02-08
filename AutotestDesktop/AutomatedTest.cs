@@ -23,15 +23,15 @@ namespace AutotestDesktop
 	{
         private TestRail _testrail;
         private Driver _browsers;        
-        public AutomatedTest(string planID)
+        public AutomatedTest(string id) // plan id or test run id
         {
             _testrail = new TestRail();
+            _browsers = new Driver(_testrail);
             int testRunCount = 0;
 
-                 Console.WriteLine("Test is running..." + DateTime.Now + "\n");
-                _browsers = new Driver(_testrail);
-                testRunCount = _testrail.GetPlansProject(planID);
-                while (testRunCount != 0)
+            Console.WriteLine("Test is running..." + DateTime.Now + "\n");
+            testRunCount = _testrail.GetPlansProject(id);
+                while (testRunCount > 0)
                 {
                     _browsers.SauceLabsTest();
                     testRunCount--;
