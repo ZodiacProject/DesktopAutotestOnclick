@@ -10,14 +10,19 @@ namespace AutotestDesktop
     class Program
     {
         static void Main(string[] args)
-        {
+        {   
             if (args.Length != 0)
             {
-                AutomatedTest BeginTest = new AutomatedTest(args[0]);
+                List<string> testIDs = new List<string>();     
+                string[] DataStr = args[0].Split('#'); //"2342#158507,158514"
+                string runID = DataStr[0];
+                testIDs = DataStr[1].Split(',').ToList();    
+                Console.WriteLine(runID + "\n");       
+                AutomatedTest BeginTest = new AutomatedTest(runID, testIDs);                
                 Console.WriteLine("Тест выполнился! " + DateTime.Now);
             }
             else
-                Console.WriteLine("Not found Plan ID!");    
+                Console.WriteLine("You don't chosen ids from test run!");    
         }
     }
 }

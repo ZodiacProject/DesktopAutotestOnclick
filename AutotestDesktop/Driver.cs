@@ -41,10 +41,10 @@ namespace AutotestDesktop
 
         }
         //SauceLabs
-        public void SauceLabsTest()
+        public void SauceLabsTest(List<string> testIDs)
         {
             string platform = _testRun.TheCurrentPlatform; // получение config name test run (имя платформы)         
-            _testRun.TakeParamToStartTestRail(); // получение test-case for test run                                  
+            _testRun.TakeParamToStartTestRail(testIDs); // получение test-case for test run                                  
             _LcaseWithStatus = new Dictionary<string, Status>();
             _LurlTestCase = new Dictionary<string, string>();
             _LcaseCommentCase = new Dictionary<string, string>();

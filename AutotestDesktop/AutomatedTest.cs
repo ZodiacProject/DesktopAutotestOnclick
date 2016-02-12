@@ -23,19 +23,14 @@ namespace AutotestDesktop
 	{
         private TestRail _testrail;
         private Driver _browsers;        
-        public AutomatedTest(string id) // plan id or test run id
+        public AutomatedTest(string id, List<string> testIDs) // plan id or test run id
         {
             _testrail = new TestRail();
-            _browsers = new Driver(_testrail);
-            int testRunCount = 0;
-
+            _browsers = new Driver(_testrail);            
             Console.WriteLine("Test is running..." + DateTime.Now + "\n");
-            testRunCount = _testrail.GetPlansProject(id);
-                while (testRunCount > 0)
-                {
-                    _browsers.SauceLabsTest();
-                    testRunCount--;
-                }          
+            _testrail.GetPlansProject(id);        
+            _browsers.SauceLabsTest(testIDs);
+                                           
         }                          
         private string _getDateForJasonRequest(DateTime date)
         {

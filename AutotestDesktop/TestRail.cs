@@ -29,17 +29,16 @@ namespace AutotestDesktop
         private const string _onclick = "_onclick";  
         private string _runID = null;
         private string _suiteId = null;
-        private string _planID = null;
+        private string _platformName = null;
         private JObject _topSites;
         private JObject _topZoneSites;
         private JArray _caseData;
         private JArray _runs;
-        private JObject _plans;
+        private JObject _run;
         private List<string> _testRun;
         private Dictionary<string, string> _testCaseName;
-        private Dictionary<string, List<string>> _sites;       
-        private List<string> _lRunID;       
-        private List<string> _lPlatformName = new List<string>();
+        private Dictionary<string, List<string>> _sites;               
+      //  private List<string> _lPlatformName = new List<string>();
         private List<string> _createCases = new List<string>();
         private List<string> _lTheCurrentBrowser = new List<string>();
 
@@ -50,27 +49,24 @@ namespace AutotestDesktop
         {
             get { return _suiteId; }
             set { _suiteId = value; }
-        }
-        public string TheCurrentPlatform { get { return _lPlatformName.First(); } }        
+        } 
+        public string TheCurrentPlatform { get { return _platformName; } }        
         public List<string> GetCurrentBrowser { get { return _lTheCurrentBrowser; } }        
         public Status Status;
-        public void TakeParamToStartTestRail()
+        public void TakeParamToStartTestRail(List<string> testIDs)
         {
             client.User = _login;
-            client.Password = _password;
-            _runID = _lRunID.First();
+            client.Password = _password;   
             _testRun = new List<string>();
             _testCaseName = new Dictionary<string, string>();            
             LDriverSetting = new List<PublisherTarget>();           
-            JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);            
-            Console.WriteLine("\nRun ID: " + _lRunID.First());
-            JArray TestCases = (JArray)client.SendGet("get_tests/" + _lRunID.First());
+            JArray Sections = (JArray)client.SendGet("get_sections/3&suite_id=" + _suiteId);
+            Console.WriteLine("\nRun ID: " + _runID);
+            JArray TestCases = (JArray)client.SendGet("get_tests/" + _runID);
             JObject GetCase;
             JObject GetBrowserVersion;
             JObject GetBrowser;          
-            string titleNameOfCase = null;           
-            _lRunID.RemoveAt(_lRunID.Count - _lRunID.Count); // удаление первого run id в последовательности _lRunID
-            _lPlatformName.RemoveAt(_lPlatformName.Count - _lPlatformName.Count); // удаление первого config name run (ex.Linux or Windows XP) в последовательности _lPlatformName
+            string titleNameOfCase = null;                       
             foreach (var testCase in TestCases)
             {                            
                 // если коллекция уже содержит такой ключ, то переход к следующей записи
@@ -85,17 +81,21 @@ namespace AutotestDesktop
                     {
                         GetCase = (JObject)client.SendGet("get_case/" + testCase["case_id"]);
                         GetBrowserVersion = (JObject)client.SendGet("get_section/" + GetCase["section_id"]);
-                        GetBrowser = (JObject)client.SendGet("get_section/" + GetBrowserVersion["parent_id"]);                
-                        LDriverSetting.Add(new PublisherTarget()
+                        GetBrowser = (JObject)client.SendGet("get_section/" + GetBrowserVersion["parent_id"]);
+                        foreach(string id in testIDs)
                         {
-                            CaseID = testCase["id"].ToString(),
-                            Url = testCase["title"].ToString(),
-                            ZoneIds = testCase["custom_zone_id"].ToString(),
-                            BrName = GetBrowser["name"].ToString(),
-                            BrVersion = GetBrowserVersion["name"].ToString(),
-                            CountShowPopup = 1,
-                            Interval = 3000,
-                        });
+                            if (testCase["id"].ToString() == id)
+                                LDriverSetting.Add(new PublisherTarget()
+                                {
+                                    CaseID = testCase["id"].ToString(),
+                                    Url = testCase["title"].ToString(),
+                                    ZoneIds = testCase["custom_zone_id"].ToString(),
+                                    BrName = GetBrowser["name"].ToString(),
+                                    BrVersion = GetBrowserVersion["name"].ToString(),
+                                    CountShowPopup = 1,
+                                    Interval = 3000,
+                                });                            
+                        }                        
                     }                                       
                 }                    
             }                                                                                                                                                                          
@@ -380,33 +380,24 @@ namespace AutotestDesktop
             }
             Console.WriteLine();
         }
-        public int GetPlansProject(string planID)
+        public void GetPlansProject(string runID)
         {
             Console.Write("Topical test-plans: ");
             client.User = _login;
             client.Password = _password;
-            this._planID = planID;          
-            _lRunID = new List<string>();            
-            _plans = (JObject)client.SendGet("get_plan/" + _planID);            
-            foreach (var plan in _plans)
-            {
-                if (plan.Key == "id")
-                    Console.WriteLine(plan.Value);
-                if (plan.Key == "entries")
-                    foreach (var entries in plan.Value)
-                    {
-                        foreach (var ent_runs in entries["runs"])
-                        {                                                       
-                            _lRunID.Add(ent_runs["id"].ToString());
-                            _lPlatformName.Add(ent_runs["config"].ToString());
-                            GetSuiteID = ent_runs["suite_id"].ToString();
-                            Console.WriteLine("Run ID: " + ent_runs["id"].ToString() + " " + ent_runs["config"].ToString());                             
-                        }
-                    }
-                                                                                                                      
-            }            
-            Console.WriteLine();
-            return _lRunID.Count;
+            this._runID = runID;          
+            _run = (JObject)client.SendGet("get_run/" + _runID);            
+            foreach (var run_str in _run)
+            { 
+                if (run_str.Key == "id")
+                    Console.WriteLine(run_str.Value);
+                if (run_str.Key == "config")
+                    _platformName = run_str.Value.ToString();
+                if (run_str.Key == "suite_id")
+                    GetSuiteID = run_str.Value.ToString();                
+                        
+            }                                                                                                                                              
+            Console.WriteLine();            
         }
         public void isTheRunAlreadyExists(string nSuite)
         {
