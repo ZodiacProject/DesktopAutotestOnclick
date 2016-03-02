@@ -29,8 +29,7 @@ namespace AutotestDesktop
             _browsers = new Driver(_testrail);            
             Console.WriteLine("Test is running..." + DateTime.Now + "\n");
             _testrail.GetPlansProject(id);        
-            _browsers.SauceLabsTest(testIDs);
-                                           
+            _browsers.SauceLabsTest(testIDs);                                           
         }                          
         private string _getDateForJasonRequest(DateTime date)
         {
