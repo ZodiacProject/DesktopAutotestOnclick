@@ -65,10 +65,10 @@ namespace AutotestDesktop
                 {
                     temp_brVersion = driverSet.BrVersion;
                     temp_brVersion = temp_brVersion.Remove(temp_brVersion.IndexOf('.'));
-                    _Setup(driverSet.BrName, temp_brVersion, plfName, driverSet.Url);
+                    _Setup();
                 }
                 else
-                    _Setup(driverSet.BrName, driverSet.BrVersion, plfName, driverSet.Url);
+                    _Setup();
 
                 if (_driver == null)                 
                     {                        
@@ -166,53 +166,16 @@ namespace AutotestDesktop
                 _CleanUp(); //close test 
             }// end foreach                                                                     
         }//end of function
-private IWebDriver _Setup(string browser, string version, string platform, string NameTestUrl)
+private IWebDriver _Setup()
 {
-    // construct the url to sauce labs
-    Uri commandExecutorUri = new Uri("http://ondemand.saucelabs.com/wd/hub");
-    // set up the desired capabilities    
-    DesiredCapabilities desiredCapabilites = new DesiredCapabilities(browser, version, Platform.CurrentPlatform); // set the desired browser
-    desiredCapabilites.SetCapability("platform", platform); // operating system to use
-    desiredCapabilites.SetCapability("username", Constants.SAUCE_LABS_ACCOUNT_NAME); // supply sauce labs username
-    desiredCapabilites.SetCapability("accessKey", Constants.SAUCE_LABS_ACCOUNT_KEY);  // supply sauce labs account key
-    desiredCapabilites.SetCapability("name", TestContext.CurrentContext.Test.Name = NameTestUrl + " OnClick test"); // give the test a name
-
-
-    try
-    {
-        // start a new remote web driver session on sauce labs
-        _driver = new RemoteWebDriver(commandExecutorUri, desiredCapabilites); //new FirefoxDriver(desiredCapabilites);
-        _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
-    }
-    catch (WebDriverException e) { Console.WriteLine(e); }
-
+    _driver = new FirefoxDriver();
+    _driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
     return _driver;
 }
 private void _CleanUp()
 {
-    Console.WriteLine("# Saucelabs is " + _statusSauceLabs + "\n");
-    try
-    {
-        // get the status of the current test
-        switch (_statusSauceLabs)
-        {
-            case "passed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs); //isStatus = TestContext.CurrentContext.Outcome.Status == TestStatus.Passed;
-                break;
-            case "failed": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=" + _statusSauceLabs);
-                break;
-            case "blocked": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=skipped");
-                break;
-            case "retest": ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
-                break;
-            default: ((IJavaScriptExecutor)_driver).ExecuteScript("sauce:job-result=inconclusive");
-                break;
-        }
-    }
-    finally
-    {
-        _driver.Quit();
-        _statusSauceLabs = null;
-    }
+    Console.WriteLine("Webdriver is closed" + "\n");
+        _driver.Quit();    
 }
         private void _changeTestScripts(IWebDriver driver)
         {
